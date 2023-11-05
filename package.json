@@ -1,0 +1,30 @@
+{
+  "name": "jcal",
+  "description": "A very complete JavaScript library for the Jewish Calendar.",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "devDependencies": {
+    "@types/node": "20.8.10",
+    "typescript": "5.2.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cbsom/jCal.git"
+  },
+  "keywords": [
+    "Calendar",
+    "Jewish",
+    "Halacha",
+    "Zmanim",
+    "Shul"
+  ],
+  "author": "Chaim B. Sommers <cb@compute.co.il>",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/cbsom/jCal/issues"
+  },
+  "homepage": "https://github.com/cbsom/jCal#readme"
+}
