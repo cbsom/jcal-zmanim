@@ -1,7 +1,7 @@
 {
   "name": "jcal-zmanim",
   "description": "A very complete JavaScript library for the Jewish Calendar, Zmanim, Holidays, and daily Shul notes.",
-  "version": "1.0.4",
+  "version": "1.0.50",
   "main": "build/index.js",
   "devDependencies": {
     "@types/node": "20.8.10",
@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/cbsom/jCal.git"
+    "url": "git+https://github.com/cbsom/jcal-zmanim.git"
   },
   "keywords": [
     "Calendar",
