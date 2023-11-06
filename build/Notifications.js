@@ -44,7 +44,7 @@ let showEnglish = false, dayInfo, showGaonShirShelYom = true, israel = true;
 function getNotifications(jdate, sdate, time, settings) {
     dayNotes.length = 0;
     tefillahNotes.length = 0;
-    const month = jdate.Month, day = jdate.Day, dow = jdate.DayOfWeek, { location, showGaonShir, showDafYomi, english } = settings, { chatzosHayom, chatzosHalayla, alos, shkia, } = AppUtils_1.default.getBasicShulZmanim(sdate, jdate, location), isAfterChatzosHayom = Utils_1.default.isTimeAfter(chatzosHayom, time), isAfterChatzosHalayla = (typeof (chatzosHalayla) !== 'undefined') &&
+    const month = jdate.Month, day = jdate.Day, dow = jdate.DayOfWeek, { location, showGaonShir, showDafYomi, english } = settings, { chatzosHayom, chatzosHalayla, alos, shkia, } = AppUtils_1.default.getBasicShulZmanim(jdate, sdate, location), isAfterChatzosHayom = Utils_1.default.isTimeAfter(chatzosHayom, time), isAfterChatzosHalayla = (typeof (chatzosHalayla) !== 'undefined') &&
         (Utils_1.default.isTimeAfter(chatzosHalayla, time) ||
             (chatzosHalayla.hour > 12 && time.hour < 12)), //Chatzos is before 0:00 and time is after 0:00
     isAfterAlos = Utils_1.default.isTimeAfter(alos, time), isAfterShkia = Utils_1.default.isTimeAfter(shkia, time), isDaytime = isAfterAlos && !isAfterShkia, isNightTime = !isDaytime, isNotBeinHasmashos = !isAfterShkia ||

@@ -1,7 +1,7 @@
 import Utils from './Utils.js';
 import jDate from './jDate.js';
 import Location from './Location.js';
-import { Time } from '../jcal';
+import { Time } from '../jcal-zmanim.js';
 
 /**
  * Gets the molad for the given jewish month and year.

@@ -1,4 +1,4 @@
-import { ZmanToShow } from './jcal';
+import { ZmanToShow } from './jcal-zmanim';
 
 export const ZmanTypeIds = Object.freeze({
     ChatzosLayla: 0,

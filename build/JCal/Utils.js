@@ -205,7 +205,7 @@ class Utils {
      * @param {Time} earlierTime
      * @param {Time} laterTime
      * @param {Boolean} [showNegative] show negative values or assume second value is next day?
-     * @returns{{hour:Number, minute:Number, second:Number, sign:1|-1}}
+     * @returns{{hour:number, minute:number, second:number, sign:1|-1}}
      */
     static timeDiff(earlierTime, laterTime, showNegative = false) {
         const earlySec = Utils.totalSeconds(earlierTime), laterSec = Utils.totalSeconds(laterTime), time = Utils.fixTime({
@@ -236,7 +236,7 @@ class Utils {
     /**
      * Returns the time of the given javascript date as an object in the format of {hour : 23, minute :42, second: 18 }
      * @param {Date} sdate
-     * @returns {{hour : Number, minute :Number, second: Number }}
+     * @returns {{hour :number, minute :number, second:number }}
      */
     static timeFromDate(sdate) {
         return {
@@ -247,8 +247,8 @@ class Utils {
     }
     /**
      * Determines if the second given time is after (or at) the first given time
-     * @param {{hour : Number, minute :Number, second: Number }} beforeTime
-     * @param {{hour : Number, minute :Number, second: Number }} afterTime
+     * @param {{hour :number, minute :number, second:number }} beforeTime
+     * @param {{hour :number, minute :number, second:number }} afterTime
      */
     static isTimeAfter(beforeTime, afterTime) {
         if (!beforeTime || !afterTime)
@@ -257,7 +257,7 @@ class Utils {
     }
     /**
      * Returns the given time interval in a formatted string.
-     * @param {{hour:Number, minute:Number,second:Number,sign?: 1 | -1}} time An object in the format {hour : 23, minute :42, second: 18 }
+     * @param {{hour:number, minute:number,second:number,sign?: 1 | -1}} time An object in the format {hour : 23, minute :42, second: 18 }
      */
     static getTimeIntervalTextStringHeb(time) {
         let t = '';
@@ -280,7 +280,7 @@ class Utils {
     }
     /**
      * Returns the given time interval in a formatted string.
-     * @param {{hour:Number, minute:Number,second:Number,sign?: 1 | -1}} time An object in the format {hour : 23, minute :42, second: 18 }
+     * @param {{hour:number, minute:number,second:number,sign?: 1 | -1}} time An object in the format {hour : 23, minute :42, second: 18 }
      */
     static getTimeIntervalTextString(time) {
         let t = '';

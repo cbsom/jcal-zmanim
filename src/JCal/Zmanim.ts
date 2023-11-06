@@ -3,7 +3,7 @@ import Utils from './Utils.js';
 import jDate from './jDate.js';
 import { isValidDate } from '../GeneralUtils.js';
 import Location from './Location.js';
-import { SunTimes, Time } from '../jcal';
+import { SunTimes, Time } from '../jcal-zmanim.js';
 
 /**
  * Computes the daily Zmanim for any single date at any location.

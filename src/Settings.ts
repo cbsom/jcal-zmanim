@@ -2,7 +2,7 @@ import Location from './JCal/Location';
 import { findLocation } from './Locations';
 import { setDefault } from './GeneralUtils';
 import { ZmanTypeIds, getZmanType } from './ZmanTypes';
-import { ZmanToShow } from './jcal';
+import { ZmanToShow } from './jcal-zmanim';
 
 
 

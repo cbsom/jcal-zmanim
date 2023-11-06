@@ -1,7 +1,7 @@
 import Zmanim from './Zmanim';
 import jDate from './jDate';
 import Location from './Location';
-import { SunTimes,Time } from '../jcal';
+import { SunTimes,Time } from '../jcal-zmanim';
 export default class Utils {
     static jMonthsEng = [
         '',
@@ -302,7 +302,7 @@ export default class Utils {
      * @param {Time} earlierTime
      * @param {Time} laterTime
      * @param {Boolean} [showNegative] show negative values or assume second value is next day?
-     * @returns{{hour:Number, minute:Number, second:Number, sign:1|-1}}
+     * @returns{{hour:number, minute:number, second:number, sign:1|-1}}
      */
     static timeDiff(earlierTime:Time, laterTime:Time, showNegative = false) {
         const earlySec = Utils.totalSeconds(earlierTime),
@@ -343,7 +343,7 @@ export default class Utils {
     /**
      * Returns the time of the given javascript date as an object in the format of {hour : 23, minute :42, second: 18 }
      * @param {Date} sdate
-     * @returns {{hour : Number, minute :Number, second: Number }}
+     * @returns {{hour :number, minute :number, second:number }}
      */
     static timeFromDate(sdate:Date) {
         return {
@@ -355,8 +355,8 @@ export default class Utils {
 
     /**
      * Determines if the second given time is after (or at) the first given time
-     * @param {{hour : Number, minute :Number, second: Number }} beforeTime
-     * @param {{hour : Number, minute :Number, second: Number }} afterTime
+     * @param {{hour :number, minute :number, second:number }} beforeTime
+     * @param {{hour :number, minute :number, second:number }} afterTime
      */
     static isTimeAfter(beforeTime?:Time, afterTime?:Time) {
         if(!beforeTime || !afterTime) return false;
@@ -365,7 +365,7 @@ export default class Utils {
 
     /**
      * Returns the given time interval in a formatted string.
-     * @param {{hour:Number, minute:Number,second:Number,sign?: 1 | -1}} time An object in the format {hour : 23, minute :42, second: 18 }
+     * @param {{hour:number, minute:number,second:number,sign?: 1 | -1}} time An object in the format {hour : 23, minute :42, second: 18 }
      */
     static getTimeIntervalTextStringHeb(time:Time) {
         let t = '';
@@ -393,7 +393,7 @@ export default class Utils {
 
     /**
      * Returns the given time interval in a formatted string.
-     * @param {{hour:Number, minute:Number,second:Number,sign?: 1 | -1}} time An object in the format {hour : 23, minute :42, second: 18 }
+     * @param {{hour:number, minute:number,second:number,sign?: 1 | -1}} time An object in the format {hour : 23, minute :42, second: 18 }
      */
     static getTimeIntervalTextString(time:Time) {
         let t = '';

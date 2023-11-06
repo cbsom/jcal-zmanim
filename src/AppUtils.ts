@@ -4,7 +4,7 @@ import Location from './JCal/Location';
 import Settings from './Settings';
 import jDate from './JCal/jDate';
 import { ZmanTypes, ZmanTypeIds, getZmanType } from './ZmanTypes';
-import { SunTimes, Time, ZmanToShow } from './jcal';
+import { SunTimes, Time, ZmanToShow } from './jcal-zmanim';
 
 type ZmanTime = {
     date: Date,
@@ -51,8 +51,8 @@ export default class AppUtils {
      * @param {jDate} jdate
      * @param {Time} time
      * @param {Settings} settings
-     * @param {{hour : Number, minute :Number, second: Number }} sunset
-     * @returns {[{zmanType:{id:Number,offset:?Number, whichDaysFlags:?Number, desc: String, eng: String, heb: String },time:{hour : Number, minute :Number, second: Number }, isTomorrow:Boolean}]}
+     * @param {Time} sunset
+     * @returns {[{zmanType:ZmanToShow,time:Time, isTomorrow:boolean}]}
      */
     static getCorrectZmanTimes(sdate: Date, jdate: jDate, time: Time, settings: Settings, sunset: Time) {
         const correctedTimes = [],
@@ -115,7 +115,7 @@ export default class AppUtils {
      * @param {Date} date The secular date to get the zmanim for
      * @param {jDate} jdate The jewish date to get the zmanim for
      * @param {Location} location The location for which to get the zmanim
-     * @returns{[{zmanType:{id:number,offset:?number,desc:String,eng:String,heb:String },time:Time}]}
+     * @returns{[{zmanType:{id:number,offset:?number,desc:string,eng:string,heb:string },time:Time}]}
      */
     static getZmanTimes(zmanTypes: ZmanToShow[], date: Date, jdate: jDate, location: Location): { zmanType: ZmanToShow, time?: Time }[] {
         const mem = AppUtils.zmanTimesCache.find(
@@ -438,11 +438,12 @@ export default class AppUtils {
 
     /**
      * Returns the zmanim necessary for showing basic shul notifications: chatzosHayom, chatzosHalayla, alos
+     * @param {jDate} jdate
      * @param {Date} sdate
      * @param {Location} location
      * @returns {{chatzosHayom:Time, chatzosHalayla:Time, alos:Time, shkia:Time }}
      */
-    static getBasicShulZmanim(sdate: Date, jdate: jDate, location: Location) {
+    static getBasicShulZmanim(jdate: jDate, sdate: Date,location: Location) {
         const zmanim = AppUtils.getZmanTimes(
             [
                 getZmanType(ZmanTypeIds.chatzosDay) as ZmanToShow, //Chatzos hayom
@@ -463,9 +464,20 @@ export default class AppUtils {
     }
 
     /**
+    * Returns all the zmanim for the given day
+    * @param {jDate} jdate
+    * @param {Date} sdate
+    * @param {Location} location
+    * @returns {{zmanType:ZmanToShow, time?:Time }[]}
+    */
+    static getAllZmanim(jdate: jDate, sdate: Date, location: Location) {
+        return AppUtils.getZmanTimes(ZmanTypes, sdate, jdate, location,);
+    }
+
+    /**
      * Compares two zmanim for showing to see if they are the same
-     * @param {{id:Number,offset:?Number, whichDaysFlags:?Number, desc: String, eng: String, heb: String }} zman1
-     * @param {{id:Number,offset:?Number, whichDaysFlags:?Number, desc: String, eng: String, heb: String }} zman2
+     * @param {{id:number,offset:?Number, whichDaysFlags:?Number, desc: String, eng: String, heb: String }} zman1
+     * @param {{id:number,offset:?Number, whichDaysFlags:?Number, desc: String, eng: String, heb: String }} zman2
      */
     static IsSameZmanToShow(zman1: ZmanToShow, zman2: ZmanToShow) {
         return (

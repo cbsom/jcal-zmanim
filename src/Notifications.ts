@@ -4,8 +4,8 @@ import jDate from './JCal/jDate';
 import Molad from './JCal/Molad';
 import PirkeiAvos from './JCal/PirkeiAvos';
 import AppUtils, { DaysOfWeek } from './AppUtils';
-import { Time } from './jcal';
 import Location from './JCal/Location';
+import { Time } from './jcal-zmanim';
 
 type DayInfo = {
     jdate: jDate,
@@ -52,7 +52,7 @@ export default function getNotifications(jdate: jDate, sdate: Date, time: Time, 
             chatzosHalayla,
             alos,
             shkia,
-        } = AppUtils.getBasicShulZmanim(sdate, jdate, location),
+        } = AppUtils.getBasicShulZmanim(jdate, sdate, location),
         isAfterChatzosHayom = Utils.isTimeAfter(chatzosHayom, time),
         isAfterChatzosHalayla = (typeof (chatzosHalayla) !== 'undefined') &&
             (Utils.isTimeAfter(chatzosHalayla, time) ||

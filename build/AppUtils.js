@@ -34,8 +34,8 @@ class AppUtils {
      * @param {jDate} jdate
      * @param {Time} time
      * @param {Settings} settings
-     * @param {{hour : Number, minute :Number, second: Number }} sunset
-     * @returns {[{zmanType:{id:Number,offset:?Number, whichDaysFlags:?Number, desc: String, eng: String, heb: String },time:{hour : Number, minute :Number, second: Number }, isTomorrow:Boolean}]}
+     * @param {Time} sunset
+     * @returns {[{zmanType:ZmanToShow,time:Time, isTomorrow:boolean}]}
      */
     static getCorrectZmanTimes(sdate, jdate, time, settings, sunset) {
         const correctedTimes = [], zmanTypes = settings.zmanimToShow, location = settings.location, tomorrowJd = jdate.addDays(1), tomorrowSd = Utils_1.default.addDaysToSdate(sdate, 1), 
@@ -71,7 +71,7 @@ class AppUtils {
      * @param {Date} date The secular date to get the zmanim for
      * @param {jDate} jdate The jewish date to get the zmanim for
      * @param {Location} location The location for which to get the zmanim
-     * @returns{[{zmanType:{id:number,offset:?number,desc:String,eng:String,heb:String },time:Time}]}
+     * @returns{[{zmanType:{id:number,offset:?number,desc:string,eng:string,heb:string },time:Time}]}
      */
     static getZmanTimes(zmanTypes, date, jdate, location) {
         const mem = AppUtils.zmanTimesCache.find((z) => Utils_1.default.isSameSdate(z.date, date) &&
@@ -340,11 +340,12 @@ class AppUtils {
     }
     /**
      * Returns the zmanim necessary for showing basic shul notifications: chatzosHayom, chatzosHalayla, alos
+     * @param {jDate} jdate
      * @param {Date} sdate
      * @param {Location} location
      * @returns {{chatzosHayom:Time, chatzosHalayla:Time, alos:Time, shkia:Time }}
      */
-    static getBasicShulZmanim(sdate, jdate, location) {
+    static getBasicShulZmanim(jdate, sdate, location) {
         const zmanim = AppUtils.getZmanTimes([
             (0, ZmanTypes_1.getZmanType)(ZmanTypes_1.ZmanTypeIds.chatzosDay),
             (0, ZmanTypes_1.getZmanType)(ZmanTypes_1.ZmanTypeIds.Alos90),
@@ -359,9 +360,19 @@ class AppUtils {
         };
     }
     /**
+    * Returns all the zmanim for the given day
+    * @param {jDate} jdate
+    * @param {Date} sdate
+    * @param {Location} location
+    * @returns {{zmanType:ZmanToShow, time?:Time }[]}
+    */
+    static getAllZmanim(jdate, sdate, location) {
+        return AppUtils.getZmanTimes(ZmanTypes_1.ZmanTypes, sdate, jdate, location);
+    }
+    /**
      * Compares two zmanim for showing to see if they are the same
-     * @param {{id:Number,offset:?Number, whichDaysFlags:?Number, desc: String, eng: String, heb: String }} zman1
-     * @param {{id:Number,offset:?Number, whichDaysFlags:?Number, desc: String, eng: String, heb: String }} zman2
+     * @param {{id:number,offset:?Number, whichDaysFlags:?Number, desc: String, eng: String, heb: String }} zman1
+     * @param {{id:number,offset:?Number, whichDaysFlags:?Number, desc: String, eng: String, heb: String }} zman2
      */
     static IsSameZmanToShow(zman1, zman2) {
         return (zman1.id === zman2.id &&
