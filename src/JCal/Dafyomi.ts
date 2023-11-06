@@ -54,9 +54,12 @@ export default class Dafyomi {
         { eng: 'Midos', heb: 'מדות', daf: 4 },
         { eng: 'Niddah', heb: 'נדה', daf: 73 }];
 
-    static getDaf(jdate) {
+    static getDaf(jdate:jDate) : {
+        masechet:  { eng: string, heb: string, daf: number },
+        daf: number
+    } | null{
         const absoluteDate = jdate.Abs;
-        let dafcnt = 40, cno, dno, osday, nsday, total, count, j, blatt;
+        let dafcnt = 40, cno:number, dno:number, osday:number, nsday:number, total:number, count:number, j:number, blatt:number;
 
         osday = jDate.absSd(new Date(1923, 8, 11));
         nsday = jDate.absSd(new Date(1975, 5, 24));
@@ -117,14 +120,20 @@ export default class Dafyomi {
     }
 
     // Returns the name of the Masechta and daf number in English, For example: Sukkah, Daf 3
-    static toString(jd) {
+    static toString(jd:jDate):string|undefined {
         const d = Dafyomi.getDaf(jd);
+        if(d!==null)
+        {
         return d.masechet.eng + ', Daf ' + d.daf.toString();
+        }
     }
 
     //Returns the name of the Masechta and daf number in Hebrew. For example: 'סוכה דף כ.
-    static toStringHeb(jd) {
+    static toStringHeb(jd:jDate):string |undefined{
         const d = Dafyomi.getDaf(jd);
+        if(d!==null)
+        {
         return d.masechet.heb + ' דף ' + Utils.toJNum(d.daf);
+        }
     }
 }

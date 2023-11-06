@@ -30,7 +30,7 @@ class Sedra {
         /* find the first saturday on or after today's date */
         absDate = Sedra.getDayOnOrBefore(6, absDate + 6);
         weekNum = (absDate - sedraOrder.firstSatInYear) / 7;
-        if (weekNum >= sedraOrder.sedraArray.length) {
+        if (sedraOrder.sedraArray && weekNum >= sedraOrder.sedraArray.length) {
             const indexLast = sedraOrder.sedraArray[sedraOrder.sedraArray.length - 1];
             if (indexLast < 0) {
                 /* advance 2 parashiyot ahead after a doubled week */
@@ -41,7 +41,9 @@ class Sedra {
             }
         }
         else {
-            index = sedraOrder.sedraArray[weekNum];
+            index = (sedraOrder.sedraArray
+                ? sedraOrder.sedraArray[weekNum]
+                : -1);
         }
         if (index >= 0) {
             sedraArray = [Sedra.sedraList[index]];

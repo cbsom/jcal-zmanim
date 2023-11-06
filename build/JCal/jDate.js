@@ -435,11 +435,11 @@ class jDate {
     }
     /**Returns the daily daf in English. For example: Sukkah, Daf 3.*/
     getDafYomi() {
-        return Dafyomi_1.default.toString(this);
+        return Dafyomi_1.default.toString(this) || '';
     }
     /**Gets the daily daf in Hebrew. For example: 'סוכה דף כ.*/
     getDafyomiHeb() {
-        return Dafyomi_1.default.toStringHeb(this);
+        return Dafyomi_1.default.toStringHeb(this) || '';
     }
     /**
      *  Converts its argument/s to a Jewish Date.

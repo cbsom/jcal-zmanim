@@ -1,38 +1,45 @@
 import Location from './JCal/Location';
-import {findLocation} from './Locations';
-import {setDefault} from './GeneralUtils';
-import {ZmanTypeIds, getZmanType} from './ZmanTypes';
+import { findLocation } from './Locations';
+import { setDefault } from './GeneralUtils';
+import { ZmanTypeIds, getZmanType } from './ZmanTypes';
+import { ZmanToShow } from './jcal';
+
+
 
 export default class Settings {
+    zmanimToShow: ZmanToShow[];
+    location: Location;
+    showNotifications: boolean;
+    numberOfItemsToShow: number;
+    minToShowPassedZman: number;
+    showGaonShir: boolean;
+    showDafYomi: boolean;
+    english: boolean;
     /**
      *
-     * @param {[{id:Number, offset: ?Number, whichDaysFlags:?Number, desc: String, eng: String, heb: String }]} [zmanimToShow] List of which zmanim to show
-     * @param {[{id:Number, offset: Number, whichDaysFlags: Number }]} [customZmanim] List of which zmanim were added
+     * @param {[ZmanToShow]} [zmanimToShow] List of which zmanim to show
      * @param {Location} [location]
      * @param {boolean} [showNotifications] Show shul notifications?
      * @param {number} [numberOfItemsToShow] Number of zmanim to show on the main screen
      * @param {number} [minToShowPassedZman] Number of minutes to continue showing zmanim that have passed
      * @param {boolean} [showGaonShir] Show the Shir Shel Yom of the Gr"a?
-     * @param {string} [theme] The name of the theme
      * @param {boolean} [showDafYomi] Show the Daf Yomi?
      * @param {boolean} [english] Show in English?
      */
     constructor(
-        zmanimToShow,
-        customZmanim,
-        location,
-        showNotifications,
-        numberOfItemsToShow,
-        minToShowPassedZman,
-        showGaonShir,
-        theme,
-        showDafYomi,
-        english,
+        zmanimToShow?: ZmanToShow[],
+        location?: Location,
+        showNotifications?: boolean,
+        numberOfItemsToShow?: number,
+        minToShowPassedZman?: number,
+        showGaonShir?: boolean,
+        showDafYomi?: boolean,
+        english?: boolean,
     ) {
         /**
-         * @property {[{id:Number, offset: ?Number, whichDaysFlags:?Number, desc: String, eng: String, heb: String }]} zmanimToShow List of which zmanim to show
+         * @property {[ZmanToShow]} zmanimToShow List of which zmanim to show
          */
-        this.zmanimToShow = zmanimToShow || [
+        this.zmanimToShow = (zmanimToShow || [
             getZmanType(ZmanTypeIds.ChatzosLayla), //chatzosNight
             getZmanType(ZmanTypeIds.Alos72), //alos72
             getZmanType(ZmanTypeIds.TalisTefillin), //talisTefillin
@@ -51,59 +58,46 @@ export default class Settings {
             getZmanType(ZmanTypeIds.candleLighting), //candleLighting
             getZmanType(ZmanTypeIds.SofZmanEatingChometz), //Sof Zman eating Chometz
             getZmanType(ZmanTypeIds.SofZmanBurnChometz), //Sof Zman burn Chometz
-        ];
-        /**
-         * @property {[{id:Number, offset: Number, whichDaysFlags: Number, desc: String, eng: String, heb: String }]} customZmanim List of added zmanim
-         * Note: the id needs to be one of the ids of ZmanTypes list in the file ZmanTypes.js
-         * The offset is the number of minutes to be added/subtracted to this ZmanType.
-         * The whichDaysFlags is an integer which contains a bit-flag of WhichDaysFlags values (contained in AppUtils.js)
-         */
-        this.customZmanim = customZmanim || [];
+        ]) as ZmanToShow[];
         /**
          * @property {Location} location
          */
-        this.location = location || findLocation('Lakewood NJ');
+        this.location = (location || findLocation('Lakewood NJ')) as Location;
         /**
          * @property {boolean} showNotifications Show shul notifications?
          */
-        this.showNotifications = setDefault(showNotifications, true);
+        this.showNotifications = setDefault(showNotifications, true) as boolean;
         /**
          * @property {number} numberOfItemsToShow Number of zmanim to show on the main screen
          */
-        this.numberOfItemsToShow = setDefault(numberOfItemsToShow, 5);
+        this.numberOfItemsToShow = setDefault(numberOfItemsToShow, 5) as number;
         /**
          * @property {number} minToShowPassedZman Number of minutes to continue showing zmanim that have passed
          */
-        this.minToShowPassedZman = setDefault(minToShowPassedZman, 15);
+        this.minToShowPassedZman = setDefault(minToShowPassedZman, 15) as number;
         /**
          * @property {boolean} [showGaonShir] Show the Shir Shel Yom of the Gr"a?
          */
-        this.showGaonShir = setDefault(showGaonShir, false);
-        /**
-         * @property {string} [theme] name of the style theme
-         */
-        this.theme = theme || 'dark';
+        this.showGaonShir = setDefault(showGaonShir, false) as boolean;
         /**
          * @property {boolean} [showDafYomi] Show Daf Yomi?
          */
-        this.showDafYomi = setDefault(showDafYomi, true);
+        this.showDafYomi = setDefault(showDafYomi, true) as boolean;
         /**
          * @property {boolean} [english] Should the language be English?
          */
-        this.english = setDefault(english, true);
+        this.english = setDefault(english, true) as boolean;
     }
     clone() {
         return new Settings(
             [...this.zmanimToShow],
-            [...this.customZmanim],
             this.location,
             this.showNotifications,
             this.numberOfItemsToShow,
             this.minToShowPassedZman,
             this.showGaonShir,
-            this.theme,
             this.showDafYomi,
             this.english,
         );
-    }    
+    }
 }

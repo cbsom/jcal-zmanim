@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const Utils_js_1 = __importDefault(require("./Utils.js"));
 const jDate_js_1 = __importDefault(require("./jDate.js"));
-const Location_1 = __importDefault(require("./Location"));
+const Location_js_1 = __importDefault(require("./Location.js"));
 /**
  * Gets the molad for the given jewish month and year.
  * Algorithm was adapted from Hebcal by Danny Sadinoff
@@ -18,7 +18,7 @@ class Molad {
      *
      * @param {Number} month
      * @param {Number} year
-     * @returns {{jDate:jDate,time:{hour:Number,minute:Number,second:Number},chalakim:Number}}
+     * @returns {{jDate:jDate,time:Time,chalakim:number}}
      */
     static getMolad(month, year) {
         let totalMonths, partsElapsed, hoursElapsed, parts, monthAdj = month - 7;
@@ -45,9 +45,9 @@ class Molad {
      * @param {Number} month
      */
     static getString(year, month) {
-        const molad = Molad.getMolad(month, year), zmanim = molad.jDate.getSunriseSunset(Location_1.default.getJerusalem()), isNight = Utils_js_1.default.isTimeAfter(zmanim.sunset, molad.time), dow = molad.jDate.getDayOfWeek();
+        const molad = Molad.getMolad(month, year), zmanim = molad.jDate.getSunriseSunset(Location_js_1.default.getJerusalem()), isNight = Utils_js_1.default.isTimeAfter(zmanim.sunset, molad.time), dow = molad.jDate.getDayOfWeek();
         let str = '';
-        if (isNaN(zmanim.sunset.hour)) {
+        if (!zmanim.sunset || isNaN(zmanim.sunset.hour)) {
             str += Utils_js_1.default.dowEng[dow];
         }
         else if (dow === 6 && isNight) {
@@ -63,6 +63,9 @@ class Molad {
             molad.chalakim.toString() + ' Chalakim';
         return str;
     }
+    time(sunset, time) {
+        throw new Error('Method not implemented.');
+    }
     /**
      * Returns the time of the molad as a string in the format: ליל שני 20:33 12 חלקים
      * The molad is always in Jerusalem so we use the Jerusalem sunset times
@@ -71,7 +74,7 @@ class Molad {
      * @param {Number} month
      */
     static getStringHeb(year, month) {
-        const molad = Molad.getMolad(month, year), zmanim = molad.jDate.getSunriseSunset(Location_1.default.getJerusalem()), isNight = Utils_js_1.default.isTimeAfter(zmanim.sunset, molad.time) &&
+        const molad = Molad.getMolad(month, year), zmanim = molad.jDate.getSunriseSunset(Location_js_1.default.getJerusalem()), isNight = Utils_js_1.default.isTimeAfter(zmanim.sunset, molad.time) &&
             Utils_js_1.default.isTimeAfter(molad.time, zmanim.sunrise), dow = molad.jDate.getDayOfWeek();
         let str = '';
         if (dow === 6) {
@@ -84,7 +87,7 @@ class Molad {
             str += (isNight ? 'ליל' : 'יום') +
                 Utils_js_1.default.dowHeb[dow].replace('יום', '');
         }
-        str += ' ' + Utils_js_1.default.getTimeString(molad.time, true) + ' ' +
+        str += ' ' + Utils_js_1.default.getTimeString(molad.time, 1, true) + ' ' +
             molad.chalakim.toString() + ' חלקים';
         return str;
     }

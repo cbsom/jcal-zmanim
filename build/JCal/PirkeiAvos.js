@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const jDate_js_1 = __importDefault(require("./jDate.js"));
-const Utils_1 = __importDefault(require("./Utils"));
+const Utils_js_1 = __importDefault(require("./Utils.js"));
 'use strict';
 /****************************************************************************************************************
  * Computes the Perek/Prakim of the week for the given Shabbos.
@@ -43,7 +43,7 @@ PirkeiAvos._get1stPerek = function (jd, israel) {
     shb1 = (israel ? 7 : 8) + (6 - pes1.getDayOfWeek()), 
     //What number shabbos after pesach is the current date
     cShb = ((jMonth === 1 && jDay === (shb1 + 15)) ? 1 :
-        Utils_1.default.toInt((jd.Abs - (pes1.Abs + shb1)) / 7) + 1);
+        Utils_js_1.default.toInt((jd.Abs - (pes1.Abs + shb1)) / 7) + 1);
     let prk = cShb % 6;
     if (prk === 0)
         prk = 6;
@@ -67,7 +67,7 @@ PirkeiAvos._ellul = function (jd, israel) {
     //The year/month/day/absoluteDay constructor for JDate is used for efficiency.
     day1 = new jDate_js_1.default(jYear, 6, 1, jd.Abs - jd.Day + 1), day1DOW = day1.getDayOfWeek(), shabbos1Day = day1DOW === 6 ? 1 : ((6 - (day1DOW + 6) % 6) + 1), shabbos1Date = new jDate_js_1.default(jYear, 6, shabbos1Day, day1.Abs + shabbos1Day - 1), 
     //Which shabbos in Ellul are we working out now?
-    cShb = jDay === shabbos1Day ? 1 : Utils_1.default.toInt((jDay - shabbos1Day) / 7) + 1;
+    cShb = jDay === shabbos1Day ? 1 : Utils_js_1.default.toInt((jDay - shabbos1Day) / 7) + 1;
     switch (PirkeiAvos._get1stPerek(shabbos1Date, israel)) {
         case 1:
             switch (cShb) {

@@ -49,7 +49,7 @@ class Location {
         return !!this.locationId;
     }
     static clone(location) {
-        return new Location(location.Name, location.Israel, location.Latitude, location.Longitude, location.UTCOffset, location.Elevation, location.CandleLighting, location.locationId);
+        return new Location(location.Name, location.Israel, location.Latitude, location.Longitude, location.UTCOffset, location.Elevation, location.CandleLighting || 0, location.locationId || 0);
     }
     static getCandles(location) {
         if (location.CandleLighting) {

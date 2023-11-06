@@ -26,34 +26,34 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const Utils_1 = __importDefault(require("./JCal/Utils"));
-const Zmanim_1 = __importDefault(require("./JCal/Zmanim"));
-const Settings_1 = __importDefault(require("./Settings"));
-const jDate_1 = __importDefault(require("./JCal/jDate"));
-const Location_1 = __importDefault(require("./JCal/Location"));
-const Locations_1 = require("./Locations");
-const ZmanTypes_1 = require("./ZmanTypes");
-const Molad_1 = __importDefault(require("./JCal/Molad"));
-const PirkeiAvos_1 = __importDefault(require("./JCal/PirkeiAvos"));
-const Dafyomi_1 = __importDefault(require("./JCal/Dafyomi"));
+const Utils_js_1 = __importDefault(require("./JCal/Utils.js"));
+const Zmanim_js_1 = __importDefault(require("./JCal/Zmanim.js"));
+const Settings_js_1 = __importDefault(require("./Settings.js"));
+const jDate_js_1 = __importDefault(require("./JCal/jDate.js"));
+const Location_js_1 = __importDefault(require("./JCal/Location.js"));
+const Locations_js_1 = require("./Locations.js");
+const ZmanTypes_js_1 = require("./ZmanTypes.js");
+const Molad_js_1 = __importDefault(require("./JCal/Molad.js"));
+const PirkeiAvos_js_1 = __importDefault(require("./JCal/PirkeiAvos.js"));
+const Dafyomi_js_1 = __importDefault(require("./JCal/Dafyomi.js"));
 const Sedra_js_1 = __importDefault(require("./JCal/Sedra.js"));
-const AppUtils_1 = __importStar(require("./AppUtils"));
-const Notifications_1 = __importDefault(require("./Notifications"));
+const AppUtils_js_1 = __importStar(require("./AppUtils.js"));
+const Notifications_js_1 = __importDefault(require("./Notifications.js"));
 module.exports = {
-    Utils: Utils_1.default,
-    AppUtils: AppUtils_1.default,
-    DaysOfWeek: AppUtils_1.DaysOfWeek,
-    getNotifications: Notifications_1.default,
-    Locations: Locations_1.Locations,
-    findLocation: Locations_1.findLocation,
-    ZmanTypes: ZmanTypes_1.ZmanTypes,
-    ZmanTypeIds: ZmanTypes_1.ZmanTypeIds,
-    Zmanim: Zmanim_1.default,
-    Location: Location_1.default,
-    Settings: Settings_1.default,
-    jDate: jDate_1.default,
-    Molad: Molad_1.default,
-    PirkeiAvos: PirkeiAvos_1.default,
-    Dafyomi: Dafyomi_1.default,
+    Utils: Utils_js_1.default,
+    AppUtils: AppUtils_js_1.default,
+    DaysOfWeek: AppUtils_js_1.DaysOfWeek,
+    getNotifications: Notifications_js_1.default,
+    Locations: Locations_js_1.Locations,
+    findLocation: Locations_js_1.findLocation,
+    ZmanTypes: ZmanTypes_js_1.ZmanTypes,
+    ZmanTypeIds: ZmanTypes_js_1.ZmanTypeIds,
+    Zmanim: Zmanim_js_1.default,
+    Location: Location_js_1.default,
+    Settings: Settings_js_1.default,
+    jDate: jDate_js_1.default,
+    Molad: Molad_js_1.default,
+    PirkeiAvos: PirkeiAvos_js_1.default,
+    Dafyomi: Dafyomi_js_1.default,
     Sedra: Sedra_js_1.default
 };

@@ -1,5 +1,5 @@
 ﻿import jDate from './jDate.js';
-import Utils from './Utils';
+import Utils from './Utils.js';
 
 'use strict';
 
@@ -11,7 +11,7 @@ import Utils from './Utils';
  *     const str = 'Pirkei Avos: ' + prakim.map(s => `${Utils.toSuffixed(s)} Perek`).join(' and ');
  * ***************************************************************************************************************/
 export default class PirkeiAvos {
-    static getPrakim(jd, israel) {
+    static getPrakim(jd:jDate, israel:boolean) {
         if (jd.getDayOfWeek() !== 6) {
             return [];
         }
@@ -36,7 +36,7 @@ export default class PirkeiAvos {
             return [];
         }
     }
-    static _get1stPerek = function (jd, israel) {
+    static _get1stPerek = function (jd:jDate, israel:boolean) {
         const jYear = jd.Year,
             jMonth = jd.Month,
             jDay = jd.Day,
@@ -62,7 +62,7 @@ export default class PirkeiAvos {
 
         return prk;
     }
-    static _ellul = function (jd, israel) {
+    static _ellul = function (jd:jDate, israel:boolean) {
         let prakim;
         const jYear = jd.Year,
             jDay = jd.Day,

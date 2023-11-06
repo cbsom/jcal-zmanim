@@ -6,7 +6,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Utils_js_1 = __importDefault(require("./Utils.js"));
 const jDate_js_1 = __importDefault(require("./jDate.js"));
 const GeneralUtils_js_1 = require("../GeneralUtils.js");
-const Location_1 = __importDefault(require("./Location"));
 /**
  * Computes the daily Zmanim for any single date at any location.
  * The astronomical and mathematical calculations were directly adapted from the excellent
@@ -17,7 +16,7 @@ class Zmanim {
      * Gets sunrise and sunset time for given date and Location.
      * Accepts a javascript Date object, a string for creating a javascript date object or a jDate object.
      * Location object is required.
-     * @returns {{sunrise:{hour:Number, minute:Number, second:Number},sunset:{hour:Number, minute:Number, second:Number}}}
+     * @returns {SunTimes}
      * @param {Date | jDate} date A Javascript Date or Jewish Date for which to calculate the sun times.
      * @param {Location} location Where on the globe to calculate the sun times for.
      * @param {Boolean} considerElevation
@@ -98,11 +97,11 @@ class Zmanim {
         return Zmanim.getChatzosFromSuntimes(Zmanim.getSunTimes(date, location, false));
     }
     /**
-     * @param {{ sunrise: any; sunset: any; }} sunTimes
+     * @param {SunTimes} sunTimes
      */
     static getChatzosFromSuntimes(sunTimes) {
         const rise = sunTimes.sunrise, set = sunTimes.sunset;
-        if (isNaN(rise.hour) || isNaN(set.hour)) {
+        if (rise === undefined || isNaN(rise.hour) || set === undefined || isNaN(set.hour)) {
             return { hour: NaN, minute: NaN };
         }
         const chatz = Utils_js_1.default.toInt((Utils_js_1.default.totalSeconds(set) - Utils_js_1.default.totalSeconds(rise)) / 2);
@@ -121,8 +120,11 @@ class Zmanim {
      * @param {number} [offset]
      */
     static getShaaZmanisFromSunTimes(sunTimes, offset) {
+        if (!sunTimes || !sunTimes.sunrise || !sunTimes.sunset) {
+            return 0;
+        }
         let rise = sunTimes.sunrise, set = sunTimes.sunset;
-        if (isNaN(rise.hour) || isNaN(set.hour)) {
+        if (!rise || isNaN(rise.hour) || !set || isNaN(set.hour)) {
             return NaN;
         }
         if (offset) {
@@ -137,8 +139,8 @@ class Zmanim {
      */
     static getShaaZmanisMga(sunTimes, israel) {
         const minutes = israel ? 90 : 72;
-        let rise = Utils_js_1.default.addMinutes(sunTimes.sunrise, -minutes), set = Utils_js_1.default.addMinutes(sunTimes.sunset, minutes);
-        if (isNaN(rise.hour) || isNaN(set.hour)) {
+        let rise = sunTimes.sunrise && Utils_js_1.default.addMinutes(sunTimes.sunrise, -minutes), set = sunTimes.sunset && Utils_js_1.default.addMinutes(sunTimes.sunset, minutes);
+        if (!rise || isNaN(rise.hour) || !set || isNaN(set.hour)) {
             return NaN;
         }
         return (Utils_js_1.default.totalSeconds(set) - Utils_js_1.default.totalSeconds(rise)) / 720;
@@ -151,18 +153,18 @@ class Zmanim {
         return Zmanim.getCandleLightingFromSunTimes(Zmanim.getSunTimes(date, location), location);
     }
     /**
-     * @param {{ sunrise?: { hour: number; minute: number; second: number; }; sunset: any; }} sunTimes
+     * @param {SunTimes} sunTimes
      * @param {any} location
      */
     static getCandleLightingFromSunTimes(sunTimes, location) {
-        return Zmanim.getCandleLightingFromSunset(sunTimes.sunset, location);
+        return sunTimes.sunset && Zmanim.getCandleLightingFromSunset(sunTimes.sunset, location);
     }
     /**
-     * @param {{ hour: number; minute: number; second: number; }} sunset
+     * @param {Time} sunset
      * @param {Location} location
      */
     static getCandleLightingFromSunset(sunset, location) {
-        return Utils_js_1.default.addMinutes(sunset, -location.CandleLighting);
+        return Utils_js_1.default.addMinutes(sunset, -(location.CandleLighting || 0));
     }
     /**
      * @param {Date} date

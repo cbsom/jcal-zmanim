@@ -1,3 +1,5 @@
+import { ZmanToShow } from './jcal';
+
 export const ZmanTypeIds = Object.freeze({
     ChatzosLayla: 0,
     Alos90: 1,
@@ -13,19 +15,19 @@ export const ZmanTypeIds = Object.freeze({
     minGed: 11,
     minKet: 12,
     plag: 13,
-    shkiaAtSeaLevel:14,
+    shkiaAtSeaLevel: 14,
     shkiaElevation: 15,
     tzais45: 16,
     tzais50: 17,
     tzais72: 18,
     rabbeinuTamZmanios: 19,
-    rabbeinuTamZmaniosMga:20,
+    rabbeinuTamZmaniosMga: 20,
     candleLighting: 21,
     SofZmanEatingChometz: 22,
     SofZmanBurnChometz: 23,
 });
 
-export const ZmanTypes = [
+export const ZmanTypes: ZmanToShow[] = [
     {
         id: ZmanTypeIds.ChatzosLayla,
         desc: 'חצות הלילה',
@@ -57,7 +59,7 @@ export const ZmanTypes = [
         heb: 'הנץ החמה - מגובה',
     },
     {
-        id:ZmanTypeIds.NetzMishor ,
+        id: ZmanTypeIds.NetzMishor,
         desc: 'הנץ החמה בגובה פני הים',
         eng: 'Sunrise',
         heb: 'הנץ החמה',
@@ -177,6 +179,6 @@ export const ZmanTypes = [
  * @param {Number} id
  * @returns {{id:number, desc: String, eng: String, heb: String }}
  */
-export function getZmanType(id) {
+export function getZmanType(id:number):ZmanToShow|undefined {
     return ZmanTypes.find(zt => zt.id === id);
 }

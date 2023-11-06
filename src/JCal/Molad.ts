@@ -1,6 +1,7 @@
 import Utils from './Utils.js';
 import jDate from './jDate.js';
-import Location from './Location';
+import Location from './Location.js';
+import { Time } from '../jcal';
 
 /**
  * Gets the molad for the given jewish month and year.
@@ -9,14 +10,14 @@ import Location from './Location';
  * Example of use:
  * const moladString = Molad.getString(5776, 10);
  */
-export default class Molad {
+export default class Molad {    
     /**
      *
      * @param {Number} month
      * @param {Number} year
-     * @returns {{jDate:jDate,time:{hour:Number,minute:Number,second:Number},chalakim:Number}}
+     * @returns {{jDate:jDate,time:Time,chalakim:number}}
      */
-    static getMolad(month, year) {
+    static getMolad(month:number, year:number) :{jDate:jDate,time:Time,chalakim:number} {
         let totalMonths, partsElapsed, hoursElapsed, parts, monthAdj = month - 7;
 
         if (monthAdj < 0) {
@@ -43,14 +44,14 @@ export default class Molad {
      * @param {Number} year
      * @param {Number} month
      */
-    static getString(year, month) {
+    static getString(year:number, month:number):string {
         const molad = Molad.getMolad(month, year),
             zmanim = molad.jDate.getSunriseSunset(Location.getJerusalem()),
             isNight = Utils.isTimeAfter(zmanim.sunset, molad.time),
             dow = molad.jDate.getDayOfWeek();
         let str = '';
 
-        if (isNaN(zmanim.sunset.hour)) {
+        if (!zmanim.sunset || isNaN(zmanim.sunset.hour)) {
             str += Utils.dowEng[dow];
         }
         else if (dow === 6 && isNight) {
@@ -67,6 +68,9 @@ export default class Molad {
 
         return str;
     }
+    time(sunset: any, time: any) {
+        throw new Error('Method not implemented.');
+    }
 
     /**
      * Returns the time of the molad as a string in the format: ליל שני 20:33 12 חלקים
@@ -75,7 +79,7 @@ export default class Molad {
      * @param {Number} year
      * @param {Number} month
      */
-    static getStringHeb(year, month) {
+    static getStringHeb(year:number, month:number):string {
         const molad = Molad.getMolad(month, year),
             zmanim = molad.jDate.getSunriseSunset(Location.getJerusalem()),
             isNight = Utils.isTimeAfter(zmanim.sunset, molad.time) &&
@@ -93,7 +97,7 @@ export default class Molad {
             str += (isNight ? 'ליל' : 'יום') +
                 Utils.dowHeb[dow].replace('יום', '');
         }
-        str += ' ' + Utils.getTimeString(molad.time, true) + ' ' +
+        str += ' ' + Utils.getTimeString(molad.time,1, true) + ' ' +
             molad.chalakim.toString() + ' חלקים';
 
         return str;

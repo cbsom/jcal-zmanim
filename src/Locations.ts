@@ -1298,6 +1298,6 @@ Locations.sort(function (a, b) {
  * Get the location with the given name
  * @param {String} name
  */
-export function findLocation(name) {
+export function findLocation(name:string) {
     return Locations.find(l => l.Name === name);
 }

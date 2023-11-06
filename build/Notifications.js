@@ -27,7 +27,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const Utils_1 = __importDefault(require("./JCal/Utils"));
-const Settings_1 = __importDefault(require("./Settings"));
 const jDate_1 = __importDefault(require("./JCal/jDate"));
 const Molad_1 = __importDefault(require("./JCal/Molad"));
 const PirkeiAvos_1 = __importDefault(require("./JCal/PirkeiAvos"));
@@ -39,14 +38,15 @@ let showEnglish = false, dayInfo, showGaonShirShelYom = true, israel = true;
  * Get shul notifications for the given date and location
  * @param {jDate} jdate
  * @param {Date} sdate
- * @param {{hour : Number, minute :Number, second: Number }} time
+ * @param {Time} time
  * @param {Settings} settings
  */
 function getNotifications(jdate, sdate, time, settings) {
     dayNotes.length = 0;
     tefillahNotes.length = 0;
-    const month = jdate.Month, day = jdate.Day, dow = jdate.DayOfWeek, { location, showGaonShir, showDafYomi, english } = settings, { chatzosHayom, chatzosHalayla, alos, shkia, } = AppUtils_1.default.getBasicShulZmanim(sdate, jdate, location), isAfterChatzosHayom = Utils_1.default.isTimeAfter(chatzosHayom, time), isAfterChatzosHalayla = Utils_1.default.isTimeAfter(chatzosHalayla, time) ||
-        (chatzosHalayla.hour > 12 && time.hour < 12), //Chatzos is before 0:00 and time is after 0:00
+    const month = jdate.Month, day = jdate.Day, dow = jdate.DayOfWeek, { location, showGaonShir, showDafYomi, english } = settings, { chatzosHayom, chatzosHalayla, alos, shkia, } = AppUtils_1.default.getBasicShulZmanim(sdate, jdate, location), isAfterChatzosHayom = Utils_1.default.isTimeAfter(chatzosHayom, time), isAfterChatzosHalayla = (typeof (chatzosHalayla) !== 'undefined') &&
+        (Utils_1.default.isTimeAfter(chatzosHalayla, time) ||
+            (chatzosHalayla.hour > 12 && time.hour < 12)), //Chatzos is before 0:00 and time is after 0:00
     isAfterAlos = Utils_1.default.isTimeAfter(alos, time), isAfterShkia = Utils_1.default.isTimeAfter(shkia, time), isDaytime = isAfterAlos && !isAfterShkia, isNightTime = !isDaytime, isNotBeinHasmashos = !isAfterShkia ||
         Utils_1.default.isTimeAfter(Utils_1.default.addMinutes(shkia, 18), time), isMorning = isDaytime && !isAfterChatzosHayom, isAfternoon = isDaytime && isAfterChatzosHayom, isYomTov = jdate.isYomTovOrCholHamoed(location.Israel), isLeapYear = jDate_1.default.isJdLeapY(jdate.Year), noTachnun = isAfternoon && (dow === AppUtils_1.DaysOfWeek.FRIDAY || day === 29);
     dayInfo = {

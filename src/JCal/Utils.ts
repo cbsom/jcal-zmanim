@@ -1,7 +1,7 @@
 import Zmanim from './Zmanim';
 import jDate from './jDate';
 import Location from './Location';
-
+import { SunTimes,Time } from '../jcal';
 export default class Utils {
     static jMonthsEng = [
         '',
@@ -89,7 +89,7 @@ export default class Utils {
      * Minimum number is 1 and maximum is 9999.
      * @param {Number} number
      */
-    static toJNum(number) {
+    static toJNum(number:number) {
         if (number < 1) {
             throw 'Min value is 1';
         }
@@ -142,7 +142,7 @@ export default class Utils {
      * @param {Boolean} hideDayOfWeek
      * @param {Boolean} dontCapitalize
      */
-    static toStringDate(date, hideDayOfWeek, dontCapitalize) {
+    static toStringDate(date:Date, hideDayOfWeek:boolean, dontCapitalize:boolean) {
         if (!date) return;
         return (
             (hideDayOfWeek
@@ -164,7 +164,7 @@ export default class Utils {
      * @param {Date} date
      * @param {Boolean} monthFirst
      */
-    static toShortStringDate(date, monthFirst) {
+    static toShortStringDate(date:Date, monthFirst:boolean) {
         if (!date) return;
         const dayNum = date.getDate(),
             monthNum = date.getMonth() + 1;
@@ -183,7 +183,7 @@ export default class Utils {
      * Add two character suffix to number. e.g. 21st, 102nd, 93rd, 500th
      * @param {Number} num
      */
-    static toSuffixed(num) {
+    static toSuffixed(num:number) {
         const t = num.toString();
         let suffix = 'th';
         if (t.length === 1 || t[t.length - 2] !== '1') {
@@ -206,7 +206,7 @@ export default class Utils {
      * Returns if the given full secular year has a February 29th
      * @param {Number} year
      */
-    static isSecularLeapYear(year) {
+    static isSecularLeapYear(year:number) {
         return !(year % 400) || (!!(year % 100) && !(year % 4));
     }
 
@@ -218,7 +218,7 @@ export default class Utils {
      * @param {Number} month
      * @param {Number} day
      */
-    static getSdDOW(year, month, day) {
+    static getSdDOW(year:number, month:number, day:number) {
         return new Date(year, month - 1, day).getDay();
     }
 
@@ -226,14 +226,14 @@ export default class Utils {
      * Makes sure hour is between 0 and 23 and minute is between 0 and 59.
      * Overlaps get added/subtracted.
      * The argument needs to be an object in the format {hour : 12, minute : 42, second : 18}
-     * @param {{hour:Number, minute:Number, second:Number}} time
+     * @param {Time} time
      */
-    static fixTime(time) {
+    static fixTime(time:Time) {
         //make a copy - javascript sends object parameters by reference
         const result = {
             hour: time.hour,
             minute: time.minute,
-            second: time.second,
+            second: time.second||0,
         };
         while (result.second >= 60) {
             result.minute += 1;
@@ -264,15 +264,16 @@ export default class Utils {
      * Add the given number of minutes to the given time.
      * The argument needs to be an object in the format {hour : 12, minute : 42, second : 18 }
      *
-     * @param {{hour:Number, minute:Number, second:Number}} time
+     * @param {Time} time
      * @param {Number} minutes
      */
-    static addMinutes(time, minutes) {
+    static addMinutes(time?:Time, minutes?:number) :Time|undefined{
+        if(!time) return time;
         return (
             time &&
             Utils.fixTime({
                 hour: time.hour,
-                minute: time.minute + minutes,
+                minute: time.minute + (minutes ||0),
                 second: time.second,
             })
         );
@@ -282,14 +283,14 @@ export default class Utils {
      * Add the given number of seconds to the given time.
      * The argument needs to be an object in the format {hour : 12, minute :42, second : 18}
      *
-     * @param {{hour:Number, minute:Number, second:Number}} time
+     * @param {Time} time
      * @param {Number} seconds
      */
-    static addSeconds(time, seconds) {
+    static addSeconds(time:Time, seconds:number) {
         return Utils.fixTime({
             hour: time.hour,
             minute: time.minute,
-            second: time.second + seconds,
+            second: (time.second || 0) + seconds,
         });
     }
 
@@ -298,12 +299,12 @@ export default class Utils {
      * If showNegative is falsey, assumes that the earlier time is always before the later time.
      * So, if laterTime is less than earlierTime, the returned diff is until the next day.
      * Both arguments need to be an object in the format {hour : 12, minute : 42, second : 18 }
-     * @param {{hour:Number, minute:Number, second:Number}} earlierTime
-     * @param {{hour:Number, minute:Number, second:Number}} laterTime
+     * @param {Time} earlierTime
+     * @param {Time} laterTime
      * @param {Boolean} [showNegative] show negative values or assume second value is next day?
      * @returns{{hour:Number, minute:Number, second:Number, sign:1|-1}}
      */
-    static timeDiff(earlierTime, laterTime, showNegative = false) {
+    static timeDiff(earlierTime:Time, laterTime:Time, showNegative = false) {
         const earlySec = Utils.totalSeconds(earlierTime),
             laterSec = Utils.totalSeconds(laterTime),
             time = Utils.fixTime({
@@ -325,18 +326,18 @@ export default class Utils {
 
     /**
      * Gets the total number of minutes in the given time.
-     * @param {{hour:Number, minute:Number, second:Number}} time An object in the format {hour : 12, minute :42, second : 18}
+     * @param {Time} time An object in the format {hour : 12, minute :42, second : 18}
      */
-    static totalMinutes(time) {
+    static totalMinutes(time:Time) {
         return time ? time.hour * 60 + time.minute : 0;
     }
 
     /**
      * Gets the total number of seconds in the given time.
-     * @param {{hour:Number, minute:Number, second:Number}} time An object in the format {hour : 12, minute :42, second : 18}
+     * @param {Time} time An object in the format {hour : 12, minute :42, second : 18}
      */
-    static totalSeconds(time) {
-        return time ? Utils.totalMinutes(time) * 60 + time.second : 0;
+    static totalSeconds(time:Time) {
+        return time ? Utils.totalMinutes(time) * 60 + (time.second || 0) : 0;
     }
 
     /**
@@ -344,7 +345,7 @@ export default class Utils {
      * @param {Date} sdate
      * @returns {{hour : Number, minute :Number, second: Number }}
      */
-    static timeFromDate(sdate) {
+    static timeFromDate(sdate:Date) {
         return {
             hour: sdate.getHours(),
             minute: sdate.getMinutes(),
@@ -357,7 +358,8 @@ export default class Utils {
      * @param {{hour : Number, minute :Number, second: Number }} beforeTime
      * @param {{hour : Number, minute :Number, second: Number }} afterTime
      */
-    static isTimeAfter(beforeTime, afterTime) {
+    static isTimeAfter(beforeTime?:Time, afterTime?:Time) {
+        if(!beforeTime || !afterTime) return false;
         return Utils.totalSeconds(afterTime) >= Utils.totalSeconds(beforeTime);
     }
 
@@ -365,7 +367,7 @@ export default class Utils {
      * Returns the given time interval in a formatted string.
      * @param {{hour:Number, minute:Number,second:Number,sign?: 1 | -1}} time An object in the format {hour : 23, minute :42, second: 18 }
      */
-    static getTimeIntervalTextStringHeb(time) {
+    static getTimeIntervalTextStringHeb(time:Time) {
         let t = '';
         if (time.hour > 0) {
             t += `${time.hour.toString()} ${time.hour === 1 ? 'שעה' : 'שעות'}`;
@@ -378,11 +380,11 @@ export default class Utils {
                 time.minute === 1 ? 'דקה' : 'דקות'
             }`;
         }
-        if (time.second > 0) {
+        if ((time.second||0) > 0) {
             if (t.length) {
                 t += ' ';
             }
-            t += `${Math.trunc(time.second).toString()} ${
+            t += `${Math.trunc(time.second||0).toString()} ${
                 time.second === 1 ? 'שנייה' : 'שניות'
             }`;
         }
@@ -393,7 +395,7 @@ export default class Utils {
      * Returns the given time interval in a formatted string.
      * @param {{hour:Number, minute:Number,second:Number,sign?: 1 | -1}} time An object in the format {hour : 23, minute :42, second: 18 }
      */
-    static getTimeIntervalTextString(time) {
+    static getTimeIntervalTextString(time:Time) {
         let t = '';
         if (time.hour > 0) {
             t += `${time.hour.toString()} ${
@@ -408,11 +410,11 @@ export default class Utils {
                 time.minute === 1 ? 'minute' : 'minutes'
             }`;
         }
-        if (time.second > 0) {
+        if ((time.second||0) > 0) {
             if (t.length) {
                 t += ' ';
             }
-            t += `${Math.trunc(time.second).toString()} ${
+            t += `${Math.trunc(time.second||0).toString()} ${
                 time.second === 1 ? 'second' : 'seconds'
             }`;
         }
@@ -424,7 +426,7 @@ export default class Utils {
      * @param {number} dayOfOmer The day of the Omer for which to get the nusach for
      * @param {'ashkenaz'|'sefard'|'sefardi'} nusach Should it be La'Omer ("sefard") or Ba'Omer ("ashkenaz") or "sefardi" (Eidot Hamizrach)?
      */
-    static getOmerNusach(dayOfOmer, nusach) {
+    static getOmerNusach(dayOfOmer:number, nusach:'ashkenaz'|'sefard'|'sefardi') {
         const weeks = Utils.toInt(dayOfOmer / 7),
             days = dayOfOmer % 7;
         let txt = 'היום ';
@@ -481,33 +483,34 @@ export default class Utils {
 
     /**
      * Returns the given time in a formatted string.
-     * @param {{hour:Number, minute:Number,second:Number,sign?: 1 | -1}} time An object in the format {hour : 23, minute :42, second: 18 }
+     * @param {Time} time An object in the format {hour : 23, minute :42, second: 18 }
+     * @param {1 | -1} [sign] 
      * @param {Boolean} [army] If falsey, the returned string will be: 11:42:18 PM otherwise it will be 23:42:18
      * @param {Boolean} [roundUp] If falsey, the numbers will converted to a whole number by rounding down, otherwise, up.
      */
-    static getTimeString(time, army, roundUp) {
+    static getTimeString(time:Time, sign?:1 | -1, army?:boolean, roundUp?:boolean) {
         const round = roundUp ? Math.ceil : Math.floor;
         time = {
             hour: round(time.hour),
             minute: round(time.minute),
-            second: round(time.second),
+            second: round(time.second||0),
         };
         if (army) {
             return (
-                (time.sign && time.sign < 0 ? '-' : '') +
+                (sign && sign < 0 ? '-' : '') +
                 (time.hour.toString() +
                     ':' +
                     (time.minute < 10
                         ? '0' + time.minute.toString()
                         : time.minute.toString()) +
                     ':' +
-                    (time.second < 10
-                        ? '0' + time.second.toString()
-                        : time.second.toString()))
+                    ((time.second||0) < 10
+                        ? '0' + (time.second||0).toString()
+                        : (time.second||0).toString()))
             );
         } else {
             return (
-                (time.sign && time.sign < 0 ? '-' : '') +
+                (sign && sign < 0 ? '-' : '') +
                 (time.hour <= 12
                     ? time.hour == 0
                         ? 12
@@ -519,9 +522,9 @@ export default class Utils {
                     ? '0' + time.minute.toString()
                     : time.minute.toString()) +
                 ':' +
-                (time.second < 10
-                    ? '0' + time.second.toString()
-                    : time.second.toString()) +
+                ((time.second||0) < 10
+                    ? '0' + (time.second||0).toString()
+                    : (time.second||0).toString()) +
                 (time.hour < 12 ? ' AM' : ' PM')
             );
         }
@@ -541,7 +544,7 @@ export default class Utils {
     }
 
     /** Determines if the given date is within DST on the users system */
-    static isDateDST(date) {
+    static isDateDST(date:Date) {
         return (
             -Utils.toInt(date.getTimezoneOffset() / 60) !==
             Utils.currUtcOffset()
@@ -553,7 +556,7 @@ export default class Utils {
      * Note: This may not be correct if the user has set the Location to a
      * time zone outside Israel or the USA which is not the current system time zone.
      */
-    static isDST(location, date) {
+    static isDST(location:Location, date:Date) {
         //If the current system time zone is the same as the given locations time zone
         if (location.UTCOffset === Utils.currUtcOffset()) {
             //We can use the system data to determine if the given date is within DST
@@ -569,7 +572,7 @@ export default class Utils {
      * Determines if the given javascript date is during DST according to the USA rules
      * @param {Date} date A javascript Date object
      */
-    static isUSA_DST(date) {
+    static isUSA_DST(date:Date) {
         const year = date.getFullYear(),
             month = date.getMonth() + 1,
             day = date.getDate(),
@@ -607,7 +610,7 @@ export default class Utils {
      * Determines if the given Javascript date is during DST according to the current (5776) Israeli rules
      * @param {Date} date A Javascript Date object
      */
-    static isIsrael_DST(date) {
+    static isIsrael_DST(date:Date) {
         const year = date.getFullYear(),
             month = date.getMonth() + 1,
             day = date.getDate(),
@@ -647,7 +650,7 @@ export default class Utils {
      * @param {Date} sdate
      * @param {Number} days
      */
-    static addDaysToSdate(sdate, days) {
+    static addDaysToSdate(sdate:Date, days:number) {
         return new Date(sdate.valueOf() + 8.64e7 * days);
     }
     /**
@@ -655,7 +658,7 @@ export default class Utils {
      * @param {Date} sdate1
      * @param {Date} sdate2
      */
-    static isSameSdate(sdate1, sdate2) {
+    static isSameSdate(sdate1:Date, sdate2:Date) {
         return (
             sdate1 && sdate2 && sdate1.toDateString() === sdate2.toDateString()
         );
@@ -665,7 +668,7 @@ export default class Utils {
      * @param {jDate} jdate1
      * @param {jDate} jdate2
      */
-    static isSameJdate(jdate1, jdate2) {
+    static isSameJdate(jdate1:jDate, jdate2:jDate) {
         return (
             jdate1 &&
             jdate2 &&
@@ -679,7 +682,7 @@ export default class Utils {
      * @param {jDate} jdate1
      * @param {jDate} jdate2
      */
-    static isSameJMonth(jdate1, jdate2) {
+    static isSameJMonth(jdate1:jDate, jdate2:jDate) {
         return jdate1.Month === jdate2.Month && jdate1.Year === jdate2.Year;
     }
     /**
@@ -687,7 +690,7 @@ export default class Utils {
      * @param {Date} sdate1
      * @param {Date} sdate2
      */
-    static isSameSMonth(sdate1, sdate2) {
+    static isSameSMonth(sdate1:Date, sdate2:Date) {
         return (
             sdate1.getMonth() === sdate2.getMonth() &&
             sdate1.getFullYear() === sdate2.getFullYear()
@@ -698,16 +701,16 @@ export default class Utils {
      * @param {Date} sdate
      * @param {Location} location
      */
-    static isAfterSunset(sdate, location) {
+    static isAfterSunset(sdate:Date, location:Location) {
         const shkia = Zmanim.getSunTimes(sdate, location).sunset,
             now = Utils.timeFromDate(sdate);
-        return Utils.isTimeAfter(shkia, now);
+        return shkia && Utils.isTimeAfter(shkia, now);
     }
     /**
      * Gets the current Jewish Date at the given Location
      * @param {Location} location
      */
-    static nowAtLocation(location) {
+    static nowAtLocation(location:Location) {
         let sdate = new Date();
         //if isAfterSunset a day is added.
         if (Utils.isAfterSunset(sdate, location)) {
@@ -723,7 +726,7 @@ export default class Utils {
      * In performance tests, this function was found to be quicker than the alternatives.
      * @param {Number} float The complex number to convert to an integer
      */
-    static toInt(float) {
+    static toInt(float:number) {
         return float | 0;
     }
 }

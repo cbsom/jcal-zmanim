@@ -74,12 +74,16 @@ class Dafyomi {
     // Returns the name of the Masechta and daf number in English, For example: Sukkah, Daf 3
     static toString(jd) {
         const d = Dafyomi.getDaf(jd);
-        return d.masechet.eng + ', Daf ' + d.daf.toString();
+        if (d !== null) {
+            return d.masechet.eng + ', Daf ' + d.daf.toString();
+        }
     }
     //Returns the name of the Masechta and daf number in Hebrew. For example: 'סוכה דף כ.
     static toStringHeb(jd) {
         const d = Dafyomi.getDaf(jd);
-        return d.masechet.heb + ' דף ' + Utils_js_1.default.toJNum(d.daf);
+        if (d !== null) {
+            return d.masechet.heb + ' דף ' + Utils_js_1.default.toJNum(d.daf);
+        }
     }
 }
 Dafyomi.masechtaList = [

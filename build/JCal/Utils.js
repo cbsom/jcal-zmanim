@@ -5,7 +5,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const Zmanim_1 = __importDefault(require("./Zmanim"));
 const jDate_1 = __importDefault(require("./jDate"));
-const Location_1 = __importDefault(require("./Location"));
 class Utils {
     /**
      * Gets the Jewish representation of a number (365 = שס"ה)
@@ -134,14 +133,14 @@ class Utils {
      * Makes sure hour is between 0 and 23 and minute is between 0 and 59.
      * Overlaps get added/subtracted.
      * The argument needs to be an object in the format {hour : 12, minute : 42, second : 18}
-     * @param {{hour:Number, minute:Number, second:Number}} time
+     * @param {Time} time
      */
     static fixTime(time) {
         //make a copy - javascript sends object parameters by reference
         const result = {
             hour: time.hour,
             minute: time.minute,
-            second: time.second,
+            second: time.second || 0,
         };
         while (result.second >= 60) {
             result.minute += 1;
@@ -171,14 +170,16 @@ class Utils {
      * Add the given number of minutes to the given time.
      * The argument needs to be an object in the format {hour : 12, minute : 42, second : 18 }
      *
-     * @param {{hour:Number, minute:Number, second:Number}} time
+     * @param {Time} time
      * @param {Number} minutes
      */
     static addMinutes(time, minutes) {
+        if (!time)
+            return time;
         return (time &&
             Utils.fixTime({
                 hour: time.hour,
-                minute: time.minute + minutes,
+                minute: time.minute + (minutes || 0),
                 second: time.second,
             }));
     }
@@ -186,14 +187,14 @@ class Utils {
      * Add the given number of seconds to the given time.
      * The argument needs to be an object in the format {hour : 12, minute :42, second : 18}
      *
-     * @param {{hour:Number, minute:Number, second:Number}} time
+     * @param {Time} time
      * @param {Number} seconds
      */
     static addSeconds(time, seconds) {
         return Utils.fixTime({
             hour: time.hour,
             minute: time.minute,
-            second: time.second + seconds,
+            second: (time.second || 0) + seconds,
         });
     }
     /**
@@ -201,8 +202,8 @@ class Utils {
      * If showNegative is falsey, assumes that the earlier time is always before the later time.
      * So, if laterTime is less than earlierTime, the returned diff is until the next day.
      * Both arguments need to be an object in the format {hour : 12, minute : 42, second : 18 }
-     * @param {{hour:Number, minute:Number, second:Number}} earlierTime
-     * @param {{hour:Number, minute:Number, second:Number}} laterTime
+     * @param {Time} earlierTime
+     * @param {Time} laterTime
      * @param {Boolean} [showNegative] show negative values or assume second value is next day?
      * @returns{{hour:Number, minute:Number, second:Number, sign:1|-1}}
      */
@@ -220,17 +221,17 @@ class Utils {
     }
     /**
      * Gets the total number of minutes in the given time.
-     * @param {{hour:Number, minute:Number, second:Number}} time An object in the format {hour : 12, minute :42, second : 18}
+     * @param {Time} time An object in the format {hour : 12, minute :42, second : 18}
      */
     static totalMinutes(time) {
         return time ? time.hour * 60 + time.minute : 0;
     }
     /**
      * Gets the total number of seconds in the given time.
-     * @param {{hour:Number, minute:Number, second:Number}} time An object in the format {hour : 12, minute :42, second : 18}
+     * @param {Time} time An object in the format {hour : 12, minute :42, second : 18}
      */
     static totalSeconds(time) {
-        return time ? Utils.totalMinutes(time) * 60 + time.second : 0;
+        return time ? Utils.totalMinutes(time) * 60 + (time.second || 0) : 0;
     }
     /**
      * Returns the time of the given javascript date as an object in the format of {hour : 23, minute :42, second: 18 }
@@ -250,6 +251,8 @@ class Utils {
      * @param {{hour : Number, minute :Number, second: Number }} afterTime
      */
     static isTimeAfter(beforeTime, afterTime) {
+        if (!beforeTime || !afterTime)
+            return false;
         return Utils.totalSeconds(afterTime) >= Utils.totalSeconds(beforeTime);
     }
     /**
@@ -267,11 +270,11 @@ class Utils {
             }
             t += `${time.minute.toString()} ${time.minute === 1 ? 'דקה' : 'דקות'}`;
         }
-        if (time.second > 0) {
+        if ((time.second || 0) > 0) {
             if (t.length) {
                 t += ' ';
             }
-            t += `${Math.trunc(time.second).toString()} ${time.second === 1 ? 'שנייה' : 'שניות'}`;
+            t += `${Math.trunc(time.second || 0).toString()} ${time.second === 1 ? 'שנייה' : 'שניות'}`;
         }
         return t;
     }
@@ -290,11 +293,11 @@ class Utils {
             }
             t += `${time.minute.toString()} ${time.minute === 1 ? 'minute' : 'minutes'}`;
         }
-        if (time.second > 0) {
+        if ((time.second || 0) > 0) {
             if (t.length) {
                 t += ' ';
             }
-            t += `${Math.trunc(time.second).toString()} ${time.second === 1 ? 'second' : 'seconds'}`;
+            t += `${Math.trunc(time.second || 0).toString()} ${time.second === 1 ? 'second' : 'seconds'}`;
         }
         return t;
     }
@@ -363,31 +366,32 @@ class Utils {
     }
     /**
      * Returns the given time in a formatted string.
-     * @param {{hour:Number, minute:Number,second:Number,sign?: 1 | -1}} time An object in the format {hour : 23, minute :42, second: 18 }
+     * @param {Time} time An object in the format {hour : 23, minute :42, second: 18 }
+     * @param {1 | -1} [sign]
      * @param {Boolean} [army] If falsey, the returned string will be: 11:42:18 PM otherwise it will be 23:42:18
      * @param {Boolean} [roundUp] If falsey, the numbers will converted to a whole number by rounding down, otherwise, up.
      */
-    static getTimeString(time, army, roundUp) {
+    static getTimeString(time, sign, army, roundUp) {
         const round = roundUp ? Math.ceil : Math.floor;
         time = {
             hour: round(time.hour),
             minute: round(time.minute),
-            second: round(time.second),
+            second: round(time.second || 0),
         };
         if (army) {
-            return ((time.sign && time.sign < 0 ? '-' : '') +
+            return ((sign && sign < 0 ? '-' : '') +
                 (time.hour.toString() +
                     ':' +
                     (time.minute < 10
                         ? '0' + time.minute.toString()
                         : time.minute.toString()) +
                     ':' +
-                    (time.second < 10
-                        ? '0' + time.second.toString()
-                        : time.second.toString())));
+                    ((time.second || 0) < 10
+                        ? '0' + (time.second || 0).toString()
+                        : (time.second || 0).toString())));
         }
         else {
-            return ((time.sign && time.sign < 0 ? '-' : '') +
+            return ((sign && sign < 0 ? '-' : '') +
                 (time.hour <= 12
                     ? time.hour == 0
                         ? 12
@@ -398,9 +402,9 @@ class Utils {
                     ? '0' + time.minute.toString()
                     : time.minute.toString()) +
                 ':' +
-                (time.second < 10
-                    ? '0' + time.second.toString()
-                    : time.second.toString()) +
+                ((time.second || 0) < 10
+                    ? '0' + (time.second || 0).toString()
+                    : (time.second || 0).toString()) +
                 (time.hour < 12 ? ' AM' : ' PM'));
         }
     }
@@ -553,7 +557,7 @@ class Utils {
      */
     static isAfterSunset(sdate, location) {
         const shkia = Zmanim_1.default.getSunTimes(sdate, location).sunset, now = Utils.timeFromDate(sdate);
-        return Utils.isTimeAfter(shkia, now);
+        return shkia && Utils.isTimeAfter(shkia, now);
     }
     /**
      * Gets the current Jewish Date at the given Location

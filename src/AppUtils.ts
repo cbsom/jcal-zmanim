@@ -3,7 +3,22 @@ import Zmanim from './JCal/Zmanim';
 import Location from './JCal/Location';
 import Settings from './Settings';
 import jDate from './JCal/jDate';
-import {ZmanTypes, ZmanTypeIds} from './ZmanTypes';
+import { ZmanTypes, ZmanTypeIds, getZmanType } from './ZmanTypes';
+import { SunTimes, Time, ZmanToShow } from './jcal';
+
+type ZmanTime = {
+    date: Date,
+    location: Location,
+    sunrise: Time | undefined,
+    sunset: Time | undefined,
+    suntimesMishor: SunTimes | undefined,
+    sunriseMishor: Time | undefined,
+    sunsetMishor: Time | undefined,
+    mishorNeg90: Time | undefined,
+    chatzos: Time | undefined,
+    shaaZmanis: number | undefined,
+    shaaZmanisMga: number | undefined,
+};
 
 export const DaysOfWeek = Object.freeze({
     SUNDAY: 0,
@@ -27,19 +42,19 @@ export const WhichDaysFlags = Object.freeze({
 });
 
 export default class AppUtils {
-    static zmanTimesCache = [];
+    static zmanTimesCache: ZmanTime[] = [];
 
     /**
      * Returns the date corrected time of the given zmanim on the given date at the given location
      * If the zman is after or within 30 minutes of the given time, this days zman is returned, othwise tomorrows zman is returned.
      * @param {Date} sdate
      * @param {jDate} jdate
-     * @param {{hour : Number, minute :Number, second: Number }} time
+     * @param {Time} time
      * @param {Settings} settings
      * @param {{hour : Number, minute :Number, second: Number }} sunset
      * @returns {[{zmanType:{id:Number,offset:?Number, whichDaysFlags:?Number, desc: String, eng: String, heb: String },time:{hour : Number, minute :Number, second: Number }, isTomorrow:Boolean}]}
      */
-    static getCorrectZmanTimes(sdate, jdate, time, settings, sunset) {
+    static getCorrectZmanTimes(sdate: Date, jdate: jDate, time: Time, settings: Settings, sunset: Time) {
         const correctedTimes = [],
             zmanTypes = settings.zmanimToShow,
             location = settings.location,
@@ -66,7 +81,7 @@ export default class AppUtils {
             );
 
         for (let zt of zmanTimes) {
-            let oTime = zt.time,
+            let oTime = zt.time as Time,
                 isTomorrow = false,
                 diff = Utils.timeDiff(time, oTime, true);
             if (
@@ -96,29 +111,29 @@ export default class AppUtils {
 
     /**
      * Gets the zmanim for all the types in the given list.
-     * @param {[{id:number,offset:?number, whichDaysFlags:?Number,desc:?String,eng:?String,heb:?String}]} zmanTypes An array of ZmanTypes to get the zman for.
+     * @param {[ZmanToShow]} zmanTypes An array of ZmanTypes to get the zman for.
      * @param {Date} date The secular date to get the zmanim for
      * @param {jDate} jdate The jewish date to get the zmanim for
      * @param {Location} location The location for which to get the zmanim
-     * @returns{[{zmanType:{id:number,offset:?number,desc:String,eng:String,heb:String },time:{hour:Number,minute:Number,second:Number}}]}
+     * @returns{[{zmanType:{id:number,offset:?number,desc:String,eng:String,heb:String },time:Time}]}
      */
-    static getZmanTimes(zmanTypes, date, jdate, location) {
+    static getZmanTimes(zmanTypes: ZmanToShow[], date: Date, jdate: jDate, location: Location): { zmanType: ZmanToShow, time?: Time }[] {
         const mem = AppUtils.zmanTimesCache.find(
             (z) =>
                 Utils.isSameSdate(z.date, date) &&
                 z.location.Name === location.Name,
         ),
-            zmanTimes = [],
+            zmanTimes: { zmanType: ZmanToShow, time?: Time }[] = [],
             whichDay = AppUtils.getWhichDays(date, jdate, location);
-        let sunrise,
-            sunset,
-            suntimesMishor,
-            sunriseMishor,
-            sunsetMishor,
-            mishorNeg90,
-            chatzos,
-            shaaZmanis,
-            shaaZmanisMga;
+        let sunrise: Time | undefined,
+            sunset: Time | undefined,
+            suntimesMishor: SunTimes | undefined,
+            sunriseMishor: Time | undefined,
+            sunsetMishor: Time | undefined,
+            mishorNeg90: Time | undefined,
+            chatzos: Time | undefined,
+            shaaZmanis: number | undefined,
+            shaaZmanisMga: number | undefined;
         if (mem) {
             sunrise = mem.sunrise;
             sunset = mem.sunset;
@@ -165,11 +180,10 @@ export default class AppUtils {
             });
         }
         for (let zmanType of zmanTypes) {
-            const offset =
-                zmanType.offset &&
-                    (!zmanType.whichDaysFlags || zmanType.whichDaysFlags & whichDay)
-                    ? zmanType.offset
-                    : 0;
+            const offset = zmanType.offset &&
+                (!zmanType.whichDaysFlags || zmanType.whichDaysFlags & whichDay)
+                ? zmanType.offset
+                : 0;
             switch (zmanType.id) {
                 case ZmanTypeIds.ChatzosLayla: // chatzosNight
                     zmanTimes.push({
@@ -214,40 +228,44 @@ export default class AppUtils {
                     });
                     break;
                 case ZmanTypeIds.szksMga: //szksMga
-                    zmanTimes.push({
-                        zmanType,
-                        time: Utils.addMinutes(
-                            mishorNeg90,
-                            Math.floor(shaaZmanisMga * 3) + offset,
-                        ),
-                    });
+                    if (shaaZmanisMga)
+                        zmanTimes.push({
+                            zmanType,
+                            time: Utils.addMinutes(
+                                mishorNeg90,
+                                Math.floor(shaaZmanisMga * 3) + offset,
+                            ),
+                        });
                     break;
                 case ZmanTypeIds.szksGra: //szksGra
-                    zmanTimes.push({
-                        zmanType,
-                        time: Utils.addMinutes(
-                            sunriseMishor,
-                            Math.floor(shaaZmanis * 3) + offset,
-                        ),
-                    });
+                    if (shaaZmanis)
+                        zmanTimes.push({
+                            zmanType,
+                            time: Utils.addMinutes(
+                                sunriseMishor,
+                                Math.floor(shaaZmanis * 3) + offset,
+                            ),
+                        });
                     break;
                 case ZmanTypeIds.sztMga: // sztMga
-                    zmanTimes.push({
-                        zmanType,
-                        time: Utils.addMinutes(
-                            mishorNeg90,
-                            Math.floor(shaaZmanisMga * 4) + offset,
-                        ),
-                    });
+                    if (shaaZmanisMga)
+                        zmanTimes.push({
+                            zmanType,
+                            time: Utils.addMinutes(
+                                mishorNeg90,
+                                Math.floor(shaaZmanisMga * 4) + offset,
+                            ),
+                        });
                     break;
                 case ZmanTypeIds.sztGra: //sztGra
-                    zmanTimes.push({
-                        zmanType,
-                        time: Utils.addMinutes(
-                            sunriseMishor,
-                            Math.floor(shaaZmanis * 4) + offset,
-                        ),
-                    });
+                    if (shaaZmanis)
+                        zmanTimes.push({
+                            zmanType,
+                            time: Utils.addMinutes(
+                                sunriseMishor,
+                                Math.floor(shaaZmanis * 4) + offset,
+                            ),
+                        });
                     break;
                 case ZmanTypeIds.chatzosDay: //chatzos
                     zmanTimes.push({
@@ -258,31 +276,34 @@ export default class AppUtils {
                     });
                     break;
                 case ZmanTypeIds.minGed: //minGed
-                    zmanTimes.push({
-                        zmanType,
-                        time: Utils.addMinutes(
-                            chatzos,
-                            shaaZmanis * 0.5 + offset,
-                        ),
-                    });
+                    if (shaaZmanis)
+                        zmanTimes.push({
+                            zmanType,
+                            time: Utils.addMinutes(
+                                chatzos,
+                                shaaZmanis * 0.5 + offset,
+                            ),
+                        });
                     break;
                 case ZmanTypeIds.minKet: //minKet
-                    zmanTimes.push({
-                        zmanType,
-                        time: Utils.addMinutes(
-                            sunriseMishor,
-                            shaaZmanis * 9.5 + offset,
-                        ),
-                    });
+                    if (shaaZmanis)
+                        zmanTimes.push({
+                            zmanType,
+                            time: Utils.addMinutes(
+                                sunriseMishor,
+                                shaaZmanis * 9.5 + offset,
+                            ),
+                        });
                     break;
                 case ZmanTypeIds.plag: //plag
-                    zmanTimes.push({
-                        zmanType,
-                        time: Utils.addMinutes(
-                            sunriseMishor,
-                            shaaZmanis * 10.75 + offset,
-                        ),
-                    });
+                    if (shaaZmanis)
+                        zmanTimes.push({
+                            zmanType,
+                            time: Utils.addMinutes(
+                                sunriseMishor,
+                                shaaZmanis * 10.75 + offset,
+                            ),
+                        });
                     break;
                 case ZmanTypeIds.shkiaAtSeaLevel: //shkiaMishor
                     zmanTimes.push({
@@ -319,25 +340,27 @@ export default class AppUtils {
                     });
                     break;
                 case ZmanTypeIds.rabbeinuTamZmanios: //tzais72Zmaniot
-                    zmanTimes.push({
-                        zmanType,
-                        time: Utils.addMinutes(
-                            sunset,
-                            shaaZmanis * 1.2 + offset,
-                        ),
-                    });
+                    if (shaaZmanis)
+                        zmanTimes.push({
+                            zmanType,
+                            time: Utils.addMinutes(
+                                sunset,
+                                shaaZmanis * 1.2 + offset,
+                            ),
+                        });
                     break;
                 case ZmanTypeIds.rabbeinuTamZmaniosMga: //tzais72ZmaniotMA
-                    zmanTimes.push({
-                        zmanType,
-                        time: Utils.addMinutes(
-                            sunset,
-                            shaaZmanisMga * 1.2 + offset,
-                        ),
-                    });
+                    if (shaaZmanisMga)
+                        zmanTimes.push({
+                            zmanType,
+                            time: Utils.addMinutes(
+                                sunset,
+                                shaaZmanisMga * 1.2 + offset,
+                            ),
+                        });
                     break;
                 case ZmanTypeIds.candleLighting: //candleLighting
-                    if (jdate.hasCandleLighting()) {
+                    if (sunset && jdate.hasCandleLighting()) {
                         zmanTimes.push({
                             zmanType,
                             time: Utils.addMinutes(
@@ -351,7 +374,7 @@ export default class AppUtils {
                     }
                     break;
                 case ZmanTypeIds.SofZmanEatingChometz: //Sof Zman Achilas Chometz
-                    if (jdate.Month === 1 &&
+                    if (shaaZmanisMga && jdate.Month === 1 &&
                         jdate.Day === 14 &&
                         Utils.isTimeAfter(sunrise, Utils.timeFromDate(date))) {
                         zmanTimes.push({
@@ -364,7 +387,7 @@ export default class AppUtils {
                     }
                     break;
                 case ZmanTypeIds.SofZmanBurnChometz: //Sof Zman Biur Chometz
-                    if (
+                    if (shaaZmanisMga &&
                         jdate.Month === 1 &&
                         (jdate.Day === 14 ||
                             (jdate.DayOfWeek === DaysOfWeek.FRIDAY &&
@@ -390,7 +413,7 @@ export default class AppUtils {
      * @param {jDate} jdate
      * @param {Location} location
      */
-    static getWhichDays(date, jdate, location) {
+    static getWhichDays(date: Date, jdate: jDate, location: Location) {
         if (jdate.isYomTov(location.Israel)) {
             return WhichDaysFlags.YOMTOV;
         }
@@ -417,15 +440,15 @@ export default class AppUtils {
      * Returns the zmanim necessary for showing basic shul notifications: chatzosHayom, chatzosHalayla, alos
      * @param {Date} sdate
      * @param {Location} location
-     * @returns {{chatzosHayom:{hour:Number,minute:Number,second:Number}, chatzosHalayla:{hour:Number,minute:Number,second:Number}, alos:{hour:Number,minute:Number,second:Number}, shkia:{hour:Number,minute:Number,second:Number} }}
+     * @returns {{chatzosHayom:Time, chatzosHalayla:Time, alos:Time, shkia:Time }}
      */
-    static getBasicShulZmanim(sdate, jdate, location) {
+    static getBasicShulZmanim(sdate: Date, jdate: jDate, location: Location) {
         const zmanim = AppUtils.getZmanTimes(
             [
-                {id: ZmanTypeIds.chatzosDay}, //Chatzos hayom
-                {id: ZmanTypeIds.Alos90}, //alos90
-                {id: ZmanTypeIds.shkiaElevation}, //shkiaElevation,
-                {id: ZmanTypeIds.candleLighting}, //candleLighting,
+                getZmanType(ZmanTypeIds.chatzosDay) as ZmanToShow, //Chatzos hayom
+                getZmanType(ZmanTypeIds.Alos90) as ZmanToShow, //alos90
+                getZmanType(ZmanTypeIds.shkiaElevation) as ZmanToShow, //shkiaElevation,
+                getZmanType(ZmanTypeIds.candleLighting) as ZmanToShow, //candleLighting,
             ],
             sdate,
             jdate,
@@ -437,14 +460,14 @@ export default class AppUtils {
             alos: zmanim[1].time,
             shkia: zmanim[2].time,
         };
-    }   
+    }
 
     /**
      * Compares two zmanim for showing to see if they are the same
      * @param {{id:Number,offset:?Number, whichDaysFlags:?Number, desc: String, eng: String, heb: String }} zman1
      * @param {{id:Number,offset:?Number, whichDaysFlags:?Number, desc: String, eng: String, heb: String }} zman2
      */
-    static IsSameZmanToShow(zman1, zman2) {
+    static IsSameZmanToShow(zman1: ZmanToShow, zman2: ZmanToShow) {
         return (
             zman1.id === zman2.id &&
             zman1.desc === zman2.desc &&
@@ -459,7 +482,7 @@ export default class AppUtils {
      * Returns all available ZmanTypes - including baseTypes and custom added types
      * @param {Settings} settings
      */
-    static AllZmanTypes(settings) {
+    static AllZmanTypes(settings: Settings) {
         return [...ZmanTypes]/*.concat(settings.customZmanim)*/;
     }
 }

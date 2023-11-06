@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.onChangeLanguage = exports.error = exports.warn = exports.log = exports.range = exports.setDefault = exports.has = exports.isValidDate = exports.isNumber = exports.isString = void 0;
+exports.error = exports.warn = exports.log = exports.range = exports.setDefault = exports.has = exports.isValidDate = exports.isNumber = exports.isString = void 0;
+const __DEV__ = process.env.NODE_ENV === 'development';
 /** Returns true if "thing" is either a string primitive or String object.*/
 function isString(thing) {
     return typeof thing === 'string' || thing instanceof String;
@@ -56,16 +57,13 @@ exports.setDefault = setDefault;
  * @returns {[Number]}
  */
 function range(start, end) {
-    if (arguments.length === 1) {
-        end = start;
-        start = 1;
-    }
-    return Array.from({ length: end - start + 1 }, (v, i) => start + i);
+    const startNumber = typeof (end) === 'undefined' ? 1 : start, endNumber = typeof (end) === 'undefined' ? start : end;
+    return Array.from({ length: endNumber - startNumber + 1 }, (v, i) => startNumber + i);
 }
 exports.range = range;
 /**
  * Log message to console
- * @param {*} txt
+ * @param {string} txt
  */
 function log(txt, ...optionalItems) {
     if (__DEV__) {
@@ -75,7 +73,7 @@ function log(txt, ...optionalItems) {
 exports.log = log;
 /**
  * Warn message to console
- * @param {*} txt
+ * @param {string} txt
  */
 function warn(txt, ...optionalItems) {
     if (__DEV__) {
@@ -93,18 +91,3 @@ function error(txt, ...optionalItems) {
     }
 }
 exports.error = error;
-/**
- * Makes sure that the given language matches the app direction.
- * @param {boolean} english
- */
-function onChangeLanguage(english) {
-    if (english && I18nManager.isRTL) {
-        I18nManager.forceRTL(false);
-        RNRestart.Restart();
-    }
-    else if (!english && !I18nManager.isRTL) {
-        I18nManager.forceRTL(true);
-        RNRestart.Restart();
-    }
-}
-exports.onChangeLanguage = onChangeLanguage;
