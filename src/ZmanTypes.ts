@@ -1,5 +1,7 @@
 import { ZmanToShow } from './jcal-zmanim';
-
+/**
+ * List of ZmanTypeIds. Use as an enum.
+ */
 export const ZmanTypeIds = Object.freeze({
     ChatzosLayla: 0,
     Alos90: 1,
@@ -27,6 +29,9 @@ export const ZmanTypeIds = Object.freeze({
     SofZmanBurnChometz: 23,
 });
 
+/**
+ * List of Zman Types. Used to acquire the Zmanim for a particular day. 
+ */
 export const ZmanTypes: ZmanToShow[] = [
     {
         id: ZmanTypeIds.ChatzosLayla,
@@ -175,10 +180,10 @@ export const ZmanTypes: ZmanToShow[] = [
 ];
 
 /**
- * Get the ZmanType with the given id or name.
- * @param {Number} id
- * @returns {{id:number, desc: String, eng: String, heb: String }}
+ * Get the ZmanType with the given id, name (Hebrew or English) or description.
+ * @param {number|string} idOrName
+ * @returns {ZmanToShow}
  */
-export function getZmanType(id:number):ZmanToShow|undefined {
-    return ZmanTypes.find(zt => zt.id === id);
+export function getZmanType(idOrName: number | string): ZmanToShow | undefined {
+    return ZmanTypes.find(zt => zt.id === idOrName || zt.eng === idOrName || zt.heb === idOrName || zt.desc === idOrName);
 }

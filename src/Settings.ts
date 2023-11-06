@@ -5,7 +5,10 @@ import { ZmanTypeIds, getZmanType } from './ZmanTypes';
 import { ZmanToShow } from './jcal-zmanim';
 
 
-
+/**
+ * Class that represents a set of Settings to use while generating zmanim, notifications etc.
+ * All the options are optional.
+ */
 export default class Settings {
     zmanimToShow: ZmanToShow[];
     location: Location;
@@ -88,6 +91,10 @@ export default class Settings {
          */
         this.english = setDefault(english, true) as boolean;
     }
+    /**
+     * 
+     * @returns {Settings} a copy of this Settings object.
+     */
     clone() {
         return new Settings(
             [...this.zmanimToShow],
