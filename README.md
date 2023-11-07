@@ -1,16 +1,36 @@
 # jcal-zmanim
 A very complete JavaScript library for the Jewish Calendar.
 
+For example, to print out the candle lighting time for Friday, the 11th of November, 2023 in Dallas Texas:
+```javascript
+import {jDate, findLocation, Utils} from "jcal-zmanim"
+
+//Get the Jewish Date for Friday, the 10th of November, 2023.
+const erevShabbos = new jDate("November 10 2023");
+//Get Dallas...
+const dallas = findLocation('Dallas');
+//Get the candle-lighting time
+const candeLighting = erevShabbos.getCandleLighting(dallas); 
+//the above will get us { hour: 17, minute: 10, second: 59 }
+const candeLightingFormatted = Utils.getTimeString(candeLighting); 
+//This will get us the nicely formatted time '5:10:59 PM'
+
+//Spit in out...
+console.log(`Candle lighting time in ${dallas.Name} on ${erevShabbos.toString()} is at ${candeLightingFormatted}`);
+
+//"Candle lighting time in Dallas, TX on Erev Shabbos, the 26th of Cheshvan 5784 is at 5:10:59 PM"
+```   
+
 [**The jDate Object**](#the-jdate-object)
 - [jcal-zmanim](#jcal-zmanim)
-  - [The jDate object](#the-jdate-object)
-    - [Creating a jDate instance](#creating-a-jdate-instance)
-      - [Create a jDate using the jDate constructor](#create-a-jdate-using-the-jdate-constructor)
-      - [Create a jDate using the static *toJDate* function](#create-a-jdate-using-the-static-tojdate-function)
-    - [jDate instance. properties and functions](#jdate-instance-properties-and-functions)
-    - [jDate static properties and functions](#jdate-static-properties-and-functions)
-  - [The Location Object](#the-location-object)
-  - [The Sedra Object](#the-sedra-object)
+- [The jDate object](#the-jdate-object)
+- [Creating a jDate instance](#creating-a-jdate-instance)
+- [Create a jDate using the jDate constructor](#create-a-jdate-using-the-jdate-constructor)
+- [Create a jDate using the static *toJDate* function](#create-a-jdate-using-the-static-tojdate-function)
+- [jDate instance, properties and functions](#jdate-instance-properties-and-functions)
+- [jDate static properties and functions](#jdate-static-properties-and-functions)
+- [The Location Object](#the-location-object)
+- [The Sedra Object](#the-sedra-object)
   
 [**The Location Object**](#the-location-object)
 
@@ -114,7 +134,7 @@ const currentJDate = jDate.now();
  - `jDate.toJDate( { year: 5776, month: 4, day: 5, abs: 122548708 } ) `- same as `jDate.toJDate(jewishYear, jewishMonth, jewishDay, absoluteDate)`
     
 
-### jDate instance. properties and functions
+### jDate instance, properties and functions
 
 | Property | Return Type | Description |
 | ---: | :---: | :--- |
@@ -169,20 +189,14 @@ const currentJDate = jDate.now();
 
 ## The Location Object       
 
-The city or location name. 
-Doesn't need the full name,
-                the beginning of the name or a regular expression
-                search can be used. The search is not case sensitive.
-                For locations in Israel, the Hebrew name can be used as well as the English name.
-                If the supplied value matches more than one location,
-                the displayed Zmanim will be repeated for each match.
-                For example, if the supplied value is ".+wood", the
-                Zmanim of both Lakewood NJ and Hollywood California
-                will be displayed.
+The city or location.
+This is very important for calculating *Zmanim* as sunset and sunrise are different for every city.
+In addition, there are different *Minhagim* is different cities. A major one would be, in Eretz Yisroel, one day of *Yom Tov* is observed, while everywhere else, two days are kept.
 
--l, --locations       Instead of displaying the Zmanim, display the list of
-                locations returned from the "location" argument search.
-                Shows each locations name, latitude, longitude, elevation, utcoffset and hebrew name.
-                To show the full list of all the locations, use: luach.py .+ -l
+### Finding or Creating a Location
+
+To search for a Location object for anywhere in the world, use the `findLocation` function.
+-  `const location = findLocation(locationName)` - Finds a Location with the given name.<br />If the location is in Israel, typing the name in Hebrew will help find the Location.<br />If no exact match is found, the location with the name most similar to the supplied locationName will be returned. **Note:** The alogorthim for this is fairly impresise, so make check to make sure that you have acquired the correct location.<br />A list with all the Locations can be found at `Locations.Locations`.
+-  `const location = findLocation(locationCoordinates)` -  find a Location by supplying the coordinates in the format: `{latitude: 31.5, longitude: -32.54}`. The numbers are degree decimals.<br /> For latitude, North is a positive number and South is a negative number.<br /> For longitude, West is a positive number, and East is a negative number.<br /> If no Location is found with those exact coordinates, the Location closest to the supplied coordinate is returned.
 
 ## The Sedra Object 
