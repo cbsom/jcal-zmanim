@@ -3,7 +3,7 @@ import Zmanim from './JCal/Zmanim.js';
 import Settings from './Settings.js';
 import jDate from './JCal/jDate.js';
 import Location from './JCal/Location.js';
-import {Locations, findLocation} from './Locations.js';
+import {Locations, findLocation, closestNameMatch, closestDistanceMatch} from './Locations.js';
 import {ZmanTypes, ZmanTypeIds} from './ZmanTypes.js';
 import Molad from './JCal/Molad.js';
 import PirkeiAvos from './JCal/PirkeiAvos.js';
@@ -19,6 +19,8 @@ module.exports={
     getNotifications, 
     Locations, 
     findLocation, 
+    closestNameMatch,
+    closestDistanceMatch,
     ZmanTypes, 
     ZmanTypeIds,     
     Zmanim, 

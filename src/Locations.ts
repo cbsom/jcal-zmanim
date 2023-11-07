@@ -6,7 +6,7 @@ import { distance } from 'closest-match';
  */
 type Point = { latitude: number, longitude: number };
 
-export const Locations = [
+const Locations = [
     new Location('אופקים', true, 31.32, -34.62, 2, 170),
     new Location('אילת', true, 29.55, -34.95, 2, 0),
     new Location('אלעד', true, 32.05, -34.95, 2, 150),
@@ -1335,7 +1335,7 @@ function distancePointToPoint(point1: Point, point2: Point): number {
  * @param {Point} point 
  * @returns 
  */
-export function closestDistanceMatch(point: Point): Location | undefined {
+function closestDistanceMatch(point: Point): Location | undefined {
     let curr: { dist: number, location?: Location } = { dist: 100000 };
     for (let location of Locations) {
         const dist = distancePointToPoint(point, { latitude: location.Latitude, longitude: location.Longitude });
@@ -1351,7 +1351,7 @@ export function closestDistanceMatch(point: Point): Location | undefined {
  * @param {string} val
  * @returns 
  */
-export function closestNameMatch(val: string): Location | undefined {
+function closestNameMatch(val: string): Location | undefined {
     let curr: {
         dist: number, location?: { name: string, index: number }
     } = { dist: 100000 };
@@ -1372,7 +1372,7 @@ export function closestNameMatch(val: string): Location | undefined {
  * Option 4: Find the location closest to the given coordinates
  * @param {String|Point} nameOrCoordinates
  */
-export function findLocation(nameOrCoordinates: string | Point): Location | undefined {
+function findLocation(nameOrCoordinates: string | Point): Location | undefined {
     if (typeof nameOrCoordinates === 'string') {
         //First simply try to find an exact (case insensitive) match
         const exactNameMatch = Locations.find(l =>
@@ -1399,3 +1399,5 @@ export function findLocation(nameOrCoordinates: string | Point): Location | unde
         return closestDistanceMatch(nameOrCoordinates);
     }
 }
+
+export {Locations, findLocation, closestDistanceMatch, closestNameMatch};
