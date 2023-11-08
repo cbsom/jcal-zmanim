@@ -5,9 +5,9 @@ import jDate from './jDate.js';
 /** *********************************************************************************************************
  * Computes the Day Yomi for the given day.
  * Sample of use - to get todays daf:
- *     const dafEng = Dafyomi.toString(new jDate(new Date()));
- *     const dafHeb = Dafyomi.toStringHeb(new jDate(new Date()));
- * The code was converted to javascript and tweaked by CBS.
+ *     const dafEng = Dafyomi.toString(jDate.now());
+ *     const dafHeb = Dafyomi.toStringHeb(jDate.now());
+ * The code was converted to typescript and tweaked by CBS.
  * It is directly based on the C code in Danny Sadinoff's HebCal - Copyright (C) 1994.
  * The HebCal code for dafyomi was adapted by Aaron Peromsik from Bob Newell's public domain daf.el.
 ***********************************************************************************************************/
@@ -54,12 +54,9 @@ export default class Dafyomi {
         { eng: 'Midos', heb: 'מדות', daf: 4 },
         { eng: 'Niddah', heb: 'נדה', daf: 73 }];
 
-    static getDaf(jdate:jDate) : {
-        masechet:  { eng: string, heb: string, daf: number },
-        daf: number
-    } | null{
+    static getDaf(jdate: jDate) : { masechet: { eng: string, heb: string, daf: number }, daf: number } | null {
         const absoluteDate = jdate.Abs;
-        let dafcnt = 40, cno:number, dno:number, osday:number, nsday:number, total:number, count:number, j:number, blatt:number;
+        let dafcnt = 40, cno: number, dno: number, osday: number, nsday: number, total: number, count: number, j: number, blatt: number;
 
         osday = jDate.absSd(new Date(1923, 8, 11));
         nsday = jDate.absSd(new Date(1975, 5, 24));
@@ -120,20 +117,18 @@ export default class Dafyomi {
     }
 
     // Returns the name of the Masechta and daf number in English, For example: Sukkah, Daf 3
-    static toString(jd:jDate):string|undefined {
+    static toString(jd: jDate): string | undefined {
         const d = Dafyomi.getDaf(jd);
-        if(d!==null)
-        {
-        return d.masechet.eng + ', Daf ' + d.daf.toString();
+        if (d !== null) {
+            return d.masechet.eng + ', Daf ' + d.daf.toString();
         }
     }
 
     //Returns the name of the Masechta and daf number in Hebrew. For example: 'סוכה דף כ.
-    static toStringHeb(jd:jDate):string |undefined{
+    static toStringHeb(jd: jDate): string | undefined {
         const d = Dafyomi.getDaf(jd);
-        if(d!==null)
-        {
-        return d.masechet.heb + ' דף ' + Utils.toJNum(d.daf);
+        if (d !== null) {
+            return d.masechet.heb + ' דף ' + Utils.toJNum(d.daf);
         }
     }
 }

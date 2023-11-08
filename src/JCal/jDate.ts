@@ -447,7 +447,7 @@ export default class jDate {
     /**Gets sunrise and sunset time for the current Jewish date at the given Location.
      *
      * Return format: {sunrise: {hour: 6, minute: 18}, sunset: {hour: 19, minute: 41}}*/
-    getSunriseSunset(location:Location, ignoreElevation?: boolean) {
+    getSunriseSunset(location: Location, ignoreElevation?: boolean) {
         if (!location) {
             throw 'To get sunrise and sunset, the location needs to be supplied';
         }
@@ -457,7 +457,7 @@ export default class jDate {
     /**Gets Chatzos for both the day and the night for the current Jewish date at the given Location.
      *
      *Return format: {hour: 11, minute: 48}*/
-    getChatzos(location:Location) {
+    getChatzos(location: Location) {
         if (!location) {
             throw 'To get Chatzos, the location needs to be supplied';
         }
@@ -465,7 +465,7 @@ export default class jDate {
     }
 
     /**Gets the length of a single Sha'a Zmanis in minutes for the current Jewish date at the given Location.*/
-    getShaaZmanis(location:Location, offset: number) {
+    getShaaZmanis(location: Location, offset: number) {
         if (!location) {
             throw 'To get the Shaa Zmanis, the location needs to be supplied';
         }
@@ -474,12 +474,12 @@ export default class jDate {
 
     /**Returns the daily daf in English. For example: Sukkah, Daf 3.*/
     getDafYomi() {
-        return DafYomi.toString(this)||'';
+        return DafYomi.toString(this) || '';
     }
 
     /**Gets the daily daf in Hebrew. For example: 'סוכה דף כ.*/
     getDafyomiHeb() {
-        return DafYomi.toStringHeb(this)||'';
+        return DafYomi.toStringHeb(this) || '';
     }
 
     /**

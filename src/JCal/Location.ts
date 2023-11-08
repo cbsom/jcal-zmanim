@@ -27,8 +27,8 @@ export default class Location {
         if (typeof israel === 'undefined' || israel === null) {
             //If the user is within Israels general coordinates,
             //we feel pretty safe assuming they are in Israel.
-            //Where else on the map is the user? (Note, the probablity of our users Jewishness: 99.99%)
-            //Sinai, Lebanon, Syria, Jordan, in a submarine under the Mediterannian ...
+            //Where else on the map is the user? (Note, the probability of our users Jewishness: 99.99%)
+            //Sinai, Lebanon, Syria, Jordan, in a submarine under the Mediterranean ...
             israel = (latitude > 29.45 && latitude < 33 && longitude < -34.23 && longitude > -35.9);
         }
         if (israel) {
@@ -39,7 +39,7 @@ export default class Location {
         else if (typeof utcOffset === 'undefined' || utcOffset === null) {
             //Try to determine the "correct" time zone using the simple fact that Greenwich is both TZ 0 and longitude 0.
             //Even though technically this is the way it should be,
-            //it will be often incorrect as time zones are almost always tweaked to accomadate the closest border.
+            //it will be often incorrect as time zones are almost always tweaked to accommodate the closest border.
             utcOffset = -Math.round(longitude / 15);
         }
 

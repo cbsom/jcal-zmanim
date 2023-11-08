@@ -10,14 +10,13 @@ import { Time } from '../jcal-zmanim.js';
  * Example of use:
  * const moladString = Molad.getString(5776, 10);
  */
-export default class Molad {    
+export default class Molad {
     /**
-     *
      * @param {Number} month
      * @param {Number} year
      * @returns {{jDate:jDate,time:Time,chalakim:number}}
      */
-    static getMolad(month:number, year:number) :{jDate:jDate,time:Time,chalakim:number} {
+    static getMolad(month: number, year: number): { jDate: jDate, time: Time, chalakim: number } {
         let totalMonths, partsElapsed, hoursElapsed, parts, monthAdj = month - 7;
 
         if (monthAdj < 0) {
@@ -44,7 +43,7 @@ export default class Molad {
      * @param {Number} year
      * @param {Number} month
      */
-    static getString(year:number, month:number):string {
+    static getString(year: number, month: number): string {
         const molad = Molad.getMolad(month, year),
             zmanim = molad.jDate.getSunriseSunset(Location.getJerusalem()),
             isNight = Utils.isTimeAfter(zmanim.sunset, molad.time),
@@ -79,7 +78,7 @@ export default class Molad {
      * @param {Number} year
      * @param {Number} month
      */
-    static getStringHeb(year:number, month:number):string {
+    static getStringHeb(year: number, month: number): string {
         const molad = Molad.getMolad(month, year),
             zmanim = molad.jDate.getSunriseSunset(Location.getJerusalem()),
             isNight = Utils.isTimeAfter(zmanim.sunset, molad.time) &&
@@ -97,7 +96,7 @@ export default class Molad {
             str += (isNight ? 'ליל' : 'יום') +
                 Utils.dowHeb[dow].replace('יום', '');
         }
-        str += ' ' + Utils.getTimeString(molad.time,1, true) + ' ' +
+        str += ' ' + Utils.getTimeString(molad.time, 1, true) + ' ' +
             molad.chalakim.toString() + ' חלקים';
 
         return str;
