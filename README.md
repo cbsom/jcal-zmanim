@@ -62,23 +62,25 @@ The above code prints out to the console:<br>
 
 [**The jDate Object**](#the-jdate-object)
 - [jcal-zmanim](#jcal-zmanim)
-- [Some basic uses of *jcal-zmanim*](#some-basic-uses-of-jcal-zmanim)
-- [Print out todays Jewish Date](#print-out-todays-jewish-date)
-- [Get the *Daf Yomi* for today](#get-the-daf-yomi-for-today)
-- [Print out the sunrise and sunset times for 11/10/23 in Dallas](#print-out-the-sunrise-and-sunset-times-for-111023-in-dallas)
-- [Print out the candle lighting time for Dallas Texas on Friday November 10th 2023:](#print-out-the-candle-lighting-time-for-dallas-texas-on-friday-november-10th-2023)
-- [The jDate object](#the-jdate-object)
-- [Creating a jDate instance](#creating-a-jdate-instance)
-- [Create a jDate using the jDate constructor](#create-a-jdate-using-the-jdate-constructor)
-- [Create a jDate using the static *toJDate* function](#create-a-jdate-using-the-static-tojdate-function)
-- [jDate instance, properties and functions](#jdate-instance-properties-and-functions)
-- [jDate static properties and functions](#jdate-static-properties-and-functions)
-- [The Location Object](#the-location-object)
-- [To acquire the entire list of Locations:](#to-acquire-the-entire-list-of-locations)
-- [Finding a Location](#finding-a-location)
-- [Location properties and functions](#location-properties-and-functions)
-- [Creating a Location](#creating-a-location)
-- [The Sedra Object](#the-sedra-object)
+    - [Some basic uses of *jcal-zmanim*](#some-basic-uses-of-jcal-zmanim)
+        - [Print out todays Jewish Date](#print-out-todays-jewish-date)
+        - [Get the *Daf Yomi* for today](#get-the-daf-yomi-for-today)
+        - [Print out the sunrise and sunset times for 11/10/23 in Dallas](#print-out-the-sunrise-and-sunset-times-for-111023-in-dallas)
+        - [Print out the candle lighting time for Dallas Texas on Friday November 10th 2023:](#print-out-the-candle-lighting-time-for-dallas-texas-on-friday-november-10th-2023)
+  - [The jDate object](#the-jdate-object)
+    - [Creating a jDate instance](#creating-a-jdate-instance)
+      - [Create a jDate using the jDate constructor](#create-a-jdate-using-the-jdate-constructor)
+      - [Create a jDate using the static *toJDate* function](#create-a-jdate-using-the-static-tojdate-function)
+    - [jDate instance, properties and functions](#jdate-instance-properties-and-functions)
+  - [|**getDafyomiHeb()**|`string`|Gets the daily daf in Hebrew. For example:*"'סוכה דף כ"*|](#getdafyomihebstringgets-the-daily-daf-in-hebrew-for-exampleסוכה-דף-כ)
+    - [jDate static properties and functions](#jdate-static-properties-and-functions)
+  - [|**jDate.monthsJYear(jewishYear)**|`number`|The number of months in the given Jewish Year.|](#jdatemonthsjyearjewishyearnumberthe-number-of-months-in-the-given-jewish-year)
+  - [The Location Object](#the-location-object)
+        - [To acquire the entire list of Locations:](#to-acquire-the-entire-list-of-locations)
+    - [Finding a Location](#finding-a-location)
+    - [Location properties and functions](#location-properties-and-functions)
+    - [Creating a Location](#creating-a-location)
+  - [The Sedra Object](#the-sedra-object)
   
 [**The Location Object**](#the-location-object)
 
@@ -180,8 +182,7 @@ const currentJDate = jDate.now();
  - `jDate.toJDate( { year: 5776 } )` - sets to the first day of *Rosh Hashana* on the given year
  - `jDate.toJDate(jewishYear, jewishMonth, jewishDay, absoluteDate)` - Most efficient. Needs no calculations at all. The absoluteDate is the number of days elapsed since the theoretical date Sunday, December 31, 0001 BCE.
  - `jDate.toJDate( { year: 5776, month: 4, day: 5, abs: 122548708 } ) `- same as `jDate.toJDate(jewishYear, jewishMonth, jewishDay, absoluteDate)`
-    
-
+------------------------------------------------------------------  
 ### jDate instance, properties and functions
 
 | Property | Return Type | Description |
@@ -204,7 +205,7 @@ const currentJDate = jDate.now();
 | **diffMonths(otherJDate)** | `number` | Gets the number of months separating this Jewish Date and the given one.<br /> Ignores the Day property:<br />`jDate.toJDate(5777, 6, 29).diffMonths(jDate.toJDate(5778, 7, 1))`<br />will return 1 even though they are a day apart.<br />If the given date is before this one, the number will be negative. |
 | **diffYears(otherJDate)** | `number` | Gets the number of years separating this Jewish Date and the given one.<br /> Ignores the Day and Month properties:<br /> `jDate.toJDate(5777, 6, 29).diffYears(jDate.toJDate(5778, 7, 1))` will return 1 even though they are a day apart.<br/> If the given date is before this one, the number will be negative. |
 | **monthName(showYear? [=true])** | `string` | Returns the current Jewish date in the format "*Nissan 5778*".<br />If *showYear* === false, than just "*Nissan*" is returned. |
-|**getDayOfOmer()**|`number`|ets the day of the omer for the current Jewish date. If the date is not during *sefira*, 0 is returned.|
+|**getDayOfOmer()**|`number`|Gets the day of the omer for the current Jewish date. If the date is not during *sefira*, 0 is returned.|
 |**isYomTovOrCholHamoed(inIsrael?)**|`boolean`|Returns true if this day is *yomtov* or *chol hamoed*<br />If *inIsrael* is truthy, then the function will keep 1 day of *yomtov*.|
 |**isYomTov(inIsrael?)**|`boolean`|Returns true if this day is *yomtov*.<br />If *inIsrael* is truthy, then the function will keep 1 day of *yomtov*.|
 | **isErevYomTov()**|`boolean`|Is this day *Erev Yom Tov*? (includes *Erev* second days of *Sukkos* and *Pesach*)|
@@ -218,8 +219,7 @@ const currentJDate = jDate.now();
 | getShaaZmanis([location](#the-location-object), offset)|`number`|Gets the length in minutes for a single *Sha'a Zmanis* for the current Jewish date at the given [Location](#the-location-object).<br />By default, a *Sha'a Zmanis* is the total number of minutes from sunrise to sunset divided by 12.<br />To calculate from 72 minutes before sunrise to 72 minutes after sunset, set the *offset* parameter to 72.|
 |**getDafYomi()**|`string`|Returns the daily daf in English. For example: "*Sukkah, Daf 3*".|
 |**getDafyomiHeb()**|`string`|Gets the daily daf in Hebrew. For example:<br />*"'סוכה דף כ"*|
-
-
+------------------------------------------------------------------
 ### jDate static properties and functions
 | Property | Return Type | Description |
 | ---: | :---: | :--- |
@@ -235,7 +235,7 @@ const currentJDate = jDate.now();
 |**jDate.isShortKislev(jewishYear)** |`boolean`|Does Kislev for the given Jewish Year have 29 days?|
 |**jDate.isJdLeapY(jewishYear)**|`boolean`|Does the given Jewish Year have 13 months?|
 |**jDate.monthsJYear(jewishYear)**|`number`|The number of months in the given Jewish Year.|
-
+------------------------------------------------------------------
 ## The Location Object       
 
 The city or location.<br>
