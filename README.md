@@ -29,7 +29,7 @@ import {jDate, findLocation, Utils} from "jcal-zmanim";
 //Get the Jewish Date for November 10th, 2023.
 const jd = new jDate("November 10 2023");
 
-//Gets us Dallas Texas...
+//Gets us Dallas Texas... 
 const dallas = findLocation('Dallas');
 
 //Acquire the sunrise and sunset times for this date in Dallas
