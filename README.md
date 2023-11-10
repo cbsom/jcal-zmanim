@@ -13,8 +13,8 @@ import {jDate} from "jcal-zmanim";
 const today = jDate.now();
 console.log(today.toString());
 ```
-The above code prints out:<br>
-`Thursday, the 23rd of Kislev 5784`
+The above code prints out:
+> Thursday, the 23rd of Kislev 5784
 ##### Get the *Daf Yomi* for today
 ```javascript
 import {jDate} from "jcal-zmanim";
@@ -38,8 +38,21 @@ const {sunrise, sunset} = jd.getSunriseSunset(dallas);
 //Print it out nicely formatted to the console
 console.log(`In ${dallas.Name} on ${jd.toString()}, Sunrise is at ${Utils.getTimeString(sunrise)}, and Sunset is at ${Utils.getTimeString(sunset)}`);
 ```
-The code above prints out to the console:<br>
-`In Dallas, TX on Erev Shabbos, the 26th of Cheshvan 5784, Sunrise is at 6:53:36 AM, and Sunset is at 5:28:59 PM`
+The code above prints out to the console:
+>In Dallas, TX on Erev Shabbos, the 26th of Cheshvan 5784, Sunrise is at 6:53:36 AM, and Sunset is at 5:28:59 PM
+##### Get the current Jewish Date in Hong Kong - taking into consideration that it may be after sunset there right now.
+```javascript
+import {findLocation, jDate, Utils} from jcal-zmanim
+
+//Get Hong Kong
+const hongKong= findLocation('Hong Kong');
+
+//Get the Jewish Date right now in Hong Kong
+const nowInHongKong = Utils.nowAtLocation(hongKong);
+
+//Print it out
+console.log(nowInHongKong.toString());
+```
 
 ##### Print out the candle lighting time for Dallas Texas on Friday November 10th 2023:
 ```javascript
@@ -56,9 +69,9 @@ const candles = erevShabbos.getCandleLighting(dallas);
 
 //Spit in out formatted nicely...
 console.log(`Candle lighting time in ${dallas.Name} on ${erevShabbos.toString()} is at ${Utils.getTimeString(candles)}`);
-```   
-The above code prints out to the console:<br>
-`Candle lighting time in Dallas, TX on Erev Shabbos, the 26th of Cheshvan 5784 is at 5:10:59 PM`
+```
+The code above, prints out to the console:
+> Candle lighting time in Dallas, TX on Erev Shabbos, the 26th of Cheshvan 5784 is at 5:10:59 PM
 
 [**The jDate Object**](#the-jdate-object)
 - [jcal-zmanim](#jcal-zmanim)
@@ -132,9 +145,7 @@ const jdate = new jDate();
 //The following will output the above Jewish Date in the format: Thursday, the 3rd of Kislev 5784.
 console.log(jdate.toString());
 ```
-
 ### Creating a jDate instance
-
 A jDate can be created in a number of ways:
 #### Create a jDate using the jDate constructor
 -  `const jdate = new jDate()` - Sets the Jewish Date for the current system date
@@ -253,14 +264,32 @@ for(let location of Locations) {
 ```
 ### Finding a Location
 
-To search for a Location object for anywhere in the world, use the `findLocation` function.
--  `const location = findLocation(locationName)` - Finds a Location with the given name.<br />If no exact match is found, the location with the name most similar to the supplied locationName will be returned.<br>**Note:** The algorithm for this is fairly imprecise, so check to make sure that you have acquired the correct location.<br />If the location is in Israel, typing the name in Hebrew will help find the Location.  
+To search for a Location object for anywhere in the world, import and use the `findLocation` function.
+##### To acquire the entire list of Locations:
+```javascript
+import {findLocation} from "jcal-zmanim";
+
+//By city name
+const myCity = findLocation('Jersusalem');
+
+//Or in Hebrew
+const myCityHebrew = findLocation('ירושלים');
+
+//Or by coordinates
+const cityByCoords = findLocation({latitude: 31.77, longitude: -35.23});
+
+//The coordinates do not have to be exact. The function will find the closest Location to the given coordinates.
+const closeToJerusalem = findLocation({latitude: 31.75, longitude: -35.2});
+```
+##### There are 2 ways to search for a Location:
+-  `const location = findLocation(locationName)` - Finds a Location with the given name.<br />If no exact match is found, the location with the name most similar to the supplied locationName will be returned.<br>**Note:** The algorithm for this is fairly imprecise, so check to make sure that you have acquired the correct location.<br />If the location is in Israel, typing the name in Hebrew may help find the Location.  
 -  `const location = findLocation(locationCoordinates)` -  find a Location by supplying the coordinates in the format: `{latitude: 31.5, longitude: -32.54}`. The numbers are degree decimals.<br /> For latitude, North is a positive number and South is a negative number.<br /> For longitude, West is a positive number, and East is a negative number.<br /> If no Location is found with those exact coordinates, the Location closest to the supplied coordinates is returned.
 
 ### Location properties and functions
 | Property | Return Type | Description |
 | ---: | :---: | :--- |
-| **Name**|`string`|The name of the Location.<br>If the Location is in Israel, the name will be in Hebrew|
+|**Name**|`string`|The name of the Location.|
+|**NameHebrew**|`string`|The name of the Location in Hebrew. Only available for Locations in Israel.|
 |**Israel**|`boolean`|Is this Location in Israel?|
 |**Latitude**|`number`|The *degree decimal* for the Locations latitude.<br>North is a positive number and South is a negative number.|
 |**Longitude**|`number`|The *degree decimal* for the Locations longitude.<br>West is a positive number and East is a negative number.|
@@ -270,7 +299,79 @@ To search for a Location object for anywhere in the world, use the `findLocation
 |**Location.getJerusalem()**|`Location`|Static function that gets us the Location for Yerushalayim.|
 |**Location.getLakewood()**|`Location`|Static function that gets us the Location for Lakewood NJ.|
   
-### Creating a Location
+### Creating a new Location
+##### To create a Location for anywhere in the world, use the Location object constructor:
+```javascript
+import {Location} from "jcal-zmanim";
 
+const myLocation = new Location(
+  'Nowhere', //The location name
+  'יהופיץ',   //The name in Hebrew.
+  false,     //This place is not in Israel
+  35.01      //The latitude.  South is negative.
+  -155.23,   //The longitude. East is negative.
+  11,        //The Time Zone: The number of hours offset from UTC.
+  1106,      //The elevation in Meters. (Feet x 3.2808)
+  18)         //The number of minutes before sunset candles are lit on Erev Shabbos. 
+);
+```
+## The Zmanim Object
+Contains functions to calculate the daily *Zmanim* for any location in the world.
+```javascript
+import {findLocation, jDate, Zmanim} from "jcal-zmanim";
 
+//The following code gets Sunset, Sunrise and Chatzos for Lakewood NJ on Purim 5789.
+
+const lakewood = findLocation('Lakewood');
+const purim = new jDate(5789,12, 14);
+const {sunset, sunrise} = Zmanim.getSunTimes(purim, lakewood);
+const chatzos = Zmanim.getChatzos(purim, lakewood);
+
+console.log(`Sunset: ${Utils.getTimeString(sunset)}`);
+console.log(`Sunrise: ${Utils.getTimeString(sunrise)}`);
+console.log(`chatzos: ${Utils.getTimeString(chatzos)}`);
+```
+The code above prints out: 
+>Sunset: 5:49:02 PM<br>
+>Sunrise: 6:29:49 AM<br>
+>chatzos: 12:09:25 PM
+
+To get all the *Halachic Zmanim* for a given day and Location use the [**AppUtils**](#the-apputils-functions) function:
+```javascript
+import {findLocation, jDate, AppUtils, Utils} from jcal-zmanim;
+
+const lakewood = findLocation('Lakewood');
+const purim = new jDate(5789,12, 14);
+
+//This will return ar array of Zmanim in the format: 
+//[{zmanType:{desc}, time: {hour, minute, second}}]
+const allZmanim = AppUtils.getAllZmanim(purim, lakewood);
+
+for(let zman of allZmanim) {  
+  console.log(`${zman.zmanType.desc}: ${Utils.getTimeString(zman.time)}`)
+}
+```
+The code above prints out:
+> Chatzos - Midnight: 12:09:25 AM<br>
+> Alos Hashachar - 90: 4:59:49 AM<br>
+> Alos Hashachar - 72: 5:17:49 AM<br>
+> Taliss and Tefillin: 5:53:49 AM<br>
+> Sunrise at current elevation: 6:29:49 AM<br>
+> Sunrise: 6:29:49 AM<br>
+> Zman Krias Shma - MG"A: 8:33:49 AM<br>
+> Zman Krias Shma - GR"A: 9:18:49 AM<br>
+> Zman Tefilla - MG"A: 9:45:49 AM<br>
+> Zman Tefilla - GR"A: 10:15:49 AM<br>
+> Chatzos - Midday: 12:09:25 PM<br>
+> Mincha Gedola: 12:37:25 PM<br>
+> Mincha Ketana: 3:26:49 PM<br>
+> Plag HaMincha: 4:37:49 PM<br>
+> Sunset at sea level: 5:49:02 PM<br>
+> Sunset: 5:49:02 PM<br>
+> Nightfall - 45: 6:34:02 PM<br>
+> Nightfall - 50: 6:39:02 PM<br>
+> Rabbeinu Tam: 7:01:02 PM<br>
+> Rabbeinu Tam - Zmanios: 6:56:02 PM<br>
+> Rabbeinu Tam - Zmanios MG"A: 7:14:02 PM
 ## The Sedra Object 
+## The AppUtils Functions

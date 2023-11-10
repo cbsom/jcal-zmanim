@@ -14,7 +14,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rimraf ./dist && NODE_ENV=production && tsc",
-    "build-dev": "NODE_ENV=development && tsc"
+    "build-dev": "NODE_ENV=development && tsc",
+    "tsc": "tsc"
   },
   "repository": {
     "type": "git",

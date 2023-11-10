@@ -414,7 +414,7 @@ export default class AppUtils {
      * @param {Location} location
      */
     static getWhichDays(date: Date, jdate: jDate, location: Location) {
-        if (jdate.isYomTov(location.Israel)) {
+        if (jdate.isYomTov(!!location.Israel)) {
             return WhichDaysFlags.YOMTOV;
         }
         switch (date.getDay()) {
@@ -443,7 +443,7 @@ export default class AppUtils {
      * @param {Location} location
      * @returns {{chatzosHayom:Time, chatzosHalayla:Time, alos:Time, shkia:Time }}
      */
-    static getBasicShulZmanim(jdate: jDate, sdate: Date,location: Location) {
+    static getBasicShulZmanim(jdate: jDate, sdate: Date, location: Location) {
         const zmanim = AppUtils.getZmanTimes(
             [
                 getZmanType(ZmanTypeIds.chatzosDay) as ZmanToShow, //Chatzos hayom
@@ -464,14 +464,16 @@ export default class AppUtils {
     }
 
     /**
-    * Returns all the zmanim for the given day
-    * @param {jDate} jdate
-    * @param {Date} sdate
+    * Returns all the zmanim for the given day    
+    * @param {Date|jDate} date
     * @param {Location} location
     * @returns {{zmanType:ZmanToShow, time?:Time }[]}
     */
-    static getAllZmanim(jdate: jDate, sdate: Date, location: Location) {
-        return AppUtils.getZmanTimes(ZmanTypes, sdate, jdate, location,);
+    static getAllZmanim(date: jDate | Date, location: Location) {
+        const jd = date instanceof Date
+            ? new jDate(date as Date)
+            : date as jDate;
+        return AppUtils.getZmanTimes(ZmanTypes, jd.getDate(), jd, location,);
     }
 
     /**

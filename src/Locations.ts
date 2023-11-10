@@ -85,7 +85,6 @@ function closestNameMatch(val: string): Location | undefined {
         if (dist < curr.dist) {
             curr = { dist, location };
         }
-        console.log(location.name, dist);
     }
     return curr.location ? Locations[curr.location.index] : undefined;
 }
