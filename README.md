@@ -1,7 +1,21 @@
 # jcal-zmanim
 A very complete JavaScript library for the Jewish Calendar.
+- [jcal-zmanim](#jcal-zmanim)
+    - [To add *jcal-zmanim* to your project](#to-add-jcal-zmanim-to-your-project)
+    - [Some basic uses of *jcal-zmanim*](#some-basic-uses-of-jcal-zmanim)
+  - [The jDate object](#the-jdate-object)
+    - [Creating a jDate instance](#creating-a-jdate-instance)
+    - [jDate instance, properties and functions](#jdate-instance-properties-and-functions)
+    - [jDate static properties and functions](#jdate-static-properties-and-functions)
+  - [The Location Object](#the-location-object)
+    - [Finding a Location](#finding-a-location)
+    - [Location properties and functions](#location-properties-and-functions)
+    - [Creating a new Location](#creating-a-new-location)
+  - [The Zmanim Object](#the-zmanim-object)
+  - [The Sedra Object](#the-sedra-object)
+  - [The AppUtils Functions](#the-apputils-functions)
 
-To add *jcal-zmanim* to your project
+### To add *jcal-zmanim* to your project
 ```node
 npm install jcal-zmanim
 ```
@@ -72,6 +86,8 @@ console.log(`Candle lighting time in ${dallas.Name} on ${erevShabbos.toString()}
 ```
 The code above, prints out to the console:
 > Candle lighting time in Dallas, TX on Erev Shabbos, the 26th of Cheshvan 5784 is at 5:10:59 PM
+
+
 
 ## The jDate object
 
@@ -169,7 +185,7 @@ const currentJDate = jDate.now();
 | **getPirkeiAvos(inIsrael?)** |`number[]`|Gets the *Prakim* of *Pirkei Avos* for the current *Shabbos*.<br/> If the current jDate is not Shabbos, or is during the winter months - where there is no *Pirkei Avos*, an empty array is returned.|
 |**getSunriseSunset([location](#the-location-object), ignoreElevation?)**|`{sunrise: {hour: 6, minute: 18}, sunset: {hour: 19, minute: 41}}`|Gets sunrise and sunset time for the current Jewish date at the given [Location](#the-location-object).<br>If *ignoreElevation* is true, the calculations used to determine the sunrise and sunset, will assume that the Location is at sea level.<br>This is necessary for determining some of the daily *Zmanim*.|
 | **getChatzos([location](#the-location-object))**|`{hour: 11, minute: 48}`|Gets Chatzos for both the day and the night for the current Jewish date at the given [Location](#the-location-object).|
-| getShaaZmanis([location](#the-location-object), offset)|`number`|Gets the length in minutes for a single *Sha'a Zmanis* for the current Jewish date at the given [Location](#the-location-object).<br />By default, a *Sha'a Zmanis* is the total number of minutes from sunrise to sunset divided by 12.<br />To calculate from 72 minutes before sunrise to 72 minutes after sunset, set the *offset* parameter to 72.|
+|**getShaaZmanis**([location](#the-location-object), offset)|`number`|Gets the length in minutes for a single *Sha'a Zmanis* for the current Jewish date at the given [Location](#the-location-object).<br />By default, a *Sha'a Zmanis* is the total number of minutes from sunrise to sunset divided by 12.<br />To calculate from 72 minutes before sunrise to 72 minutes after sunset, set the *offset* parameter to 72.|
 |**getDafYomi()**|`string`|Returns the daily daf in English. For example: "*Sukkah, Daf 3*".|
 |**getDafyomiHeb()**|`string`|Gets the daily daf in Hebrew. For example:<br />*"'סוכה דף כ"*|
 ------------------------------------------------------------------
@@ -278,7 +294,7 @@ The code above prints out:
 >Sunrise: 6:29:49 AM<br>
 >chatzos: 12:09:25 PM
 
-To get all the *Halachic Zmanim* for a given day and Location use the [**AppUtils**](#the-apputils-functions) function:
+##### To get all the *Halachic Zmanim* for a given day and Location use the [**AppUtils**](#the-apputils-functions) function:
 ```javascript
 import {findLocation, jDate, AppUtils, Utils} from jcal-zmanim;
 
