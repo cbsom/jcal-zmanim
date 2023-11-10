@@ -4,25 +4,25 @@ UTCOffset is the time zone. Israel is always 2 and the US East coast is -5. Engl
 If UTCOffset is not specifically supplied, the longitude will be used to get a quasi-educated guess.*/
 export default class Location {
     Name: string;
+    NameHebrew?: string;
     Israel: boolean;
     Latitude: number;
     Longitude: number;
     UTCOffset: number;
     Elevation: number;
     CandleLighting?: number;
-    locationId?: number;
     /**
      * Describe a new Location.
      * @param {String} name The name of the Location
+     * @param {String} nameHeb The name of the Location
      * @param {Boolean} israel Is this Location in Israel?
      * @param {Number} latitude
      * @param {Number} longitude
      * @param {Number} utcOffset The time zone. Israel is 2 and New York is -5.
      * @param {Number} elevation Elevation in meters
      * @param {Number} [candleLighting] Number of minutes before sunset the candles are lit on Friday
-     * @param {Number} [locationId] If this location is in a database, keeps track of the id
      */
-    constructor(name:string, israel:boolean, latitude:number, longitude:number, utcOffset:number, elevation:number, candleLighting?:number, locationId?:number) {
+    constructor(name: string, nameHeb: string | undefined, israel: boolean, latitude: number, longitude: number, utcOffset: number, elevation: number, candleLighting?: number) {
         //If the israel argument was not set at all.
         if (typeof israel === 'undefined' || israel === null) {
             //If the user is within Israels general coordinates,
@@ -44,32 +44,28 @@ export default class Location {
         }
 
         this.Name = (name || 'Unknown Location');
+        this.NameHebrew = nameHeb;
         this.Israel = !!israel;
         this.Latitude = latitude;
         this.Longitude = longitude;
         this.UTCOffset = utcOffset || 0;
         this.Elevation = elevation || 0;
         this.CandleLighting = candleLighting || Location.getCandles(this);
-        this.locationId = locationId;
     }
 
-    hasId() {
-        return !!this.locationId;
-    }
-
-    static clone(location:Location) {
+    static clone(location: Location) {
         return new Location(
             location.Name,
+            location.NameHebrew,
             location.Israel,
             location.Latitude,
             location.Longitude,
             location.UTCOffset,
             location.Elevation,
-            location.CandleLighting || 0,
-            location.locationId||0);
+            location.CandleLighting || 0);
     }
 
-    static getCandles(location:Location) {
+    static getCandles(location: Location) {
         if (location.CandleLighting) {
             return location.CandleLighting;
         }
@@ -91,10 +87,10 @@ export default class Location {
 
     /**Gets the Location for Jerusalem.*/
     static getJerusalem() {
-        return new Location('Jerusalem', true, 31.78, -35.22, 2, 800, 40, 28);
+        return new Location('Jerusalem', 'ירושלים', true, 31.78, -35.22, 2, 800, 40);
     }
     /**Gets the Location for Lakewood NJ*/
     static getLakewood() {
-        return new Location('Lakewood NJ', false, 40.1, 74.23, -5, 0, 18, 185);
+        return new Location('Lakewood NJ', undefined, false, 40.1, 74.23, -5, 0, 18);
     }
 }
