@@ -16,9 +16,12 @@ A very complete JavaScript library for the Jewish Calendar.
   - [The AppUtils Functions](#the-apputils-functions)
 
 ### To add *jcal-zmanim* to your project
-```node
-npm install jcal-zmanim
-```
+> *npm install jcal-zmanim*
+
+OR
+
+> *yarn add jcal-zmanim*
+
 ### Some basic uses of *jcal-zmanim*
 ##### Print out todays Jewish Date
 ```javascript
@@ -222,8 +225,7 @@ for(let location of Locations) {
 ```
 ### Finding a Location
 
-To search for a Location object for anywhere in the world, import and use the `findLocation` function.
-##### To acquire the entire list of Locations:
+##### To search for a Location object for anywhere in the world, import and use the `findLocation` function.
 ```javascript
 import {findLocation} from "jcal-zmanim";
 
@@ -301,12 +303,12 @@ import {findLocation, jDate, AppUtils, Utils} from jcal-zmanim;
 const lakewood = findLocation('Lakewood');
 const purim = new jDate(5789,12, 14);
 
-//This will return ar array of Zmanim in the format: 
-//[{zmanType:{desc}, time: {hour, minute, second}}]
+//This will return an array of Zmanim in the format: 
+//[{zmanType:{eng, heb}, time: {hour, minute, second}}]
 const allZmanim = AppUtils.getAllZmanim(purim, lakewood);
 
 for(let zman of allZmanim) {  
-  console.log(`${zman.zmanType.desc}: ${Utils.getTimeString(zman.time)}`)
+  console.log(`${zman.zmanType.eng}: ${Utils.getTimeString(zman.time)}`)
 }
 ```
 The code above prints out:
