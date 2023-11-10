@@ -4,7 +4,7 @@ import Settings from './Settings.js';
 import jDate from './JCal/jDate.js';
 import Location from './JCal/Location.js';
 import {Locations, findLocation, closestNameMatch, closestDistanceMatch} from './Locations.js';
-import {ZmanTypes, ZmanTypeIds} from './ZmanTypes.js';
+import {ZmanTypes, ZmanTypeIds, getZmanType} from './ZmanTypes.js';
 import Molad from './JCal/Molad.js';
 import PirkeiAvos from './JCal/PirkeiAvos.js';
 import Dafyomi from './JCal/Dafyomi.js';
@@ -23,7 +23,8 @@ module.exports={
     closestNameMatch,
     closestDistanceMatch,
     ZmanTypes, 
-    ZmanTypeIds,     
+    ZmanTypeIds,   
+    getZmanType,  
     Zmanim,    
     Settings, 
     jDate, 

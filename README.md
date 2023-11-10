@@ -59,7 +59,7 @@ The code above prints out to the console:
 >In Dallas, TX on Erev Shabbos, the 26th of Cheshvan 5784, Sunrise is at 6:53:36 AM, and Sunset is at 5:28:59 PM
 ##### Get the current Jewish Date in Hong Kong - taking into consideration that it may be after sunset there right now.
 ```javascript
-import {findLocation, jDate, Utils} from jcal-zmanim
+import {findLocation, jDate, Utils} from 'jcal-zmanim'
 
 //Get Hong Kong
 const hongKong= findLocation('Hong Kong');
@@ -275,17 +275,18 @@ const myLocation = new Location(
   18)         //The number of minutes before sunset candles are lit on Erev Shabbos. 
 );
 ```
-## The Zmanim Object
-Contains functions to calculate the daily *Zmanim* for any location in the world.
+## Zmanim
+The following functions can be used to get *Halachic Zmanim* for any date, anywhere.
+##### To get the daily Sunset, Sunrise and *Chatzos* for any location in the world:
 ```javascript
-import {findLocation, jDate, Zmanim} from "jcal-zmanim";
+import {findLocation, jDate} from "jcal-zmanim";
 
 //The following code gets Sunset, Sunrise and Chatzos for Lakewood NJ on Purim 5789.
 
 const lakewood = findLocation('Lakewood');
 const purim = new jDate(5789,12, 14);
-const {sunset, sunrise} = Zmanim.getSunTimes(purim, lakewood);
-const chatzos = Zmanim.getChatzos(purim, lakewood);
+const {sunset, sunrise} = purim.getSunriseSunset(lakewood);
+const chatzos = purim.getChatzos(lakewood);
 
 console.log(`Sunset: ${Utils.getTimeString(sunset)}`);
 console.log(`Sunrise: ${Utils.getTimeString(sunrise)}`);
@@ -296,9 +297,9 @@ The code above prints out:
 >Sunrise: 6:29:49 AM<br>
 >chatzos: 12:09:25 PM
 
-##### To get all the *Halachic Zmanim* for a given day and Location use the [**AppUtils**](#the-apputils-functions) function:
+##### To get <u>all</u> the *Halachic Zmanim* for a given day and Location:
 ```javascript
-import {findLocation, jDate, AppUtils, Utils} from jcal-zmanim;
+import {findLocation, jDate, AppUtils, Utils} from 'jcal-zmanim';
 
 const lakewood = findLocation('Lakewood');
 const purim = new jDate(5789,12, 14);
@@ -333,5 +334,55 @@ The code above prints out:
 > Rabbeinu Tam: 7:01:02 PM<br>
 > Rabbeinu Tam - Zmanios: 6:56:02 PM<br>
 > Rabbeinu Tam - Zmanios MG"A: 7:14:02 PM
+##### To get just the basic daily *Halachic Zmanim* for a given day and Location:
+```javascript
+import {findLocation, jDate, AppUtils, Utils} from 'jcal-zmanim';
+
+const lakewood = findLocation('Lakewood');
+const purim = new jDate(5789,12, 14);
+
+//This will return an array of Zmanim in the format: 
+//[{zmanType:{eng, heb}, time: {hour, minute, second}}]
+const someZmanim = AppUtils.getBasicShulZmanim(purim, lakewood);
+
+for(let zman of someZmanim) {  
+  console.log(`${zman.zmanType.eng}: ${Utils.getTimeString(zman.time)}`)
+}
+```
+The code above prints out:
+> Chatzos - Midday: 12:09:25 PM<br>
+> Alos Hashachar - 90: 4:59:49 AM<br>
+> Sunset: 5:49:02 PM<br>
+> Candle lighting time: 5:31:02  PM
+
+### Zmanim Types
+There are many *zmanim* that can be acquired. 
+##### To get a list of particular Zmanim:
+```javascript
+import {jDate, findLocation, AppUtils, ZmanTypeIds, getZmanType} from 'jcal-zmanim';
+
+const lakewood = findLocation('Lakewood');
+const purim = new jDate(5789,12, 14);
+const zmanimTypesWeWant= [
+                getZmanType(ZmanTypeIds.chatzosDay) as ZmanToShow, //Chatzos hayom
+                getZmanType(ZmanTypeIds.Alos90) as ZmanToShow, //alos90
+                getZmanType(ZmanTypeIds.shkiaElevation) as ZmanToShow, //shkiaElevation,
+                getZmanType(ZmanTypeIds.candleLighting) as ZmanToShow, //candleLighting,
+            ];
+const zmanimForThose = AppUtils.getZmanTimes(
+            zmanimTypesWeWant,
+            purim.getDate(),
+            purim,
+            lakewood,
+        );
+        return {
+            chatzosHayom: zmanim[0].time,
+            chatzosHalayla: Utils.addMinutes(zmanim[0].time, 720),
+            alos: zmanim[1].time,
+            shkia: zmanim[2].time,
+        };
+```
+#### Here is a list of the 
+
 ## The Sedra Object 
 ## The AppUtils Functions
