@@ -73,64 +73,6 @@ console.log(`Candle lighting time in ${dallas.Name} on ${erevShabbos.toString()}
 The code above, prints out to the console:
 > Candle lighting time in Dallas, TX on Erev Shabbos, the 26th of Cheshvan 5784 is at 5:10:59 PM
 
-[**The jDate Object**](#the-jdate-object)
-- [jcal-zmanim](#jcal-zmanim)
-- [Some basic uses of *jcal-zmanim*](#some-basic-uses-of-jcal-zmanim)
-- [Print out todays Jewish Date](#print-out-todays-jewish-date)
-- [Get the *Daf Yomi* for today](#get-the-daf-yomi-for-today)
-- [Print out the sunrise and sunset times for 11/10/23 in Dallas](#print-out-the-sunrise-and-sunset-times-for-111023-in-dallas)
-- [Print out the candle lighting time for Dallas Texas on Friday November 10th 2023:](#print-out-the-candle-lighting-time-for-dallas-texas-on-friday-november-10th-2023)
-- [The jDate object](#the-jdate-object)
-- [Creating a jDate instance](#creating-a-jdate-instance)
-- [Create a jDate using the jDate constructor](#create-a-jdate-using-the-jdate-constructor)
-- [Create a jDate using the static *toJDate* function](#create-a-jdate-using-the-static-tojdate-function)
-- [jDate instance, properties and functions](#jdate-instance-properties-and-functions)
-- [|**getDafyomiHeb()**|`string`|Gets the daily daf in Hebrew. For example:*"'סוכה דף כ"*|](#getdafyomihebstringgets-the-daily-daf-in-hebrew-for-exampleסוכה-דף-כ)
-- [jDate static properties and functions](#jdate-static-properties-and-functions)
-- [|**jDate.monthsJYear(jewishYear)**|`number`|The number of months in the given Jewish Year.|](#jdatemonthsjyearjewishyearnumberthe-number-of-months-in-the-given-jewish-year)
-- [The Location Object](#the-location-object)
-- [To acquire the entire list of Locations:](#to-acquire-the-entire-list-of-locations)
-- [Finding a Location](#finding-a-location)
-- [Location properties and functions](#location-properties-and-functions)
-- [Creating a Location](#creating-a-location)
-- [The Sedra Object](#the-sedra-object)
-  
-[**The Location Object**](#the-location-object)
-
-[**The Utils Object**](#the-Utils-object)
-
-[**The AppUtils Object**](#the-AppUtils-object)
-
-[**The DaysOfWeek Object**](#the-DaysOfWeek-object)
-
-[**The getNotifications Object**](#the-getNotifications-object)
-
-[**The Locations Object**](#the-Locations-object)
-
-[**The findLocation Object**](#the-findLocation-object)
-
-[**The closestNameMatch Object**](#the-closestNameMatch-object)
-
-[**The closestDistanceMatch Object**](#the-closestDistanceMatch-object)
-
-[**The ZmanTypes Object**](#the-ZmanTypes-object)
-
-[**The ZmanTypeIds Object**](#the-ZmanTypeIds-object)
-
-[**The Zmanim Object**](#the-Zmanim-object)
-
-[**The Location Object**](#the-Location-object)
-
-[**The Settings Object**](#the-Settings-object)
-
-[**The Molad Object**](#the-Molad-object)
-
-[**The PirkeiAvos Object**](#the-PirkeiAvos-object)
-
-[**The Dafyomi Object**](#the-Dafyomi-object)
-
-[**The Sedra Object**](#the-Sedra-object)
-
 ## The jDate object
 
 A *jDate* is a single day in the Jewish Calendar.<br>
