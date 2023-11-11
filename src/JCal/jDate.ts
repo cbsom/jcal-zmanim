@@ -1,4 +1,4 @@
-import { isString, isNumber, has, isValidDate } from '../GeneralUtils';
+
 import {Utils, DaysOfWeekEng, JewishMonthsEng, DaysOfWeekHeb, JewishMonthsHeb} from '../Utils.js';
 import Sedra from './Sedra.js';
 import PirkeiAvos from './PirkeiAvos.js';
@@ -58,7 +58,7 @@ export default class jDate {
         if (arguments.length === 0) {
             this.fromAbs(jDate.absSd(new Date()));
         } else if (arg instanceof Date) {
-            if (isValidDate(arg)) {
+            if (Utils.isValidDate(arg)) {
                 this.fromAbs(jDate.absSd(arg));
             } else {
                 throw 'jDate constructor: The given Date is not a valid javascript Date';
@@ -70,9 +70,9 @@ export default class jDate {
             this.Abs =
                 (arg.length > 3 && arg[3]) ||
                 jDate.absJd(this.Year, this.Month, this.Day);
-        } else if (arg && isString(arg)) {
+        } else if (arg && Utils.isString(arg)) {
             const d = new Date(arg as string);
-            if (isValidDate(d)) {
+            if (Utils.isValidDate(d)) {
                 this.fromAbs(jDate.absSd(d));
             } else {
                 throw (
@@ -81,7 +81,7 @@ export default class jDate {
                     '" cannot be parsed into a Date'
                 );
             }
-        } else if (isNumber(arg)) {
+        } else if (Utils.isNumber(arg)) {
             //if no other arguments were supplied, we assume that the supplied number is an absolute date
             if (arguments.length === 1) {
                 this.fromAbs(arg as number);
@@ -98,7 +98,7 @@ export default class jDate {
         //If arg is an object that has a "year" property that contains a valid value...
         else if (typeof arg === 'object') {
             const argObj = arg as { year: number, month: number, day: number, abs: number };
-            if (isNumber(argObj.year)) {
+            if (Utils.isNumber(argObj.year)) {
                 this.Day = argObj.day || 1;
                 this.Month = argObj.month || 7;
                 this.Year = argObj.year;
@@ -384,10 +384,10 @@ export default class jDate {
     /**Is today Erev Yom Tov? (includes Erev second days of Sukkos and Pesach) */
     isErevYomTov(): boolean {
         return (
-            (this.Month === 1 && has(this.Day, 14, 20)) ||
+            (this.Month === 1 && Utils.has(this.Day, 14, 20)) ||
             (this.Month === 3 && this.Day === 5) ||
             (this.Month === 6 && this.Day === 29) ||
-            (this.Month === 7 && has(this.Day, 9, 14, 21))
+            (this.Month === 7 && Utils.has(this.Day, 9, 14, 21))
         );
     }
 
@@ -509,7 +509,7 @@ export default class jDate {
         // If just the year is set, then the date is set to Rosh Hashana of that year.
         // In the above scenario, we can't just pass the args along, as the constructor will treat it as an absolute date.
         //...and that folks, is actually the whole point of this function...
-        else if (isNumber(arg) && arguments.length === 1) {
+        else if (Utils.isNumber(arg) && arguments.length === 1) {
             return new jDate(arg, 7, 1);
         } else {
             return new jDate(arg, month, day, abs);
@@ -677,7 +677,7 @@ export default class jDate {
         }
 
         // A day is added if Rosh HaShanah would occur on Sunday, Friday or Wednesday,
-        if (has(altDay % 7, 0, 3, 5)) {
+        if (Utils.has(altDay % 7, 0, 3, 5)) {
             altDay += 1;
         }
 

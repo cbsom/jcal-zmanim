@@ -1,7 +1,6 @@
 
 import {Utils} from '../Utils.js';
 import jDate from './jDate.js';
-import { isValidDate } from '../GeneralUtils.js';
 import Location from './Location.js';
 import { SunTimes, Time } from '../jcal-zmanim.js';
 
@@ -28,7 +27,7 @@ export default class Zmanim {
             date = new Date(date);
         }
 
-        if (!isValidDate(date)) {
+        if (!Utils.isValidDate(date)) {
             throw 'Zmanim.getSunTimes: supplied date parameter cannot be converted to a Date';
         }
 
