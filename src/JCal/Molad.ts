@@ -67,9 +67,6 @@ export default class Molad {
 
         return str;
     }
-    time(sunset: any, time: any) {
-        throw new Error('Method not implemented.');
-    }
 
     /**
      * Returns the time of the molad as a string in the format: ליל שני 20:33 12 חלקים

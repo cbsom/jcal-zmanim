@@ -265,16 +265,19 @@ const closeToJerusalem = findLocation({latitude: 31.75, longitude: -35.2});
 import {Location} from "jcal-zmanim";
 
 const myLocation = new Location(
-  'Nowhere', //The location name
-  'יהופיץ',   //The name in Hebrew.
-  false,     //This place is not in Israel
-  35.01      //The latitude.  South is negative.
-  -155.23,   //The longitude. East is negative.
-  11,        //The Time Zone: The number of hours offset from UTC.
-  1106,      //The elevation in Meters. (Feet x 3.2808)
-  18)         //The number of minutes before sunset candles are lit on Erev Shabbos. 
+  'Nowhere', // The location name
+  'יהופיץ',     //The name in Hebrew.
+  false,     // This place is not in Israel
+  35.01      // The latitude.  North is positive.
+  -155.23,   // The longitude. East is negative.
+  11,        // The Time Zone: The number of hours offset from UTC.
+  1106,      // The elevation in Meters. (Feet x 3.2808)
+  18)        // The number of minutes before sunset candles are lit on Erev Shabbos. 
 );
 ```
+
+----------------------------------
+
 ## Zmanim
 The following functions can be used to get *Halachic Zmanim* for any date, anywhere.
 ##### To get the daily Sunset, Sunrise and *Chatzos* for any location in the world:
@@ -356,33 +359,132 @@ The code above prints out:
 > Candle lighting time: 5:31:02  PM
 
 ### Zmanim Types
-There are many *zmanim* that can be acquired. 
+The ZmanTypes enum can be acquired by importing `ZmanTypeIds` from 'jcal-zmanim'.<br>
+If you need to print out the Zman Type description etc., use the `getZmanType` function.
+
+Here is a list of the in-built *Zmanim Types*: 
+
+|ZmanTypeId|Description|English|Hebrew|
+| ---: | :--- | :--- | :--- |
+| `ZmanTypeIds.ChatzosLayla` |חצות הלילה|Chatzos - Midnight|חצות הלילה|
+|  `ZmanTypeIds.Alos90`|עלות השחר - 90 דקות|Alos Hashachar - 90|עלות השחר (90)|
+|  `ZmanTypeIds.Alos72`|עלות השחר - 72 דקות|Alos Hashachar - 72|עלות השחר (72)|
+|  `ZmanTypeIds.TalisTefillin`|זמן עטיפת טלית ותפילין - 36 דקות|Taliss and Tefillin|טלית ותפילין|
+|  `ZmanTypeIds.NetzAtElevation`|הנץ החמה בגובה המיקום|Sunrise at current elevation|הנץ החמה - מגובה|
+|  `ZmanTypeIds.NetzMishor`|הנץ החמה בגובה פני הים|Sunrise|הנץ החמה|
+|  `ZmanTypeIds.szksMga`|סזק"ש מג"א|Zman Krias Shma - MG"A|סזק"ש מג"א|
+|  `ZmanTypeIds.szksGra`|סזק"ש הגר"א|Zman Krias Shma - GR"A|סזק"ש הגר"א|
+|  `ZmanTypeIds.sztMga`|סז"ת מג"א|Zman Tefilla - MG"A|סז"ת מג"א|
+|  `ZmanTypeIds.sztGra`|סז"ת הגר"א|Zman Tefilla - GR"A|סז"ת הגר"א|
+|  `ZmanTypeIds.chatzosDay`|חצות היום|Chatzos - Midday|חצות היום|
+|  `ZmanTypeIds.minGed`|מנחה גדולה|Mincha Gedola|מנחה גדולה|
+|  `ZmanTypeIds.minKet`|מנחה קטנה|Mincha Ketana|מנחה קטנה|
+|  `ZmanTypeIds.plag`|פלג המנחה|Plag HaMincha|פלג המנחה|
+|  `ZmanTypeIds.shkiaAtSeaLevel`|שקיעת החמה מגובה פני הים|Sunset at sea level|שקיעת החמה - ממישור|
+|  `ZmanTypeIds.shkiaElevation`|שקיעת החמה מגובה המיקום|Sunset|שקיעת החמה|
+|  `ZmanTypeIds.tzais45`|45 דקות אחרי שקיעה|Nightfall - 45|צאת הכוכבים (45)|
+|  `ZmanTypeIds.tzais50`|50 דקות אחרי שקיעה|Nightfall - 50|צאת הכוכבים (50)|
+|  `ZmanTypeIds.tzais72`|72 דקות אחרי שקיעה|Rabbeinu Tam|צה"כ ר"ת - 72 דקות|
+|  `ZmanTypeIds.rabbeinuTamZmanios`|72 דקות זמניות אחרי שקיעה|Rabbeinu Tam - Zmanios|צה"כ ר"ת - זמניות|
+|  `ZmanTypeIds.rabbeinuTamZmaniosMga`|72 דקות זמניות אחרי שקיעה - מג"א|Rabbeinu Tam - Zmanios MG"A|צה"כ ר"ת - זמניות מג"א|
+|  `ZmanTypeIds.candleLighting`|זמן הדלקת נרות|Candle lighting time|זמן הדלקת נרות|
+|  `ZmanTypeIds.SofZmanEatingChometz`|סוף זמן אכילת חמץ|Stop eating Chometz|סוף זמן אכילת חמץ|
+|  `ZmanTypeIds.SofZmanBurnChometz`|סוף זמן ביעור חמץ|Destroy Chometz|סוף זמן ביעור חמץ|
 ##### To get a list of particular Zmanim:
 ```javascript
 import {jDate, findLocation, AppUtils, ZmanTypeIds, getZmanType} from 'jcal-zmanim';
 
+//Get Lakewood, NJ
 const lakewood = findLocation('Lakewood');
+
+//Get the Jewish Date of Purim 5789
 const purim = new jDate(5789,12, 14);
-const zmanimTypesWeWant= [
-                getZmanType(ZmanTypeIds.chatzosDay) as ZmanToShow, //Chatzos hayom
-                getZmanType(ZmanTypeIds.Alos90) as ZmanToShow, //alos90
-                getZmanType(ZmanTypeIds.shkiaElevation) as ZmanToShow, //shkiaElevation,
-                getZmanType(ZmanTypeIds.candleLighting) as ZmanToShow, //candleLighting,
-            ];
+
+//Here is a list of the Zmanim Types we want
+const zmanimTypesWeWant= [                
+    getZmanType(ZmanTypeIds.Alos72),
+    getZmanType(ZmanTypeIds.chatzosDay),
+    getZmanType(ZmanTypeIds.shkiaElevation)
+];
+
+//This will return an array of these Zmanim in the format: 
+//[{zmanType:{eng, heb}, time: {hour, minute, second}}]
 const zmanimForThose = AppUtils.getZmanTimes(
-            zmanimTypesWeWant,
-            purim.getDate(),
-            purim,
-            lakewood,
-        );
-        return {
-            chatzosHayom: zmanim[0].time,
-            chatzosHalayla: Utils.addMinutes(zmanim[0].time, 720),
-            alos: zmanim[1].time,
-            shkia: zmanim[2].time,
-        };
+    zmanimTypesWeWant,
+    purim.getDate(),
+    purim,
+    lakewood
+);
+
+//Print them out nicely
+for(let zman of someZmanim) {  
+  console.log(`${zman.zmanType.eng}: ${Utils.getTimeString(zman.time)}`)
+}
 ```
-#### Here is a list of the 
+### Calculate other Zmanim
+To calculate any other *Zman*, add the number of minutes or *Shaas Zmanimios* to sunset, sunrise or *Chatzos*.
+##### For example, to calculate 4 *Shaos Zmanios* of the *Magen Avraham* after sunrise in Lakewood NJ on Purim 5789:
+```javascript
+import {jDate, findLocation, Utils} from 'jcal-zmanim';
+
+//Get Lakewood, NJ
+const lakewood = findLocation('Lakewood');
+
+//Get the Jewish Date of Purim 5789
+const purim = new jDate(5789, 12, 14);
+
+//Get Hanetz Hachama
+const {sunrise} = purim.getSunriseSunset(lakewood);
+
+//Get the longer Shaos Zmanios length for this day -
+//from 72 minutes before sunrise until 72 minutes after sunset
+const shaosZmanios = purim.getShaaZmanis(lakewood, 72);
+
+//Add 4 long Shaos Zmanios to Hanetz Hachama (Why not? it's Purim...)
+const lateZman = Utils.addMinutes(sunrise, shaosZmanios * 4);
+
+//Print it out nicely
+console.log(`Hanetz on Purim 5789 in Lakewood is: ${Utils.getTimeString(sunrise)}\n4 long Sha'os Zmanios after Hanetz is :) ${Utils.getTimeString(lateZman)}`)
+```
+The code above prints out:
+>Hanetz on Purim 5789 in Lakewood is: 6:29:49 AM<br>
+>4 long Sha'os Zmanios after Hanetz is :) 11:03:49 AM
+
+---------------------
 
 ## The Sedra Object 
+The *Sedra* object is obtained by calling getSedra on a [jDate](#the-jdate-object).
+
+```javascript
+import {jDate} from "jcal-zmanim";
+
+const today = jDate.now();
+
+//Gets the sedra for today out of Israel
+const parsha = today.getSedra(false);
+
+//Print that out
+console.log(parsha.toString());
+```
+The above code printed out:
+>Chayei Sara
+
+#### Sedra Property and Functions:
+|Name|Type|Description|
+| ---: | :---: |:--- |
+| **sedras** |`[{eng, heb}]`|An array for the `Sedra` of the week for the current [jDate](#the-jdate-object).<br>Each item in the array contains the `eng` (English) name of that *parsha* and `heb`, the Hebrew name.|
+|**toString()**|`string`|Gets the sedra/s names in English as a string. If there are two, they are seperated by a " - "|
+|**toStringHeb()**|`string`|Gets the sedra/s names in Hebrew as a string. If there are two, they are seperated by a " - "|
+
+------------------------------------------
+## The Molad Functions
+|Name|Type|Description|
+| ---: | :---: |:--- |
+| **Molad.getMolad(jewishMonth, jewishYear)** |`{jDate,time,chalakim}`|Gets the *Molad* for the given Jewish Year and Month.<br>For the Month, Nissan is 1 and Adar Sheini is 13.<br>The returned object contains the [jDate](#the-jdate-object), the time of day in the format `{hour, minute}` and the number of *Chalakim*|
+|**Molad.getString(jewishYear, jewishMonth)**|`string`|Gets the *Molad* for the given Jewish Year and Month.<br>For the Month, Nissan is 1 and Adar Sheini is 13.<br>Returns the time of the molad as a string in the format: *Monday Night, 8:33 PM and 12 Chalakim*.<br>The molad is always in Jerusalem so we use the Jerusalem sunset times to determine whether to display "Night" or *Motzai Shabbos* etc.|
+|**Molad.getStringHeb(jewishYear, jewishMonth)**|`string`|Gets the *Molad* for the given Jewish Year and Month.<br>For the Month, Nissan is 1 and Adar Sheini is 13.<br>Returns the time of the molad as a string in the format: *ליל שני 20:33 12 חלקים* <br>The molad is always in Jerusalem so we use the Jerusalem sunset times to determine whether to display "ליל/יום" or "מוצאי שב"ק" etc.|
+------------------------------------
+## Daily *Notifications* and *Shul Notifications*
+s
+------------------------------------------
 ## The AppUtils Functions

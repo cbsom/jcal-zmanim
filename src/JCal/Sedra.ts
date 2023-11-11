@@ -4,7 +4,7 @@ import jDate from './jDate.js';
  * Computes the Sedra/Sedras of the week for the given day.
  * The property "sedras" an array of sedras (either one or two) for the given Jewish Date
  * Sample of use to get todays sedra in Israel:
- *     const sedras = new Sedra(new jDate(new Date(), true)).toString();
+ *     const sedras = new Sedra(new jDate(), true).toString();
  * The code was converted to javascript and tweaked by CBS.
  * It is directly based on the C code in Danny Sadinoff's HebCal - Copyright (C) 1994.
  * Portions of that code are Copyright (c) 2002 Michael J. Radwin. All Rights Reserved.
