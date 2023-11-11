@@ -1,9 +1,8 @@
-import Utils from './JCal/Utils';
-import Settings from './Settings';
+import {Utils, DaysOfWeek} from './Utils';
 import jDate from './JCal/jDate';
 import Molad from './JCal/Molad';
 import PirkeiAvos from './JCal/PirkeiAvos';
-import AppUtils, { DaysOfWeek } from './AppUtils';
+import ZmanimUtils from './JCal/ZmanimUtils';
 import Location from './JCal/Location';
 import { Time } from './jcal-zmanim';
 
@@ -35,35 +34,30 @@ let showEnglish = false,
 
 /**
  * Get shul notifications for the given date and location
- * @param {jDate} jdate
- * @param {Date} sdate
- * @param {Time} time
- * @param {Settings} settings
+ * @param date 
+ * @param time 
+ * @param location 
+ * @param english 
+ * @param showGaonShir  * 
+ * @param showDafYomi 
+ * @returns {{ dayNotes: string[], tefillahNotes: string[]}}
  */
-export default function getNotifications(jdate: jDate, sdate: Date, time: Time, settings: Settings) {
+export function getNotifications(date: jDate | Date, time: Time, location: Location, english: boolean, showGaonShir?: boolean, showDafYomi?: boolean) {
+    const { sdate, jdate } = Utils.bothDates(date);
     dayNotes.length = 0;
     tefillahNotes.length = 0;
     const month = jdate.Month,
         day = jdate.Day,
         dow = jdate.DayOfWeek,
-        { location, showGaonShir, showDafYomi, english } = settings,
-        {
-            chatzosHayom,
-            chatzosHalayla,
-            alos,
-            shkia,
-        } = AppUtils.getBasicShulZmanim(jdate, sdate, location),
+        { chatzosHayom, chatzosHalayla, alos, shkia, } = ZmanimUtils.getBasicShulZmanim(date, location),
         isAfterChatzosHayom = Utils.isTimeAfter(chatzosHayom, time),
         isAfterChatzosHalayla = (typeof (chatzosHalayla) !== 'undefined') &&
-            (Utils.isTimeAfter(chatzosHalayla, time) ||
-                (chatzosHalayla.hour > 12 && time.hour < 12)), //Chatzos is before 0:00 and time is after 0:00
+            (Utils.isTimeAfter(chatzosHalayla, time) || (chatzosHalayla.hour > 12 && time.hour < 12)), //Chatzos is before 0:00 and time is after 0:00
         isAfterAlos = Utils.isTimeAfter(alos, time),
         isAfterShkia = Utils.isTimeAfter(shkia, time),
         isDaytime = isAfterAlos && !isAfterShkia,
         isNightTime = !isDaytime,
-        isNotBeinHasmashos =
-            !isAfterShkia ||
-            Utils.isTimeAfter(Utils.addMinutes(shkia, 18), time),
+        isNotBeinHasmashos = !isAfterShkia || Utils.isTimeAfter(Utils.addMinutes(shkia, 18), time),
         isMorning = isDaytime && !isAfterChatzosHayom,
         isAfternoon = isDaytime && isAfterChatzosHayom,
         isYomTov = jdate.isYomTovOrCholHamoed(location.Israel),
@@ -90,7 +84,7 @@ export default function getNotifications(jdate: jDate, sdate: Date, time: Time, 
         location,
     };
     showEnglish = english;
-    showGaonShirShelYom = showGaonShir;
+    showGaonShirShelYom = showGaonShir === true;
     israel = location.Israel;
 
     if (dow === DaysOfWeek.SHABBOS) {
@@ -105,13 +99,11 @@ export default function getNotifications(jdate: jDate, sdate: Date, time: Time, 
             addTefillahNote('No Tachnun', 'א"א תחנון');
         } else if (isAfternoon) {
             addTefillahNote('No Tzidkascha', 'א"א צדקתך');
-        } else if (
-            !(
-                (month === 1 && day > 21) ||
-                month === 2 ||
-                (month === 3 && day < 6)
-            )
-        ) {
+        } else if (!(
+            (month === 1 && day > 21) ||
+            month === 2 ||
+            (month === 3 && day < 6)
+        )) {
             addTefillahNote('No Av Harachamim', 'א"א אב הרחמים');
         }
     }
@@ -120,10 +112,8 @@ export default function getNotifications(jdate: jDate, sdate: Date, time: Time, 
     }
 
     //If it is after the earliest Nacht during Sefiras Ha'omer
-    if (
-        isNotBeinHasmashos &&
-        ((month === 1 && day > 15) || month === 2 || (month === 3 && day < 6))
-    ) {
+    if (isNotBeinHasmashos &&
+        ((month === 1 && day > 15) || month === 2 || (month === 3 && day < 6))) {
         const dayOfSefirah = jdate.getDayOfOmer();
         if (dayOfSefirah > 0) {
             addTefillahNote(Utils.getOmerNusach(dayOfSefirah, 'ashkenaz'));
@@ -227,9 +217,9 @@ function getShabbosNotifications() {
         if (prakim.length > 0) {
             addDayNote(
                 'Pirkei Avos - ' +
-                prakim.map(s => `Perek ${Utils.toJNum(s)}`).join(' and '),
+                prakim.map(s => `Perek ${Utils.toJewishNumber(s)}`).join(' and '),
                 'פרקי אבות - ' +
-                prakim.map(s => `פרק ${Utils.toJNum(s)}`).join(' ו'),
+                prakim.map(s => `פרק ${Utils.toJewishNumber(s)}`).join(' ו'),
             );
         }
     }

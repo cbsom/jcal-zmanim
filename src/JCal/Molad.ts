@@ -1,4 +1,4 @@
-import Utils from './Utils.js';
+import {Utils, DaysOfWeekHeb, DaysOfWeekEng} from '../Utils.js';
 import jDate from './jDate.js';
 import Location from './Location.js';
 import { Time } from '../jcal-zmanim.js';
@@ -51,7 +51,7 @@ export default class Molad {
         let str = '';
 
         if (!zmanim.sunset || isNaN(zmanim.sunset.hour)) {
-            str += Utils.dowEng[dow];
+            str += DaysOfWeekEng[dow];
         }
         else if (dow === 6 && isNight) {
             str += 'Motzai Shabbos,';
@@ -60,7 +60,7 @@ export default class Molad {
             str += 'Shabbos Night,';
         }
         else {
-            str += Utils.dowEng[dow] + (isNight ? ' Night' : '');
+            str += DaysOfWeekEng[dow] + (isNight ? ' Night' : '');
         }
         str += ' ' + Utils.getTimeString(molad.time) + ' and ' +
             molad.chalakim.toString() + ' Chalakim';
@@ -91,7 +91,7 @@ export default class Molad {
         }
         else {
             str += (isNight ? 'ליל' : 'יום') +
-                Utils.dowHeb[dow].replace('יום', '');
+                DaysOfWeekHeb[dow].replace('יום', '');
         }
         str += ' ' + Utils.getTimeString(molad.time, 1, true) + ' ' +
             molad.chalakim.toString() + ' חלקים';

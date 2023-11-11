@@ -1,5 +1,5 @@
 import { isString, isNumber, has, isValidDate } from '../GeneralUtils';
-import Utils from './Utils.js';
+import {Utils, DaysOfWeekEng, JewishMonthsEng, DaysOfWeekHeb, JewishMonthsHeb} from '../Utils.js';
 import Sedra from './Sedra.js';
 import PirkeiAvos from './PirkeiAvos.js';
 import Zmanim from './Zmanim.js';
@@ -284,7 +284,7 @@ export default class jDate {
                 ? dontCapitalize
                     ? 't'
                     : 'T'
-                : Utils.dowEng[this.getDayOfWeek()] + ', t') +
+                : DaysOfWeekEng[this.getDayOfWeek()] + ', t') +
             'he ' +
             Utils.toSuffixed(this.Day) +
             ' of ' +
@@ -298,8 +298,8 @@ export default class jDate {
      */
     toShortstring(showDow: boolean): string {
         return (
-            (showDow ? Utils.dowEng[this.getDayOfWeek()] + ' ' : '') +
-            Utils.jMonthsEng[this.Month] +
+            (showDow ? DaysOfWeekEng[this.getDayOfWeek()] + ' ' : '') +
+            JewishMonthsEng[this.Month] +
             ' ' +
             this.Day.toString() +
             ', ' +
@@ -313,7 +313,7 @@ export default class jDate {
      */
     monthName(showYear = true): string {
         return (
-            Utils.jMonthsEng[this.Month] +
+            JewishMonthsEng[this.Month] +
             (showYear ? ' ' + this.Year.toString() : '')
         );
     }
@@ -321,13 +321,13 @@ export default class jDate {
     /**Returns the current Jewish date in the format: יום חמישי כ"א כסלו תשע"ו.*/
     toStringHeb(): string {
         return (
-            Utils.dowHeb[this.getDayOfWeek()] +
+            DaysOfWeekHeb[this.getDayOfWeek()] +
             ' ' +
-            Utils.toJNum(this.Day) +
+            Utils.toJewishNumber(this.Day) +
             ' ' +
-            Utils.jMonthsHeb[this.Month] +
+            JewishMonthsHeb[this.Month] +
             ' ' +
-            Utils.toJNum(this.Year % 1000)
+            Utils.toJewishNumber(this.Year % 1000)
         );
     }
 

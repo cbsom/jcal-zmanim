@@ -1,20 +1,5 @@
 # jcal-zmanim
 A very complete JavaScript library for the Jewish Calendar.
-- [jcal-zmanim](#jcal-zmanim)
-    - [To add *jcal-zmanim* to your project](#to-add-jcal-zmanim-to-your-project)
-    - [Some basic uses of *jcal-zmanim*](#some-basic-uses-of-jcal-zmanim)
-  - [The jDate object](#the-jdate-object)
-    - [Creating a jDate instance](#creating-a-jdate-instance)
-    - [jDate instance, properties and functions](#jdate-instance-properties-and-functions)
-    - [jDate static properties and functions](#jdate-static-properties-and-functions)
-  - [The Location Object](#the-location-object)
-    - [Finding a Location](#finding-a-location)
-    - [Location properties and functions](#location-properties-and-functions)
-    - [Creating a new Location](#creating-a-new-location)
-  - [The Zmanim Object](#the-zmanim-object)
-  - [The Sedra Object](#the-sedra-object)
-  - [The AppUtils Functions](#the-apputils-functions)
-
 ### To add *jcal-zmanim* to your project
 > *npm install jcal-zmanim*
 
@@ -163,7 +148,7 @@ const currentJDate = jDate.now();
 | **Month** | `number` | The month of the Jewish year. Nissan is month number 1 and Adar Sheini is 13. | 
 | **Year** | `number` |The Jewish year. Valid values are 1 - 6000 | 
 | **Abs** | `number` | The number of days elapsed since the theoretical date Sunday, December 31, 0001 BCE. | 
-| **DayOfWeek** |`number`| The day of the week for the current Jewish date. Sunday is 0 and *Shabbos* is 6. | 
+| **DayOfWeek** |`number`| The day of the week for the current Jewish date. Sunday is 0 and *Shabbos* is 6.<br>**Helpful tip**: Use the `DaysOfWeek` enum to compare days of the week.<br>For example:<br> `if(jdate.DayOfWeek === DaysOfWeek.FRIDAY) {`<br>&nbsp;&nbsp;`console.log('Today is Erev Shabbos!')`<br>`}`  | 
 | **getDate()** | `Date` | Returns the javascript Date of this jDate.<br />This represents the Gregorian date that starts at midnight of the current Jewish Date. | 
 | **toString(hideDayOfWeek?, dontCapitalize?)** | `string` | Returns the current Jewish date in the format: "*Thursday, the 3rd of Kislev 5776*".<br />If *hideDayOfWeek* is truthy, the day of the week is left out.<br />If *dontCapitalize* is truthy and *hideDayOfWeek* is truthy, the 't' of "The 3rd etc." will be a regular 't', otherwise it will be a 'T'. This parameter has no effect when *hideDayOfWeek* is falsey. |
 | **toShortstring(showDayOfWeek?)**| `string` | Returns the current Jewish date in the format "*Nissan 3, 5778*".<br />If showDayOfWeek is truthy, "*Tuesday Nissan 3, 5778*" is returned. |

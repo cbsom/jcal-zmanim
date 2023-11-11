@@ -1,5 +1,5 @@
 ﻿import jDate from './jDate.js';
-import Utils from './Utils.js';
+import {Utils} from '../Utils.js';
 
 'use strict';
 

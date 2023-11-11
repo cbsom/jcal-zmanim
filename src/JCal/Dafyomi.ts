@@ -1,4 +1,4 @@
-import Utils from './Utils.js';
+import {Utils} from '../Utils.js';
 import jDate from './jDate.js';
 
 'use strict';
@@ -128,7 +128,7 @@ export default class Dafyomi {
     static toStringHeb(jd: jDate): string | undefined {
         const d = Dafyomi.getDaf(jd);
         if (d !== null) {
-            return d.masechet.heb + ' דף ' + Utils.toJNum(d.daf);
+            return d.masechet.heb + ' דף ' + Utils.toJewishNumber(d.daf);
         }
     }
 }

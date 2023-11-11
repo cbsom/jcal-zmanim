@@ -1,5 +1,5 @@
 
-import Utils from './Utils.js';
+import {Utils} from '../Utils.js';
 import jDate from './jDate.js';
 import { isValidDate } from '../GeneralUtils.js';
 import Location from './Location.js';
