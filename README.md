@@ -470,6 +470,55 @@ The above code printed out:
 |**Molad.getStringHeb(jewishYear, jewishMonth)**|`string`|Gets the *Molad* for the given Jewish Year and Month.<br>For the Month, Nissan is 1 and Adar Sheini is 13.<br>Returns the time of the molad as a string in the format: *ליל שני 20:33 12 חלקים* <br>The molad is always in Jerusalem so we use the Jerusalem sunset times to determine whether to display "ליל/יום" or "מוצאי שב"ק" etc.|
 ------------------------------------
 ## Daily *Notifications* and *Shul Notifications*
-s
+
 ------------------------------------------
-## The AppUtils Functions
+## The Utils Functions
+The Utils Class contains many useful jDate and regular Date functions.<br>
+It also has some extremely useful general functions.
+
+|Function|Return Type|Description|
+|-----:|:-------:|:--------|
+|**Utils.toJewishNumber(number)**|`string`|Gets the Jewish representation of a number (365 = שס"ה)<br>Minimum number is 1 and maximum is 9999.|
+|**Utils.toStringDate(Date, hideDayOfWeek?, dontCapitalize?)**|`string`|Returns the javascript date in the format: Thursday, the 3rd of January 2018.|
+|**Utils.toShortStringDate(Date, monthFirst?)**|`string`|Returns the javascript date in the format: 132020.|
+|**Utils.toSuffixed(number)**|`string`|Add two character suffix to number. e.g. 21st, 102nd, 93rd, 500th|
+|**Utils.isSecularLeapYear(year)**|`boolean`|Returns if the given full secular year has a February 29th|
+|**Utils.getSdDOW(year, month, day)**|`number`|Get day of week using Javascripts getDay function.<br>Important note: months starts at 1 not 0 like javascript<br>The DOW returned has Sunday = 0|
+|**Utils.fixTime(Time)**|`{hour, minute, second}`|Makes sure hour is between 0 and 23 and minute is between 0 and 59.<br>Overlaps get addedsubtracted.<br>The argument needs to be an object in the format {hour : 12, minute : 42, second : 18}|
+|**Utils.addMinutes(Time, minutes)**|`{hour, minute, second}`|Add the given number of minutes to the given time.<br>The argument needs to be an object in the format {hour : 12, minute : 42, second : 18 }|
+|**Utils.addSeconds(Time, seconds)**|`{hour, minute, second}`|Add the given number of seconds to the given time.<br>The argument needs to be an object in the format {hour : 12, minute :42, second : 18}|
+|**Utils.timeDiff(earlierTime, laterTime, showNegative?)**|`{hour, minute, second, sign}`|Gets the time difference between two times of day.<br>If showNegative is falsey, assumes that the earlier time is always before the later time.<br>So, if laterTime is less than earlierTime, the returned diff is until the next day.<br>Both arguments need to be an object in the format {hour : 12, minute : 42, second : 18 }|
+|**Utils.totalMinutes(Time)**|`number`|Gets the total number of minutes in the given time. |
+|**Utils.totalSeconds(Time)**|`number`|Gets the total number of seconds in the given time. |
+|**Utils.timeFromDate(Date)**|`{hour, minute, second}`|Returns the time of the given javascript date.|
+|**Utils.isTimeAfter(beforeTime, afterTime)**|`boolean`|Determines if the second given time is after (or at) the first given time|
+|**Utils.getTimeIntervalTextStringHeb(Time)**|`string`|Returns the given time interval in a formatted string.|
+|**Utils.getTimeIntervalTextString(Time)**|`string`|Returns the given time interval in a formatted string.|
+|**Utils.getTimeString(Time, sign?, army?, roundUp?)**|`string`|Returns the given time in a formatted string.|
+|**Utils.getOmerNusach(dayOfOmer, nusach)**|`string`|Returns the nusach for Sefiras Ha'omer for the given day and minhag<br>The *nusach* parameter should be either *'ashkenaz'* or *'sefard'* or *'sefardi'*)|
+|**Utils.currUtcOffset()**|`number`|Gets the UTC offset in whole hours for the users time zone.<br>Note: this is not affected by DST - unlike javascripts getTimezoneOffset() function which gives you the current offset.|
+|**Utils.isDateDST( Date)**|`boolean`|Determines if the given date is within DST on the users system|
+|**Utils.isDST(Location, Date)**|`boolean`|Determines if the given date is within DST in the given location<br>Note: This may not be correct if the user has set the Location to a time zone outside Israel or the USA which is not the current system time zone.|
+|**Utils.isUSA_DST(date: Date)**|`boolean`|Determines if the given javascript date is during DST according to the USA rules|
+|**Utils.isIsrael_DST(date: Date)**|`boolean`|Determines if the given Javascript date is during DST according to the current (5776) Israeli rules|
+|**Utils.getSdNowInIsrael()**|`Date`|The current time in Israel - determined by the current users system time and time zone offset|
+|**Utils.addDaysToSdate(Date, days)**|`Date`|Adds the given number of days to the given javascript Date and returns the new date |
+|**Utils.isSameSdate(Date1, Date2)**|`boolean`|Compares two js dates to se if they both refer to the same day - time is ignored.|
+|**Utils.isSameJdate(jDate1, jDate2)**|`boolean`|Compares two jDates to se if they both refer to the same day - time is ignored.|
+|**Utils.isSameJMonth(jDate1, jDate2)**|`boolean`|Compares two jDates to see if they both refer to the same Jewish Month.|
+|**Utils.isSameSMonth(Date1, Date2)**|`boolean`|Compares two javascript dates to see if they both refer to the same Secular Month.|
+|**Utils.isAfterSunset(Date, Location)**|`boolean`|Determines if the time of the given Date() is after sunset at the given Location|
+|**Utils.nowAtLocation(Location)**|`jDate`|Gets the current Jewish Date at the given Location|
+|**Utils.toInt(float)**|`number`|Converts the given complex number to an integer by removing the decimal part.<br>Returns same results as Math.floor for positive numbers and Math.ceil for negative ones.<br>Almost identical functionality to Math.trunc and parseInt.<br>The difference is if the argument is NaN. Math.trunc returns NaN while ths fuction returns 0.<br>In performance tests, this function was found to be quicker than the alternatives.|
+|**Utils.bothDates(Date)**|`{ sdate:Date, jdate:jDate }`|Takes either a jDate or a Date and returns both|
+|**Utils.isString(thing)**|`boolean`|Returns true if "thing" is either a string primitive or String object.|
+|**Utils.isNumber(thing)**|`boolean`|Returns true if "thing" is either a number primitive or a Number object.|
+|**Utils.isValidDate(thing)**|`boolean`|Returns true if "thing" is a Date object containing a valid date.|
+|**Utils.has(thing, ...paramsOrArrayOrString)**|`boolean`|Returns whether or not the given, array, string, or argument list contains the given item or substring.<br>This function is awfully similar to Array.includes, but has the added plus of accepting any number or type of arguments.|
+|**Utils.setDefault(paramValue, defValue)**|`any`|Returns the first value unless it is undefined, null or NaN.<br>This is very useful for boolean, string and integer parameters<br>where we want to keep false, "" and 0 if they were supplied.<br>Similar purpose to default parameters with the difference being that this function will return the second value if the first is NaN or null, while default params will give give you the NaN or the null.|
+|**Utils.log(string, ...optionalItems)**||Log message to console|
+|**Utils.warn(string, ...optionalItems)**||Warn message to console|
+|**Utils.error(string, ...optionalItems)**||Error message to console|
+
+ 
+
