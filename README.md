@@ -519,6 +519,3 @@ It also has some extremely useful general functions.
 |**Utils.log(string, ...optionalItems)**||Log message to console|
 |**Utils.warn(string, ...optionalItems)**||Warn message to console|
 |**Utils.error(string, ...optionalItems)**||Error message to console|
-
- 
-
