@@ -402,7 +402,7 @@ const zmanimForThose = ZmanimUtils.getZmanTimes(
 );
 
 //Print them out nicely
-for(let zman of someZmanim) {  
+for(let zman of zmanimForThose) {  
   console.log(`${zman.zmanType.eng}: ${Utils.getTimeString(zman.time)}`)
 }
 ```
