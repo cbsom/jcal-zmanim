@@ -287,14 +287,14 @@ The code above prints out:
 
 ##### To get <u>all</u> the *Halachic Zmanim* for a given day and Location:
 ```javascript
-import {findLocation, jDate, AppUtils, Utils} from 'jcal-zmanim';
+import {findLocation, jDate, ZmanimUtils, Utils} from 'jcal-zmanim';
 
 const lakewood = findLocation('Lakewood');
 const purim = new jDate(5789,12, 14);
 
 //This will return an array of Zmanim in the format: 
 //[{zmanType:{eng, heb}, time: {hour, minute, second}}]
-const allZmanim = AppUtils.getAllZmanim(purim, lakewood);
+const allZmanim = ZmanimUtils.getAllZmanim(purim, lakewood);
 
 for(let zman of allZmanim) {  
   console.log(`${zman.zmanType.eng}: ${Utils.getTimeString(zman.time)}`)
@@ -324,14 +324,14 @@ The code above prints out:
 > Rabbeinu Tam - Zmanios MG"A: 7:14:02 PM
 ##### To get just the basic daily *Halachic Zmanim* for a given day and Location:
 ```javascript
-import {findLocation, jDate, AppUtils, Utils} from 'jcal-zmanim';
+import {findLocation, jDate, ZmanimUtils, Utils} from 'jcal-zmanim';
 
 const lakewood = findLocation('Lakewood');
 const purim = new jDate(5789,12, 14);
 
 //This will return an array of Zmanim in the format: 
 //[{zmanType:{eng, heb}, time: {hour, minute, second}}]
-const someZmanim = AppUtils.getBasicShulZmanim(purim, lakewood);
+const someZmanim = ZmanimUtils.getBasicShulZmanim(purim, lakewood);
 
 for(let zman of someZmanim) {  
   console.log(`${zman.zmanType.eng}: ${Utils.getTimeString(zman.time)}`)
@@ -377,7 +377,7 @@ Here is a list of the in-built *Zmanim Types*:
 |  `ZmanTypeIds.SofZmanBurnChometz`|סוף זמן ביעור חמץ|Destroy Chometz|סוף זמן ביעור חמץ|
 ##### To get a list of particular Zmanim:
 ```javascript
-import {jDate, findLocation, AppUtils, ZmanTypeIds, getZmanType} from 'jcal-zmanim';
+import {jDate, findLocation, ZmanimUtils, ZmanTypeIds, getZmanType} from 'jcal-zmanim';
 
 //Get Lakewood, NJ
 const lakewood = findLocation('Lakewood');
@@ -394,7 +394,7 @@ const zmanimTypesWeWant= [
 
 //This will return an array of these Zmanim in the format: 
 //[{zmanType:{eng, heb}, time: {hour, minute, second}}]
-const zmanimForThose = AppUtils.getZmanTimes(
+const zmanimForThose = ZmanimUtils.getZmanTimes(
     zmanimTypesWeWant,
     purim.getDate(),
     purim,
