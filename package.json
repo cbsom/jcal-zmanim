@@ -8,13 +8,16 @@
   ],
   "devDependencies": {
     "@types/node": "20.8.10",
+    "copyfiles": "^2.4.1",
     "rimraf": "5.0.5",
     "typescript": "5.2.2"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "rimraf ./dist && NODE_ENV=production && tsc",
+    "build": "rimraf ./dist && NODE_ENV=production && tsc && copyfiles -u 1 ./docs/README.md dist/",
+    "build-win": "rimraf ./dist && SET NODE_ENV=production && tsc && copyfiles -u 1 ./docs/README.md dist/",
     "build-dev": "NODE_ENV=development && tsc",
+    "build-dev-win": "SET NODE_ENV=development && tsc",
     "tsc": "tsc"
   },
   "repository": {
