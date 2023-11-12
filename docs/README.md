@@ -74,9 +74,7 @@ console.log(`Candle lighting time in ${dallas.Name} on ${erevShabbos.toString()}
 ```
 The code above, prints out to the console:
 > Candle lighting time in Dallas, TX on Erev Shabbos, the 26th of Cheshvan 5784 is at 5:10:59 PM
-
-
-
+---------------------------
 ## The jDate object
 
 A *jDate* is a single day in the Jewish Calendar.<br>
@@ -153,7 +151,7 @@ const currentJDate = jDate.now();
 | **toString(hideDayOfWeek?, dontCapitalize?)** | `string` | Returns the current Jewish date in the format: "*Thursday, the 3rd of Kislev 5776*".<br />If *hideDayOfWeek* is truthy, the day of the week is left out.<br />If *dontCapitalize* is truthy and *hideDayOfWeek* is truthy, the 't' of "The 3rd etc." will be a regular 't', otherwise it will be a 'T'. This parameter has no effect when *hideDayOfWeek* is falsey. |
 | **toShortstring(showDayOfWeek?)**| `string` | Returns the current Jewish date in the format "*Nissan 3, 5778*".<br />If showDayOfWeek is truthy, "*Tuesday Nissan 3, 5778*" is returned. |
 |**toStringHeb()**|`string`|Returns the current Jewish date in the format:<br />*"יום חמישי כ"א כסלו תשע"ו"*|
-| **addDays(numberOfDays)** | `jDate` | Returns a new Jewish Date by adding the given number of days to the current Jewish date. |
+| **addDays(numberOfDays)** | `jDate` | Returns a new Jewish Date by adding the given number of days to the current Jewish date.<br><br>Here is a nice trick that can be used to get the upcoming Shabbos:<br>-------------<br>`import {jDate, DaysOfWeek} from "jcal-zmanim";`<br>`const now = jDate.now();`<br>`const shabbos = now.addDays(DaysOfWeek.SHABBOS - (now.DayOfWeek % DaysOfWeek.SHABBOS));`<br>-------------<br>This can be used for any upcoming day - just substitute the DaysOfWeek you need.|
 | **addMonths(numberOfMonths)** | `jDate` | Returns a new Jewish date by adding the given number of Jewish Months to the current Jewish date.<br />If the current Day is 30 and the new month only has 29 days, the 29th day of the month is returned. |
 | **addYears(numberOfYears)** | `jDate` | Returns a new Jewish date represented by adding the given number of Jewish Years to the current Jewish date.<br />If the current Day is 30 and the new dates month only has 29 days, the 29th day of the month is returned. |
 | **addSecularMonths(numberOfMonths)** | `jDate`  | Adds the given number of months to the Secular Date of this jDate and returns the result as a jDate  |
@@ -470,6 +468,54 @@ The above code printed out:
 |**Molad.getStringHeb(jewishYear, jewishMonth)**|`string`|Gets the *Molad* for the given Jewish Year and Month.<br>For the Month, Nissan is 1 and Adar Sheini is 13.<br>Returns the time of the molad as a string in the format: *ליל שני 20:33 12 חלקים* <br>The molad is always in Jerusalem so we use the Jerusalem sunset times to determine whether to display "ליל/יום" or "מוצאי שב"ק" etc.|
 ------------------------------------
 ## Daily *Notifications* and *Shul Notifications*
+Get a list of Halacha related information about any [jDate](#the-jdate-object).<br>
+This is very useful for creating an application that shows the daily information and *Zmanim* in a *Shul* etc.
+<br>
+To get these notifications, use the *getNotifications* function.
+
+#### There are two lists that are returned from the *getNotifications* function.
+- **Daily Notifications** - These are information about the given day, such as if it is Shabbos or YomTov, the *Daf Yomi*, day of *Sefirah* etc.
+- **Shul Notifications** - These are *shul* and *davening* realted information about the given day, such as the *Torah* reading, skipping *Tachnun*, saying *Hallel*, the *Shir Shel Yom* etc.
+##### Sample use of daily and *tefillah* notifications:
+```javascript
+import {jDate, getNotifications, findLocation} from "jcal-zmanim";
+
+//Get Lakewood NJ
+const lakewood = findLocation('Lakewood');
+
+//Get Purim 5784
+const purim = new jDate(5784, 13, 14);
+
+//We want to get the notifications that are relevant at 8 o'clock in the morning.
+const morningTime = { hour:8, minute:0 };
+
+//Get Purim's notifications
+const {dayNotes, tefillahNotes} = getNotifications(purim, morningTime, lakewood, true, true, true);
+
+//Print them out
+console.log(`Purim: ${purim.toString()}\nDaily Notes:\n\t${dayNotes.join('\n\t')}\nTefillah Notes:\n\t${tefillahNotes.join('\n\t')}`);
+```
+The above code prints out:
+> Purim:  Sunday, the 14th of Adar Sheini 5784<br>
+> Daily Notes:
+> - Megilas Esther
+> - Purim
+> - Baba Metzia Daf 25
+>
+> Tefillah Notes: 
+> - No Laminatzeach
+> - Al Hanissim
+> - שיר של יום - כ"ב - למנצח על אילת השחר
+> - No Tachnun
+### The **getNotifications** Function - parameters
+|Parameter|Type|Description|
+|-----:|:-------:|:--------|
+|**date**|`Date` or `jDate`|Either a jDate or a javascript Date|
+|**time**|`{hour, minute}}`|The time of day for which to show notifications for. <br>For example, "Hallel" will not be shown at night etc.|
+|**location**|`Location`|Where in the world to show notifications for?|
+|**english**|`boolean`|Should the notifications be in English or Hebrew?|
+|**showGaonShir**|`boolean`|Should the *Shir Shel Yom* of the Gr"a be shown?<br>If this paremeter is undefined, it will not be shown, unless the location is in Israel.|
+|**showDafYomi**|`boolean`|Should the daily *Daf* be shown in the daily notifications?<br>Defaults to **true**.|
 
 ------------------------------------------
 ## The Utils Functions

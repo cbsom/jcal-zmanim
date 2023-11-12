@@ -1,4 +1,4 @@
-import {Utils, DaysOfWeek} from './Utils';
+import { Utils, DaysOfWeek } from './Utils';
 import jDate from './JCal/jDate';
 import Molad from './JCal/Molad';
 import PirkeiAvos from './JCal/PirkeiAvos';
@@ -38,7 +38,7 @@ let showEnglish = false,
  * @param time 
  * @param location 
  * @param english 
- * @param showGaonShir  * 
+ * @param showGaonShir
  * @param showDafYomi 
  * @returns {{ dayNotes: string[], tefillahNotes: string[]}}
  */
@@ -84,8 +84,8 @@ export function getNotifications(date: jDate | Date, time: Time, location: Locat
         location,
     };
     showEnglish = english;
-    showGaonShirShelYom = showGaonShir === true;
     israel = location.Israel;
+    showGaonShirShelYom = (typeof showGaonShir === 'undefined' ? israel : !!showGaonShir);
 
     if (dow === DaysOfWeek.SHABBOS) {
         getShabbosNotifications();
@@ -107,7 +107,7 @@ export function getNotifications(date: jDate | Date, time: Time, location: Locat
             addTefillahNote('No Av Harachamim', 'א"א אב הרחמים');
         }
     }
-    if (showDafYomi) {
+    if (showDafYomi !== false) {
         addDayNote(jdate.getDafYomi(), jdate.getDafyomiHeb());
     }
 
