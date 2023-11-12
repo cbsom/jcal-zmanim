@@ -1,5 +1,6 @@
 /build
 /dist
+/.vscode
 # Logs
 logs
 *.log
