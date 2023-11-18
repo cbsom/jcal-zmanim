@@ -1,4 +1,4 @@
-const { jDate, findLocation, Utils, ZmanimUtils, ZmanTypeIds, getZmanType, Molad } = require('../dist/index.js');
+import { jDate, findLocation, Utils, ZmanimUtils, ZmanTypeIds, getZmanType, Molad } from '../dist/index.js';
 
 
 describe("Basic jDate", () => {
