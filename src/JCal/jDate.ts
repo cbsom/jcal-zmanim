@@ -3,8 +3,8 @@ import {Utils, DaysOfWeekEng, JewishMonthsEng, DaysOfWeekHeb, JewishMonthsHeb} f
 import Sedra from './Sedra.js';
 import PirkeiAvos from './PirkeiAvos.js';
 import Zmanim from './Zmanim.js';
-import DafYomi from './Dafyomi';
-import Location from './Location';
+import DafYomi from './Dafyomi.js';
+import Location from './Location.js';
 
 /** Keeps a "memcache" of years that have had their elapsed days previously calculated. Format: { year:5776, elapsed:2109283 } */
 const _yearCache: [{ year: number, elapsed: number }?] = [],

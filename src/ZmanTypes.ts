@@ -1,4 +1,4 @@
-import { ZmanToShow } from './jcal-zmanim';
+import { ZmanToShow } from './jcal-zmanim.js';
 /**
  * List of ZmanTypeIds. Use as an enum.
  */

@@ -1,7 +1,7 @@
-import Zmanim from './JCal/Zmanim';
-import jDate from './JCal/jDate';
-import Location from './JCal/Location';
-import { Time } from './jcal-zmanim';
+import Zmanim from './JCal/Zmanim.js';
+import jDate from './JCal/jDate.js';
+import Location from './JCal/Location.js';
+import { Time } from './jcal-zmanim.js';
 
 const __DEV__ = process.env.NODE_ENV === 'development';
 

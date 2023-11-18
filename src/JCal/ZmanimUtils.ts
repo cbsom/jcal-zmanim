@@ -1,9 +1,9 @@
-import {Utils, DaysOfWeek} from '../Utils';
-import Zmanim from './Zmanim';
-import Location from './Location';
-import jDate from './jDate';
-import { ZmanTypes, ZmanTypeIds, getZmanType } from '../ZmanTypes';
-import { SunTimes, Time, ZmanToShow } from '../jcal-zmanim';
+import {Utils, DaysOfWeek} from '../Utils.js';
+import Zmanim from './Zmanim.js';
+import Location from './Location.js';
+import jDate from './jDate.js';
+import { ZmanTypes, ZmanTypeIds, getZmanType } from '../ZmanTypes.js';
+import { SunTimes, Time, ZmanToShow } from '../jcal-zmanim.js';
 
 type ZmanTime = {
     date: Date,

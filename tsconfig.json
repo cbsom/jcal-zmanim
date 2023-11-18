@@ -1,21 +1,34 @@
 {
-  "compilerOptions": {  
-    "target": "es2016",
-    "lib": ["es6"],
-    "module": "commonjs",
+  "compilerOptions": {
+    "target": "ES5",
+    "lib": ["es2017", "es7", "es6", "dom"],
+    "module": "NodeNext",
     "rootDir": "src",
-    "resolveJsonModule": true,
+    "moduleResolution":"NodeNext",
     "allowJs": true,
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
     "outDir": "dist",
     "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "downlevelIteration":true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
-    "noImplicitAny": true,    
+    "noImplicitAny": true,
     "skipLibCheck": true
   },
-  "include": ["./src/**/*.ts", "./src/**/*.tsx","./src/locations.json"],
-  "exclude": ["node_modules", "build", "dist", "tests", "src/**/*.js", "src/**/*.jsx"]
+  "include": [
+    "./src/**/*.ts",
+    "./src/**/*.tsx",
+    "./src/locations.json"
+  ],
+  "exclude": [
+    "node_modules",
+    "build",
+    "dist",
+    "tests",
+    "src/**/*.js",
+    "src/**/*.jsx"
+  ]
 }

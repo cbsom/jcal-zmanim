@@ -1,17 +1,19 @@
-import Location from './JCal/Location';
-import locations from './locations.json';
+import Location from './JCal/Location.js';
+import { createRequire } from "module";
 import { distance } from 'closest-match';
-
+const require = createRequire(import.meta.url);
+const locations = require('./locations.json');
 /**
  * NOTE: South and East are negative.
  */
 type Point = { latitude: number, longitude: number };
 
-const Locations = locations.map(l =>
+
+const Locations = locations.map((l: { name: string; heb: string | undefined; il: any; lat: number; lon: number; tz: number; el: any; cl: number | undefined; }) =>
     new Location(l.name, l.heb, !!l.il, l.lat, l.lon, l.tz, l.el || 0, l.cl));
 
 //Sort the Locations by name
-Locations.sort(function (a, b) {
+Locations.sort(function (a:Location, b:Location) {
     return a.Name > b.Name ? 1 : b.Name > a.Name ? -1 : 0;
 });
 //The location names and indexes - until the first comma and in lowercase.
@@ -99,7 +101,7 @@ function closestNameMatch(val: string): Location | undefined {
 function findLocation(nameOrCoordinates: string | Point): Location | undefined {
     if (typeof nameOrCoordinates === 'string') {
         //First simply try to find an exact (case insensitive) match
-        const exactNameMatch = Locations.find(l =>
+        const exactNameMatch = Locations.find((l: Location) =>
             l.Name.toLowerCase() === nameOrCoordinates.toLowerCase() || l.NameHebrew === nameOrCoordinates);
         if (!!exactNameMatch) {
             return exactNameMatch;
@@ -114,7 +116,7 @@ function findLocation(nameOrCoordinates: string | Point): Location | undefined {
         return closestNameMatch(nameOrCoordinates.toLowerCase(),)
     }
     else { //The given parameter is a Point of coordinates
-        const exactCoordinateMatch = Locations.find(l =>
+        const exactCoordinateMatch = Locations.find((l:Location) =>
             l.Latitude === nameOrCoordinates.latitude &&
             l.Longitude === nameOrCoordinates.longitude);
         if (!!exactCoordinateMatch) {

@@ -11,28 +11,26 @@ import Sedra from './JCal/Sedra.js';
 import ZmanimUtils from './JCal/ZmanimUtils.js';
 import { getNotifications } from './Notifications.js';
 
-module.exports = {
-    Utils,
-    ZmanimUtils,
-    DaysOfWeek,
-    DaysOfWeekHeb,
-    DaysOfWeekEng,
-    JewishMonthsEng,
-    JewishMonthsHeb,
-    SecularMonthsEng,
-    getNotifications,
-    Location,
-    Locations,
-    findLocation,
-    closestNameMatch,
-    closestDistanceMatch,
-    ZmanTypes,
-    ZmanTypeIds,
-    getZmanType,
-    Zmanim,
-    jDate,
-    Molad,
-    PirkeiAvos,
-    Dafyomi,
-    Sedra
-};
+export {Utils};
+export {ZmanimUtils};
+export {DaysOfWeek};
+export {DaysOfWeekHeb};
+export {DaysOfWeekEng};
+export {JewishMonthsEng};
+export {JewishMonthsHeb};
+export {SecularMonthsEng};
+export {getNotifications};
+export {Location};
+export {Locations};
+export {findLocation};
+export {closestNameMatch};
+export {closestDistanceMatch};
+export {ZmanTypes};
+export {ZmanTypeIds};
+export {getZmanType};
+export {Zmanim};
+export {jDate};
+export {Molad};
+export {PirkeiAvos};
+export {Dafyomi};
+export {Sedra};

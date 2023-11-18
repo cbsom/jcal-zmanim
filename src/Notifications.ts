@@ -1,10 +1,10 @@
-import { Utils, DaysOfWeek } from './Utils';
-import jDate from './JCal/jDate';
-import Molad from './JCal/Molad';
-import PirkeiAvos from './JCal/PirkeiAvos';
-import ZmanimUtils from './JCal/ZmanimUtils';
-import Location from './JCal/Location';
-import { Time } from './jcal-zmanim';
+import { Utils, DaysOfWeek } from './Utils.js';
+import jDate from './JCal/jDate.js';
+import Molad from './JCal/Molad.js';
+import PirkeiAvos from './JCal/PirkeiAvos.js';
+import ZmanimUtils from './JCal/ZmanimUtils.js';
+import Location from './JCal/Location.js';
+import { Time } from './jcal-zmanim.js';
 
 type DayInfo = {
     jdate: jDate,
@@ -217,9 +217,9 @@ function getShabbosNotifications() {
         if (prakim.length > 0) {
             addDayNote(
                 'Pirkei Avos - ' +
-                prakim.map(s => `Perek ${Utils.toJewishNumber(s)}`).join(' and '),
+                prakim.map((s:number) => `Perek ${Utils.toJewishNumber(s)}`).join(' and '),
                 'פרקי אבות - ' +
-                prakim.map(s => `פרק ${Utils.toJewishNumber(s)}`).join(' ו'),
+                prakim.map((s:number) => `פרק ${Utils.toJewishNumber(s)}`).join(' ו'),
             );
         }
     }
