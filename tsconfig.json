@@ -21,7 +21,8 @@
   "include": [
     "./src/**/*.ts",
     "./src/**/*.tsx",
-    "./src/locations.json"
+    "./src/locations.json",
+    "./README.md"
   ],
   "exclude": [
     "node_modules",
