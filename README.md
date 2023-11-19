@@ -67,7 +67,7 @@ console.log(`Your jewish Birthday is the ${Utils.toSuffixed(jewishDob.Day)} day 
 On ${Utils.toStringDate(nextBirthdayDate)} you will become ${age + 1} in Jewish.`);
 ```
 The code above prints out to the console:
->Your Jewish Birthday is the 20th day of Tamuz.
+>Your Jewish Birthday is the 20th day of Tamuz.<br>
 >On Wednesday, the 16th of July 2025 you will become 29 in Jewish.
 
 ##### Get the current Jewish Date in Hong Kong - taking into consideration that it may be after sunset there right now.
