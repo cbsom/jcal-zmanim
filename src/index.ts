@@ -1,4 +1,4 @@
-import { Utils, DaysOfWeek, DaysOfWeekHeb, DaysOfWeekEng, JewishMonthsEng, JewishMonthsHeb, SecularMonthsEng } from './Utils.js';
+import { Utils, DaysOfWeek,JewishMonthsNames, DaysOfWeekHeb, DaysOfWeekEng, JewishMonthsEng, JewishMonthsHeb, SecularMonthsEng } from './Utils.js';
 import Zmanim from './JCal/Zmanim.js';
 import jDate from './JCal/jDate.js';
 import Location from './JCal/Location.js';
@@ -14,6 +14,7 @@ import { getNotifications } from './Notifications.js';
 export {Utils};
 export {ZmanimUtils};
 export {DaysOfWeek};
+export {JewishMonthsNames};
 export {DaysOfWeekHeb};
 export {DaysOfWeekEng};
 export {JewishMonthsEng};

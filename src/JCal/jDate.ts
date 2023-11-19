@@ -1,5 +1,5 @@
 
-import {Utils, DaysOfWeekEng, JewishMonthsEng, DaysOfWeekHeb, JewishMonthsHeb} from '../Utils.js';
+import { Utils, DaysOfWeekEng, JewishMonthsEng, DaysOfWeekHeb, JewishMonthsHeb } from '../Utils.js';
 import Sedra from './Sedra.js';
 import PirkeiAvos from './PirkeiAvos.js';
 import Zmanim from './Zmanim.js';
@@ -261,6 +261,21 @@ export default class jDate {
         return months;
     }
 
+    /**Gets the number of full months separating this Jewish Date and the given one.
+     * If the given date is before this one, the number will be negative.
+     * @param {jDate} jd
+     * */
+    diffFullMonths(jd: jDate): number {
+        let months = this.diffMonths(jd);
+        if (months >= 0 && this.Day > jd.Day) {
+            months--;
+        }
+        else if (months < 0 && this.Day < jd.Day) {
+            months++;
+        }
+        return months;
+    }
+
     /**Gets the number of years separating this Jewish Date and the given one.
      *
      * Ignores the Day and Month properties:
@@ -270,7 +285,25 @@ export default class jDate {
      * If the given date is before this one, the number will be negative.
      * @param {jDate} jd*/
     diffYears(jd: jDate): number {
-        return jd.Year - this.Year;
+        let diff = jd.Year - this.Year
+        if ((this.Month < jd.Month) || (this.Month === jd.Month && this.Day < jd.Day)) {
+            diff--;
+        }
+        return diff;
+    }
+
+    /**Gets the number of full years separating this Jewish Date and the given one.
+     * If the given date is before this one, the number will be negative.
+     * @param {jDate} jd*/
+    diffFullYears(jd: jDate): number {
+        let diff = jd.Year - this.Year
+        if (diff >= 0 && (this.Month > jd.Month || (this.Month === jd.Month && this.Day > jd.Day))) {
+            diff--;
+        }
+        else if (diff < 0 && (this.Month < jd.Month || (this.Month === jd.Month && this.Day < jd.Day))) {
+            diff++;
+        }
+        return diff;
     }
 
     /**

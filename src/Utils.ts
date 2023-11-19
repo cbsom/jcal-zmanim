@@ -14,6 +14,21 @@ export const DaysOfWeek = Object.freeze({
     FRIDAY: 5,
     SHABBOS: 6,
 });
+export const JewishMonthsNames = Object.freeze({
+    NISSAN: 1,
+    IYAR: 2,
+    SIVAN: 3,
+    TAMUZ: 4,
+    AV: 5,
+    ELLUL: 6,
+    TISHREI: 7,
+    CHESHVAN: 8,
+    KISLEV: 9,
+    TEVES: 10,
+    SHVAT: 11,
+    ADAR: 12,
+    ADAR_SHEINI: 13
+});
 export const JewishMonthsEng = [
     '',
     'Nissan',

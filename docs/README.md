@@ -42,6 +42,34 @@ console.log(`In ${dallas.Name} on ${jd.toString()}, Sunrise is at ${Utils.getTim
 ```
 The code above prints out to the console:
 >In Dallas, TX on Erev Shabbos, the 26th of Cheshvan 5784, Sunrise is at 6:53:36 AM, and Sunset is at 5:28:59 PM
+
+##### Get your age and the date of your next Jewish Birthday
+```javascript
+import {jDate, Utils} from 'jcal-zmanim' 
+
+//We start with the date of birth
+const myDateOfBirth = new Date("July 18 1995")  
+
+//Get the Jewish Date for that wonderful day
+const jewishDob = new jDate(myDateOfBirth) 
+
+//Get your age today (in the Jewish calendar)
+const age = jewishDob.diffFullYears(jDate.now()) 
+
+//Get the next birthday in Jewish
+const nextBirthday = jewishDob.addYears(age + 1) 
+
+//Get the next birthday as a Date
+const nextBirthdayDate = nextBirthday.getDate(); 
+
+//Print it out
+console.log(`Your jewish Birthday is the ${Utils.toSuffixed(jewishDob.Day)} day of ${JewishMonthsEng[jewishDob.Month]}.
+On ${Utils.toStringDate(nextBirthdayDate)} you will become ${age + 1} in Jewish.`);
+```
+The code above prints out to the console:
+>Your Jewish Birthday is the 20th day of Tamuz.
+>On Wednesday, the 16th of July 2025 you will become 29 in Jewish.
+
 ##### Get the current Jewish Date in Hong Kong - taking into consideration that it may be after sunset there right now.
 ```javascript
 import {findLocation, jDate, Utils} from 'jcal-zmanim'
@@ -158,7 +186,9 @@ const currentJDate = jDate.now();
 | **addSecularYears(numberOfYears)** | `jDate` | Adds the given number of years to the Secular Date of this jDate and returns the result as a jDate |
 | **diffDays(otherJDate)** | `number` | Gets the number of days separating this Jewish Date and the given one.<br />If the given date is before this one, the number will be negative. |
 | **diffMonths(otherJDate)** | `number` | Gets the number of months separating this Jewish Date and the given one.<br /> Ignores the Day property:<br />`jDate.toJDate(5777, 6, 29).diffMonths(jDate.toJDate(5778, 7, 1))`<br />will return 1 even though they are a day apart.<br />If the given date is before this one, the number will be negative. |
+|**diffFullMonths(otherDate)**|`number`|Gets the number of full months separating this Jewish Date and the given one.<br>If the given date is before this one, the number will be negative.|
 | **diffYears(otherJDate)** | `number` | Gets the number of years separating this Jewish Date and the given one.<br /> Ignores the Day and Month properties:<br /> `jDate.toJDate(5777, 6, 29).diffYears(jDate.toJDate(5778, 7, 1))` will return 1 even though they are a day apart.<br/> If the given date is before this one, the number will be negative. |
+|diffFullYears(otherDate)|`number`|Use this function to calculate someones age.<br>Gets the number of full years separating this Jewish Date and the given one.<br>If the given date is before this one, the number will be negative.|
 | **monthName(showYear? [=true])** | `string` | Returns the current Jewish date in the format "*Nissan 5778*".<br />If *showYear* === false, than just "*Nissan*" is returned. |
 |**getDayOfOmer()**|`number`|Gets the day of the omer for the current Jewish date. If the date is not during *sefira*, 0 is returned.|
 |**isYomTovOrCholHamoed(inIsrael?)**|`boolean`|Returns true if this day is *yomtov* or *chol hamoed*<br />If *inIsrael* is truthy, then the function will keep 1 day of *yomtov*.|

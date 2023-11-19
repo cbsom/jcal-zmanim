@@ -1,4 +1,4 @@
-import { Utils, DaysOfWeek } from './Utils.js';
+import { Utils, DaysOfWeek, JewishMonthsNames as m } from './Utils.js';
 import jDate from './JCal/jDate.js';
 import Molad from './JCal/Molad.js';
 import PirkeiAvos from './JCal/PirkeiAvos.js';
@@ -100,9 +100,9 @@ export function getNotifications(date: jDate | Date, time: Time, location: Locat
         } else if (isAfternoon) {
             addTefillahNote('No Tzidkascha', 'א"א צדקתך');
         } else if (!(
-            (month === 1 && day > 21) ||
-            month === 2 ||
-            (month === 3 && day < 6)
+            (month === m.NISSAN && day > 21) ||
+            month === m.IYAR ||
+            (month === m.SIVAN && day < 6)
         )) {
             addTefillahNote('No Av Harachamim', 'א"א אב הרחמים');
         }
@@ -113,7 +113,7 @@ export function getNotifications(date: jDate | Date, time: Time, location: Locat
 
     //If it is after the earliest Nacht during Sefiras Ha'omer
     if (isNotBeinHasmashos &&
-        ((month === 1 && day > 15) || month === 2 || (month === 3 && day < 6))) {
+        ((month === m.NISSAN && day > 15) || month === m.IYAR || (month === m.SIVAN && day < 6))) {
         const dayOfSefirah = jdate.getDayOfOmer();
         if (dayOfSefirah > 0) {
             addTefillahNote(Utils.getOmerNusach(dayOfSefirah, 'ashkenaz'));
@@ -138,24 +138,24 @@ function getShabbosNotifications() {
         isDaytime,
         isAfternoon,
     } = dayInfo;
-    if (month === 1 && day > 7 && day < 15) {
+    if (month === m.NISSAN && day > 7 && day < 15) {
         addDayNote('Shabbos Hagadol', 'שבת הגדול');
-    } else if (month === 7 && day > 2 && day < 10) {
+    } else if (month === m.TISHREI && day > 2 && day < 10) {
         addDayNote('Shabbos Shuva', 'שבת שובה');
-    } else if (month === 5 && day > 2 && day < 10) {
+    } else if (month === m.AV && day > 2 && day < 10) {
         addDayNote('Shabbos Chazon', 'שבת חזון');
     } else if (
-        (month === (isLeapYear ? 12 : 11) && day > 24) ||
-        (month === (isLeapYear ? 13 : 12) && day === 1)
+        (month === (isLeapYear ? m.ADAR : m.SHVAT) && day > 24) ||
+        (month === (isLeapYear ? m.ADAR_SHEINI : m.ADAR) && day === 1)
     ) {
         addDayNote('Parshas Shkalim', 'פרשת שקלים');
-    } else if (month === (isLeapYear ? 13 : 12) && day > 7 && day < 14) {
+    } else if (month === (isLeapYear ? m.ADAR_SHEINI : m.ADAR) && day > 7 && day < 14) {
         addDayNote('Parshas Zachor', 'פרשת זכור');
-    } else if (month === (isLeapYear ? 13 : 12) && day > 16 && day < 24) {
+    } else if (month === (isLeapYear ? m.ADAR_SHEINI : m.ADAR) && day > 16 && day < 24) {
         addDayNote('Parshas Parah', 'פרשת פרה');
     } else if (
-        (month === (isLeapYear ? 13 : 12) && day > 23 && day < 30) ||
-        (month === 1 && day === 1)
+        (month === (isLeapYear ? m.ADAR_SHEINI : m.ADAR) && day > 23 && day < 30) ||
+        (month === m.NISSAN && day === 1)
     ) {
         addDayNote('Parshas Hachodesh', 'פרשת החודש');
     }
@@ -168,7 +168,7 @@ function getShabbosNotifications() {
             );
         }
         //All months but Tishrei have Shabbos Mevarchim on the Shabbos before Rosh Chodesh
-        if (month !== 6 && day > 22 && day < 30) {
+        if (month !== m.ELLUL && day > 22 && day < 30) {
             const nextMonth = jdate.addMonths(1);
             addTefillahNote(
                 'The molad will be ' +
@@ -177,20 +177,21 @@ function getShabbosNotifications() {
                 Molad.getStringHeb(nextMonth.Year, nextMonth.Month),
             );
             addTefillahNote('Bircas Hachodesh', 'מברכים החודש');
-            if (month !== 1 && month !== 2) {
+            //Rosh Chodesh Bentching during Sefira, we do say Av Harachamim
+            if (month !== m.NISSAN && month !== m.IYAR) {
                 addTefillahNote('No Av Harachamim', 'א"א אב הרחמים');
             }
         }
     }
     //Rosh Chodesh
-    if (month !== 7 && (day === 1 || day === 30)) {
+    if (month !== m.TISHREI && (day === 1 || day === 30)) {
         addDayNote('Rosh Chodesh', 'ראש חודש');
         addTefillahNote('Ya`aleh Viyavo', 'יעלה ויבא');
         if (showGaonShirShelYom && isDaytime) {
             addTefillahNote('Barchi Nafshi', 'שיר של יום - קי"ד - ברכי נפשי');
         }
         //Rosh Chodesh Teves is during Chanuka
-        if (isDaytime && month !== 10 && !(month === 9 && day === 30)) {
+        if (isDaytime && month !== m.TEVES && !(month === m.KISLEV && day === 30)) {
             addTefillahNote('Chatzi Hallel', 'חצי הלל');
         }
         addTefillahNote('No Av Harachamim', 'א"א אב הרחמים');
@@ -201,7 +202,7 @@ function getShabbosNotifications() {
         }
     }
     //Kriyas Hatora - Shabbos by mincha - besides for Yom Kippur
-    if (isAfternoon && !(month === 7 && day === 10)) {
+    if (isAfternoon && !(month === m.TISHREI && day === 10)) {
         const sedra = jdate.addDays(1).getSedra(israel);
         addTefillahNote(
             'Kriyas Hatorah Mincha Parshas ' + sedra.sedras[0].eng,
@@ -210,16 +211,16 @@ function getShabbosNotifications() {
     }
     if (
         isAfternoon &&
-        ((month === 1 && day > 21) ||
-            (month <= 6 && !(month === 5 && [8, 9].includes(day))))
+        ((month === m.NISSAN && day > 21) ||
+            (month <= m.ELLUL && !(month === m.AV && [8, 9].includes(day))))
     ) {
         const prakim = PirkeiAvos.getPrakim(jdate, israel);
         if (prakim.length > 0) {
             addDayNote(
                 'Pirkei Avos - ' +
-                prakim.map((s:number) => `Perek ${Utils.toJewishNumber(s)}`).join(' and '),
+                prakim.map((s: number) => `Perek ${Utils.toJewishNumber(s)}`).join(' and '),
                 'פרקי אבות - ' +
-                prakim.map((s:number) => `פרק ${Utils.toJewishNumber(s)}`).join(' ו'),
+                prakim.map((s: number) => `פרק ${Utils.toJewishNumber(s)}`).join(' ו'),
             );
         }
     }
@@ -243,16 +244,16 @@ function getWeekDayNotifications() {
     if (isNightTime && dow === DaysOfWeek.SUNDAY) {
         //הבדלה בתפילה for מוצאי שבת
         addTefillahNote(
-            (month === 1 && day === 15) || (month === 3 && day === 6)
+            (month === m.NISSAN && day === 15) || (month === m.SIVAN && day === 6)
                 ? 'ותודיעינו'
                 : 'אתה חוננתנו',
         );
         //Motzai Shabbos before Yom Tov - no ויהי נועם
         if (
-            (month === 6 && day > 22) ||
-            (month === 7 && day < 22 && day !== 3) ||
-            (month === 1 && day > 8 && day < 15) ||
-            (month === 3 && day < 6)
+            (month === m.ELLUL && day > 22) ||
+            (month === m.TISHREI && day < 22 && day !== 3) ||
+            (month === m.NISSAN && day > 8 && day < 15) ||
+            (month === m.SIVAN && day < 6)
         ) {
             addTefillahNote('No Vihi Noam', 'א"א ויהי נועם');
         }
@@ -260,9 +261,9 @@ function getWeekDayNotifications() {
     //אתה חוננתנו for מוצאי יו"ט
     else if (
         isNightTime &&
-        ((month === 1 && (day === 16 || day === 22)) ||
-            (month === 3 && day === 7) ||
-            (month === 7 && [3, 11, 16, 23].includes(day)))
+        ((month === m.NISSAN && (day === 16 || day === 22)) ||
+            (month === m.SIVAN && day === 7) ||
+            (month === m.TISHREI && [3, 11, 16, 23].includes(day)))
     ) {
         addTefillahNote('Ata Chonantanu', 'אתה חוננתנו');
     }
@@ -283,7 +284,7 @@ function getWeekDayNotifications() {
         }
     }
     //Rosh Chodesh
-    if ((month !== 7 && day === 1) || day === 30) {
+    if ((month !== m.TISHREI && day === 1) || day === 30) {
         dayInfo.noTachnun = true;
         addDayNote('Rosh Chodesh', 'ראש חודש');
         addTefillahNote('Ya`aleh Viyavo', 'יעלה ויבא');
@@ -291,7 +292,7 @@ function getWeekDayNotifications() {
             addTefillahNote('Barchi Nafshi', 'שיר של יום - קי"ד - ברכי נפשי');
         }
         //Rosh Chodesh Teves is during Chanuka
-        if (isDaytime && month !== 10 && !(month === 9 && day === 30)) {
+        if (isDaytime && month !== m.TEVES && !(month === m.KISLEV && day === 30)) {
             addTefillahNote('Chatzi Hallel', 'חצי הלל');
             if (isMorning && dow !== DaysOfWeek.SHABBOS) {
                 noLaminatzeach();
@@ -300,7 +301,7 @@ function getWeekDayNotifications() {
     }
     //Yom Kippur Kattan
     else if (
-        month !== 6 &&
+        month !== m.ELLUL &&
         ((dow < DaysOfWeek.FRIDAY && day === 29) ||
             (dow === DaysOfWeek.THURSDAY && day === 28)) &&
         isAfternoon
@@ -1059,7 +1060,7 @@ function getAroundTheYearNotifications() {
             break;
         case 12:
         case 13:
-            if (month === 12 && isLeapYear) {
+            if (month === m.ADAR && isLeapYear) {
                 //Adar Rishon in a leap year
                 if (
                     ((day === 13 && isAfternoon) || [14, 15].includes(day)) &&
@@ -1224,7 +1225,7 @@ function hasOwnKriyasHatorah(jdate: jDate, location: Location) {
         case 12:
         case 13:
             return (
-                Month === (jDate.isJdLeapY(jdate.Year) ? 13 : 12) &&
+                Month === (jDate.isJdLeapY(jdate.Year) ? m.ADAR_SHEINI : m.ADAR) &&
                 (Day === 13 || Day === (location.Name === 'ירושלים' ? 15 : 14))
             );
         default:
