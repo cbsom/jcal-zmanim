@@ -541,7 +541,7 @@ The above code prints out:
 |Parameter|Type|Description|
 |-----:|:-------:|:--------|
 |**date**|`Date` or `jDate`|Either a jDate or a javascript Date|
-|**time**|`{hour, minute}}`|The time of day for which to show notifications for. <br>For example, "Hallel" will not be shown at night etc.|
+|**time**|`{hour, minute}`|The time of day for which to show notifications for. <br>For example, "Hallel" will not be shown at night etc.|
 |**location**|`Location`|Where in the world to show notifications for?|
 |**english**|`boolean`|Should the notifications be in English or Hebrew?|
 |**showGaonShir**|`boolean`|Should the *Shir Shel Yom* of the Gr"a be shown?<br>If this paremeter is undefined, it will not be shown, unless the location is in Israel.|

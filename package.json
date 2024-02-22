@@ -1,7 +1,7 @@
 {
   "name": "jcal-zmanim",
   "description": "A very complete JavaScript library for the Jewish Calendar, Zmanim, Holidays, and daily Shul notes.",
-  "version": "1.2.4",
+  "version": "1.2.6",
   "main": "./dist/index.js",
   "exports": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -20,9 +20,9 @@
   },
   "scripts": {
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
-    "build": "NODE_ENV=production && tsup &&  && shx cp -r ./README.md dist/",
+    "build": "SET NODE_ENV=production && tsup && shx cp -r ./README.md dist/",
     "build-win": "SET NODE_ENV=production && tsup && shx cp -r ./README.md dist/",
-    "build-dev": "NODE_ENV=development && tsup",
+    "build-dev": "SET NODE_ENV=development && tsup",
     "build-dev-win": "SET NODE_ENV=development && tsup",
     "tsup": "tsup"
   },
