@@ -931,7 +931,7 @@ function getAroundTheYearNotifications() {
           addTefillahNote("Aneinu", "עננו");
         } else {
           //Only ירושלים says על הניסים on ט"ו
-          const isYerushalayim = location.Name === "ירושלים";
+          const isYerushalayim = location.Name === "Jerusalem" || location.NameHebrew === "ירושלים";
           if (day === 14) {
             dayInfo.noTachnun = true;
             if (isMorning && dow !== DaysOfWeek.SHABBOS) {
