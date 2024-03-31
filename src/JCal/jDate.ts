@@ -457,7 +457,7 @@ export default class jDate {
   }
 
   /**Gets the candle lighting time for the current Jewish date for the given Location object.*/
-  getCandleLighting(location: Location, nullIfNoCandles: boolean) {
+  getCandleLighting(location: Location, nullIfNoCandles?: boolean) {
     if (!location) {
       throw "To get sunrise and sunset, the location needs to be supplied";
     }
