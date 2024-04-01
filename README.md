@@ -285,7 +285,7 @@ const myLocation = new Location(
   -155.23,   // The longitude. East is negative.
   11,        // The Time Zone: The number of hours offset from UTC.
   1106,      // The elevation in Meters. (Feet x 3.2808)
-  18)        // The number of minutes before sunset candles are lit on Erev Shabbos. 
+  18        // The number of minutes before sunset candles are lit on Erev Shabbos. 
 );
 ```
 
