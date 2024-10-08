@@ -247,7 +247,7 @@ function getWeekDayNotifications() {
     //Motzai Shabbos before Yom Tov - no ויהי נועם
     if (
       (month === m.ELLUL && day > 22) ||
-      (month === m.TISHREI && day < 22 && day !== 3) ||
+      (month === m.TISHREI && day > 4 && day < 22) ||
       (month === m.NISSAN && day > 8 && day < 15) ||
       (month === m.SIVAN && day < 6)
     ) {
