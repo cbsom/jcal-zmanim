@@ -22,9 +22,10 @@
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "build": "SET NODE_ENV=production && tsup && shx cp -r ./README.md dist/",
     "build-mac": "NODE_ENV=production tsup && shx cp -r ./README.md dist/",
-    "build-win": "SET ZNODE_ENV=production && tsup && shx cp -r ./README.md dist/",
+    "build-win": "SET NODE_ENV=production && tsup && shx cp -r ./README.md dist/",
     "build-dev": "SET NODE_ENV=development && tsup",
     "build-dev-win": "SET NODE_ENV=development && tsup",
+	"build-dev-mac": "NODE_ENV=development && tsup",
     "tsup": "tsup"
   },
   "url": "git+https://github.com/cbsom/jcal-zmanim.git",
