@@ -1,11 +1,11 @@
 import Location from './JCal/Location.js';
 import { distance } from 'closest-match';
-import locations from './locations.json';
+import locations from './locations.json' assert { type: "json" };
+
 /**
  * NOTE: South and East are negative.
  */
 type Point = { latitude: number, longitude: number };
-
 
 const Locations = locations.map((l) =>
     new Location(l.name, l.heb, !!l.il, l.lat, l.lon, l.tz, l.el || 0, l.cl));

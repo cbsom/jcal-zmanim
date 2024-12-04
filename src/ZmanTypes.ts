@@ -31,6 +31,39 @@ export const ZmanTypeIds = Object.freeze({
 
 /**
  * List of Zman Types. Used to acquire the Zmanim for a particular day. 
+ *
+ * An array of objects representing different Zmanim (Jewish halachic times).
+ * Each object contains the following properties:
+ * - `id`: A unique identifier for the Zman.
+ * - `desc`: A description of the Zman in Hebrew.
+ * - `eng`: The English translation of the Zman.
+ * - `heb`: The Hebrew name of the Zman.
+ * 
+ * The Zmanim included are:
+ * - Chatzos Layla (Midnight)
+ * - Alos Hashachar (Dawn) - 90 minutes
+ * - Alos Hashachar (Dawn) - 72 minutes
+ * - Taliss and Tefillin (36 minutes)
+ * - Sunrise at current elevation
+ * - Sunrise at sea level
+ * - Zman Krias Shma according to MG"A
+ * - Zman Krias Shma according to GR"A
+ * - Zman Tefilla according to MG"A
+ * - Zman Tefilla according to GR"A
+ * - Chatzos (Midday)
+ * - Mincha Gedola
+ * - Mincha Ketana
+ * - Plag HaMincha
+ * - Sunset at sea level
+ * - Sunset at current elevation
+ * - Nightfall (45 minutes after sunset)
+ * - Nightfall (50 minutes after sunset)
+ * - Rabbeinu Tam (72 minutes after sunset)
+ * - Rabbeinu Tam - Zmanios
+ * - Rabbeinu Tam - Zmanios MG"A
+ * - Candle lighting time
+ * - Stop eating Chometz
+ * - Destroy Chometz
  */
 export const ZmanTypes: ZmanToShow[] = [
     {

@@ -319,9 +319,24 @@ function getAroundTheYearNotifications() {
     isMorning,
     isAfterChatzosHalayla,
     jdate,
+    sdate,
     isLeapYear,
     location,
   } = dayInfo;
+
+  /**
+   * A flag indicating whether to show "V'sain Tal U'Matar" in Chutz La'aretz.
+   * If the Jewish year is divisible by 4, then it is said from the 6th of December.
+   * Otherwise it is said from the 5th of December.
+   */
+  let showVsainTalUmatarInChul = false;
+
+  if (!location.Israel && sdate.getMonth() === 11 && sdate.getDate() > 4) {
+    const startVsainTalUmatar = jdate.Year % 4 === 0 ? 6 : 5;
+    showVsainTalUmatarInChul =
+      sdate.getDate() >= startVsainTalUmatar && sdate.getDate() <= startVsainTalUmatar + 14;
+  }
+
   switch (month) {
     case m.NISSAN:
       dayInfo.noTachnun = true;
@@ -846,12 +861,18 @@ function getAroundTheYearNotifications() {
       if (day <= 22) {
         addTefillahNote("Mashiv Haruach U`Morid Hageshem", "משיב הרוח ומוריד הגשם");
       }
-      if (day >= 7 && dow !== DaysOfWeek.SHABBOS) {
+      if (
+        ((location.Israel && day >= 7) || (!location.Israel && showVsainTalUmatarInChul)) &&
+        dow !== DaysOfWeek.SHABBOS
+      ) {
         addTefillahNote("V`sain Tal U`matar", "ותן טל ומטר");
       }
       break;
     case m.KISLEV:
-      if (day <= 7 && dow !== DaysOfWeek.SHABBOS) {
+      if (
+        ((location.Israel && day <= 7) || (!location.Israel && showVsainTalUmatarInChul)) &&
+        dow !== DaysOfWeek.SHABBOS
+      ) {
         addTefillahNote("V`sain Tal U`matar", "ותן טל ומטר");
       } else if (day === 24 && dow !== DaysOfWeek.SHABBOS && isAfternoon) {
         dayInfo.noTachnun = true;
@@ -869,6 +890,9 @@ function getAroundTheYearNotifications() {
       }
       break;
     case m.TEVES:
+      if (!location.Israel && showVsainTalUmatarInChul && dow !== DaysOfWeek.SHABBOS) {
+        addTefillahNote("V`sain Tal U`matar", "ותן טל ומטר");
+      }
       if (day <= (jDate.isShortKislev(jdate.Year) ? 3 : 2)) {
         dayInfo.noTachnun = true;
         addDayNote("Chanukah", "חנוכה");
