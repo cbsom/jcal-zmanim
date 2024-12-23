@@ -64,10 +64,11 @@ const _yearCache: [{ year: number; elapsed: number }?] = [],
     0, 7, 4, 7, 0, 1, 8, 0, 1, 8, 0, 7, 1, 4, 13, 1, 1, 8, 0, 1, 7, 0, 8, 1, 0, 8, 1, 0, 7, 4, 7, 0,
     1, 8, 0, 1, 8, 1, 0, 7, 4, 13, 1, 1, 8, 0, 1, 7, 0, 8, 1, 0, 8, 1, 0, 7,
   ],
-  //The number of days until 1 Tishrei 5000
+  //The number of days from creation until 1 Tishrei 5000
   daysUntil5000 = 1825849,
-  /**For years prior to 5000, returns elapsed days since creation of the world until Rosh Hashana of the given year
-   * Retured values are cached for future use.
+  /**Used for years prior to 5000.
+   * Returns elapsed days since creation of the world until Rosh Hashana of the given year
+   * Returned values are cached for future use.
    */
   getElapsedDaysEarly = (year: number) => {
     /*As this function may be called many times, often on the same year for all types of calculations,
@@ -78,8 +79,13 @@ const _yearCache: [{ year: number; elapsed: number }?] = [],
       return elapsed;
     }
 
-    let daysCounter = 0;
+    /* ****************************************************************************************************************
+     * These algorithms are based on the C code which was translated from Lisp
+     * in "Calendrical Calculations" by Nachum Dershowitz and Edward M. Reingold
+     * in Software---Practice & Experience, vol. 20, no. 9 (September, 1990), pp. 899--928.
+     * ****************************************************************************************************************/
 
+    let daysCounter = 0;
     const months = Utils.toInt(
         235 * Utils.toInt((year - 1) / 19) + // Leap months this cycle
           12 * ((year - 1) % 19) + // Regular months in this cycle.
@@ -115,6 +121,9 @@ const _yearCache: [{ year: number; elapsed: number }?] = [],
 
     return daysCounter;
   },
+  /**Used for years from 5000 and on.
+   * Returns elapsed days since creation of the world until Rosh Hashana of the given year
+   * */
   getElapsedDays5000 = (year: number) => {
     //The number of days until 1 Tishrei 5000
     let counter = daysUntil5000;
@@ -123,11 +132,6 @@ const _yearCache: [{ year: number; elapsed: number }?] = [],
     }
     return counter;
   };
-/* ****************************************************************************************************************
- * Many of the date conversion algorithms in the jDate class are based on the C code which was translated from Lisp
- * in "Calendrical Calculations" by Nachum Dershowitz and Edward M. Reingold
- * in Software---Practice & Experience, vol. 20, no. 9 (September, 1990), pp. 899--928.
- * ****************************************************************************************************************/
 
 /** Represents a single day in the Jewish Calendar. */
 export default class jDate {
