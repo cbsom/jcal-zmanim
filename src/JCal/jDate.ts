@@ -12,7 +12,117 @@ const _yearCache: [{ year: number; elapsed: number }?] = [],
   //The number of milliseconds in everyday
   MS_PER_DAY = 8.64e7,
   //The time zone offset (in minutes) for 1/1/1970 0:00:00 UTC at the current users time zone
-  JS_START_OFFSET = new Date(0).getTimezoneOffset();
+  JS_START_OFFSET = new Date(0).getTimezoneOffset(),
+  yearTypes = [
+    { isLeapYear: false, dow: 5, isLongCheshvan: false, isLongKislev: true, daysInYear: 354 },
+    { isLeapYear: false, dow: 7, isLongCheshvan: true, isLongKislev: true, daysInYear: 355 },
+    { isLeapYear: false, dow: 2, isLongCheshvan: true, isLongKislev: true, daysInYear: 355 },
+    { isLeapYear: false, dow: 3, isLongCheshvan: false, isLongKislev: true, daysInYear: 354 },
+    { isLeapYear: false, dow: 7, isLongCheshvan: false, isLongKislev: false, daysInYear: 353 },
+    { isLeapYear: false, dow: 2, isLongCheshvan: false, isLongKislev: false, daysInYear: 353 },
+    { isLeapYear: false, dow: 5, isLongCheshvan: true, isLongKislev: true, daysInYear: 355 },
+    { isLeapYear: true, dow: 5, isLongCheshvan: true, isLongKislev: true, daysInYear: 385 },
+    { isLeapYear: true, dow: 2, isLongCheshvan: false, isLongKislev: false, daysInYear: 383 },
+    { isLeapYear: true, dow: 5, isLongCheshvan: false, isLongKislev: false, daysInYear: 383 },
+    { isLeapYear: true, dow: 7, isLongCheshvan: false, isLongKislev: false, daysInYear: 383 },
+    { isLeapYear: true, dow: 2, isLongCheshvan: true, isLongKislev: true, daysInYear: 385 },
+    { isLeapYear: true, dow: 7, isLongCheshvan: true, isLongKislev: true, daysInYear: 385 },
+    { isLeapYear: true, dow: 3, isLongCheshvan: false, isLongKislev: true, daysInYear: 384 },
+  ],
+  //Year types starting from the year 5000
+  yearTypeList = [
+    8, 0, 1, 7, 0, 8, 1, 0, 8, 1, 0, 7, 4, 1, 13, 1, 8, 0, 1, 7, 4, 0, 7, 1, 8, 0, 1, 7, 0, 4, 7, 0,
+    1, 8, 0, 7, 4, 0, 7, 1, 4, 13, 1, 8, 1, 0, 7, 1, 0, 8, 1, 0, 8, 1, 7, 0, 4, 7, 0, 1, 8, 0, 7, 4,
+    1, 13, 1, 4, 13, 1, 1, 8, 0, 7, 1, 0, 8, 1, 0, 8, 1, 7, 0, 4, 7, 0, 1, 8, 0, 1, 7, 4, 13, 1, 1,
+    8, 0, 1, 8, 0, 7, 1, 0, 8, 1, 0, 7, 4, 0, 7, 1, 8, 0, 1, 8, 0, 1, 7, 4, 13, 1, 1, 8, 0, 1, 7, 0,
+    4, 7, 0, 8, 1, 0, 7, 4, 1, 13, 1, 8, 0, 1, 8, 1, 0, 7, 1, 0, 8, 1, 8, 0, 1, 7, 0, 4, 7, 0, 8, 1,
+    0, 7, 4, 1, 13, 1, 4, 13, 1, 7, 4, 0, 7, 1, 0, 8, 1, 8, 0, 1, 7, 0, 4, 7, 0, 1, 8, 0, 7, 1, 4,
+    13, 1, 1, 8, 0, 7, 4, 0, 7, 1, 0, 8, 1, 0, 7, 4, 7, 0, 1, 8, 0, 1, 8, 1, 13, 1, 4, 13, 1, 1, 8,
+    0, 1, 7, 0, 8, 1, 0, 8, 1, 0, 7, 4, 7, 0, 1, 8, 0, 1, 8, 1, 0, 7, 4, 13, 1, 1, 8, 0, 1, 7, 0, 8,
+    1, 0, 8, 1, 0, 7, 4, 1, 13, 1, 8, 0, 1, 7, 4, 0, 7, 1, 8, 0, 1, 7, 0, 4, 7, 0, 1, 8, 0, 7, 4, 0,
+    7, 1, 4, 13, 1, 8, 1, 0, 7, 1, 0, 8, 1, 0, 8, 1, 7, 0, 4, 7, 0, 1, 8, 0, 7, 4, 1, 13, 1, 4, 13,
+    1, 1, 8, 0, 7, 1, 0, 8, 1, 0, 8, 1, 7, 0, 4, 7, 0, 1, 8, 0, 1, 8, 1, 13, 1, 4, 13, 1, 1, 8, 0,
+    7, 1, 0, 8, 1, 0, 7, 4, 0, 7, 1, 8, 0, 1, 8, 0, 1, 7, 4, 13, 1, 1, 8, 0, 1, 7, 0, 4, 7, 0, 8, 1,
+    0, 7, 4, 0, 7, 1, 8, 0, 1, 8, 1, 0, 7, 1, 0, 8, 1, 8, 0, 1, 7, 0, 4, 7, 0, 8, 1, 0, 7, 4, 1, 13,
+    1, 4, 13, 1, 7, 4, 0, 7, 1, 0, 8, 1, 8, 0, 1, 7, 0, 4, 7, 0, 1, 8, 0, 7, 1, 4, 13, 1, 1, 8, 0,
+    7, 4, 0, 7, 1, 0, 8, 1, 0, 7, 4, 7, 0, 1, 8, 0, 1, 8, 1, 13, 1, 4, 13, 1, 1, 8, 0, 1, 7, 0, 8,
+    1, 0, 8, 1, 0, 7, 4, 7, 0, 1, 8, 0, 1, 8, 1, 0, 7, 4, 13, 1, 1, 8, 0, 1, 7, 0, 8, 1, 0, 8, 1, 0,
+    7, 4, 1, 13, 1, 8, 0, 1, 7, 4, 0, 7, 1, 8, 0, 1, 8, 0, 1, 7, 0, 4, 7, 0, 7, 4, 0, 7, 1, 4, 13,
+    1, 8, 1, 0, 7, 1, 0, 8, 1, 0, 8, 1, 7, 0, 4, 7, 0, 1, 8, 0, 7, 4, 1, 13, 1, 4, 13, 1, 1, 8, 0,
+    7, 1, 0, 8, 1, 0, 8, 1, 7, 0, 4, 7, 0, 1, 8, 0, 1, 8, 1, 13, 1, 4, 13, 1, 1, 8, 0, 7, 1, 0, 8,
+    1, 0, 7, 4, 0, 7, 1, 8, 0, 1, 8, 0, 1, 7, 4, 13, 1, 1, 8, 0, 1, 7, 0, 4, 7, 0, 8, 1, 0, 7, 4, 0,
+    7, 1, 8, 0, 1, 8, 1, 0, 7, 1, 0, 8, 1, 8, 0, 1, 7, 0, 4, 7, 0, 8, 1, 0, 7, 4, 1, 13, 1, 4, 13,
+    1, 8, 1, 0, 7, 1, 0, 8, 1, 8, 0, 1, 7, 0, 4, 7, 0, 1, 8, 0, 7, 1, 4, 13, 1, 1, 8, 0, 7, 4, 0, 7,
+    1, 0, 8, 1, 0, 7, 4, 7, 0, 1, 8, 0, 1, 8, 0, 7, 1, 4, 13, 1, 1, 8, 0, 1, 7, 0, 8, 1, 0, 8, 1, 0,
+    7, 4, 7, 0, 1, 8, 0, 1, 8, 1, 0, 7, 4, 13, 1, 1, 8, 0, 1, 7, 0, 8, 1, 0, 8, 1, 0, 7, 4, 1, 13,
+    1, 8, 0, 1, 7, 4, 0, 7, 1, 8, 0, 1, 8, 0, 1, 7, 0, 4, 7, 0, 7, 4, 0, 7, 1, 4, 13, 1, 8, 1, 0, 7,
+    1, 0, 8, 1, 0, 8, 1, 7, 0, 4, 7, 0, 1, 8, 0, 7, 4, 1, 13, 1, 4, 13, 1, 1, 8, 0, 7, 1, 0, 8, 1,
+    0, 8, 1, 7, 0, 4, 7, 0, 1, 8, 0, 1, 8, 1, 13, 1, 4, 13, 1, 1, 8, 0, 7, 1, 0, 8, 1, 0, 8, 1, 0,
+    7, 4, 7, 0, 1, 8, 0, 1, 7, 4, 13, 1, 1, 8, 0, 1, 7, 0, 4, 7, 0, 8, 1, 0, 7, 4, 0, 7, 1, 8, 0, 1,
+    8, 1, 0, 7, 1, 0, 8, 1, 8, 0, 1, 7, 0, 4, 7, 0, 8, 1, 0, 7, 4, 1, 13, 1, 4, 13, 1, 8, 1, 0, 7,
+    1, 0, 8, 1, 8, 0, 1, 7, 0, 4, 7, 0, 1, 8, 0, 7, 4, 1, 13, 1, 4, 13, 1, 7, 4, 0, 7, 1, 0, 8, 1,
+    0, 7, 4, 7, 0, 1, 8, 0, 1, 8, 0, 7, 1, 4, 13, 1, 1, 8, 0, 1, 7, 0, 8, 1, 0, 8, 1, 0, 7, 4, 7, 0,
+    1, 8, 0, 1, 8, 1, 0, 7, 4, 13, 1, 1, 8, 0, 1, 7, 0, 8, 1, 0, 8, 1, 0, 7,
+  ],
+  //The number of days until 1 Tishrei 5000
+  daysUntil5000 = 1825849,
+  /**For years prior to 5000, returns elapsed days since creation of the world until Rosh Hashana of the given year
+   * Retured values are cached for future use.
+   */
+  getElapsedDaysEarly = (year: number) => {
+    /*As this function may be called many times, often on the same year for all types of calculations,
+      we save a list of years with their elapsed values.*/
+    const elapsed = _yearCache.find((y) => y?.year === year)?.elapsed;
+    //If this year was already calculated and cached, then we return the cached value.
+    if (elapsed) {
+      return elapsed;
+    }
+
+    let daysCounter = 0;
+
+    const months = Utils.toInt(
+        235 * Utils.toInt((year - 1) / 19) + // Leap months this cycle
+          12 * ((year - 1) % 19) + // Regular months in this cycle.
+          (7 * ((year - 1) % 19) + 1) / 19
+      ), // Months in complete cycles so far.
+      parts = 204 + 793 * (months % 1080),
+      hours = 5 + 12 * months + 793 * Utils.toInt(months / 1080) + Utils.toInt(parts / 1080),
+      conjDay = Utils.toInt(1 + 29 * months + hours / 24),
+      conjParts = 1080 * (hours % 24) + (parts % 1080);
+
+    /* at the end of a leap year -  15 hours, 589 parts or later... -
+      ... or is on a Monday at... -  ...of a common year, -
+      at 9 hours, 204 parts or later... - ...or is on a Tuesday... -
+      If new moon is at or after midday,*/
+    if (
+      conjParts >= 19440 ||
+      (conjDay % 7 === 2 && conjParts >= 9924 && !jDate.isJdLeapY(year)) ||
+      (conjDay % 7 === 1 && conjParts >= 16789 && jDate.isJdLeapY(year - 1))
+    ) {
+      // Then postpone Rosh HaShanah one day
+      daysCounter = conjDay + 1;
+    } else {
+      daysCounter = conjDay;
+    }
+
+    // A day is added if Rosh HaShanah would occur on Sunday, Friday or Wednesday,
+    if (Utils.has(daysCounter % 7, 0, 3, 5)) {
+      daysCounter += 1;
+    }
+
+    //Add this year to the cache to save on calculations later on
+    _yearCache.push({ year: year, elapsed: daysCounter });
+
+    return daysCounter;
+  },
+  getElapsedDays5000 = (year: number) => {
+    //The number of days until 1 Tishrei 5000
+    let counter = daysUntil5000;
+    for (var y = 5000; y < year; y++) {
+      counter += jDate.yearType(y).daysInYear;
+    }
+    return counter;
+  };
 /* ****************************************************************************************************************
  * Many of the date conversion algorithms in the jDate class are based on the C code which was translated from Lisp
  * in "Calendrical Calculations" by Nachum Dershowitz and Edward M. Reingold
@@ -678,66 +788,60 @@ export default class jDate {
 
   /**Elapsed days since creation of the world until Rosh Hashana of the given year*/
   static tDays(year: number): number {
-    /*As this function is called many times, often on the same year for all types of calculations,
-        we save a list of years with their elapsed values.*/
-    const cached = _yearCache.find((y) => !!y && y.year === year);
-    //If this year was already calculated and cached, then we return the cached value.
-    if (cached) {
-      return cached.elapsed;
-    }
-
-    const months = Utils.toInt(
-        235 * Utils.toInt((year - 1) / 19) + // Leap months this cycle
-          12 * ((year - 1) % 19) + // Regular months in this cycle.
-          (7 * ((year - 1) % 19) + 1) / 19
-      ), // Months in complete cycles so far.
-      parts = 204 + 793 * (months % 1080),
-      hours = 5 + 12 * months + 793 * Utils.toInt(months / 1080) + Utils.toInt(parts / 1080),
-      conjDay = Utils.toInt(1 + 29 * months + hours / 24),
-      conjParts = 1080 * (hours % 24) + (parts % 1080);
-
-    let altDay;
-    /* at the end of a leap year -  15 hours, 589 parts or later... -
-        ... or is on a Monday at... -  ...of a common year, -
-        at 9 hours, 204 parts or later... - ...or is on a Tuesday... -
-        If new moon is at or after midday,*/
-    if (
-      conjParts >= 19440 ||
-      (conjDay % 7 === 2 && conjParts >= 9924 && !jDate.isJdLeapY(year)) ||
-      (conjDay % 7 === 1 && conjParts >= 16789 && jDate.isJdLeapY(year - 1))
-    ) {
-      // Then postpone Rosh HaShanah one day
-      altDay = conjDay + 1;
+    if (year >= 5000) {
+      return getElapsedDays5000(year);
     } else {
-      altDay = conjDay;
+      return getElapsedDaysEarly(year);
     }
+  }
 
-    // A day is added if Rosh HaShanah would occur on Sunday, Friday or Wednesday,
-    if (Utils.has(altDay % 7, 0, 3, 5)) {
-      altDay += 1;
-    }
-
-    //Add this year to the cache to save on calculations later on
-    _yearCache.push({ year: year, elapsed: altDay });
-
-    return altDay;
+  /**The index for the year type of the given year.
+   * IMPORTANT NOTE: Only works for years 5000 and after.
+   */
+  static yearType(year: number) {
+    return yearTypes[yearTypeList[year - 5000]];
   }
 
   /**number of days in the given Jewish Year.*/
   static daysJYear(year: number): number {
-    return jDate.tDays(year + 1) - jDate.tDays(year);
+    if (year >= 5000) {
+      return jDate.yearType(year).daysInYear;
+    } else {
+      return jDate.tDays(year + 1) - jDate.tDays(year);
+    }
   }
 
   /**Does Cheshvan for the given Jewish Year have 30 days?*/
   static isLongCheshvan(year: number): boolean {
-    return jDate.daysJYear(year) % 10 === 5;
+    if (year >= 5000) {
+      return jDate.yearType(year).isLongCheshvan;
+    } else {
+      return jDate.daysJYear(year) % 10 === 5;
+    }
   }
 
   /**Does Kislev for the given Jewish Year have 29 days?*/
   static isShortKislev(year: number): boolean {
-    return jDate.daysJYear(year) % 10 === 3;
+    if (year >= 5000) {
+      return !jDate.yearType(year).isLongKislev;
+    } else {
+      return jDate.daysJYear(year) % 10 === 3;
+    }
+  }
+  /**number of days in the given Jewish Year.*/
+  static daysJYear_(year: number): number {
+    return jDate.yearType(year).daysInYear;
   }
 
+  /**Does Cheshvan for the given Jewish Year have 30 days?*/
+  static isLongCheshvan_(year: number): boolean {
+    return jDate.yearType(year).isLongCheshvan;
+  }
+
+  /**Does Kislev for the given Jewish Year have 29 days?*/
+  static isShortKislev_(year: number): boolean {
+    return !jDate.yearType(year).isLongKislev;
+  }
   /**Does the given Jewish Year have 13 months?*/
   static isJdLeapY(year: number): boolean {
     return (7 * year + 1) % 19 < 7;
