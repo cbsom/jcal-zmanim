@@ -5,9 +5,8 @@ import Zmanim from "./Zmanim.js";
 import DafYomi from "./Dafyomi.js";
 import Location from "./Location.js";
 
-
-  //The absolute date for the zero hour of all javascript date objects - 1/1/1970 0:00:00 UTC
-  const JS_START_DATE_ABS = 719163,
+//The absolute date for the zero hour of all javascript date objects - 1/1/1970 0:00:00 UTC
+const JS_START_DATE_ABS = 719163,
   //The number of milliseconds in everyday
   MS_PER_DAY = 8.64e7,
   //The time zone offset (in minutes) for 1/1/1970 0:00:00 UTC at the current users time zone
@@ -63,7 +62,7 @@ import Location from "./Location.js";
     0, 7, 4, 7, 0, 1, 8, 0, 1, 8, 0, 7, 1, 4, 13, 1, 1, 8, 0, 1, 7, 0, 8, 1, 0, 8, 1, 0, 7, 4, 7, 0,
     1, 8, 0, 1, 8, 1, 0, 7, 4, 13, 1, 1, 8, 0, 1, 7, 0, 8, 1, 0, 8, 1, 0, 7,
   ],
-  /** Returns elapsed days since creation of the world until Rosh Hashana of the given year.  
+  /** Returns elapsed days since creation of the world until Rosh Hashana of the given year.
    *  These algorithms are based on the C code which was translated from Lisp
    *  in "Calendrical Calculations" by Nachum Dershowitz and Edward M. Reingold
    *  in Software---Practice & Experience, vol. 20, no. 9 (September, 1990), pp. 899--928.
@@ -791,7 +790,7 @@ export default class jDate {
       return jDate.daysJYear(year) % 10 === 3;
     }
   }
-   
+
   /**Does the given Jewish Year have 13 months?*/
   static isJdLeapY(year: number): boolean {
     return (7 * year + 1) % 19 < 7;
