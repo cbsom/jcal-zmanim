@@ -1,6 +1,6 @@
 import { jDate, findLocation, Utils } from "./dist/index.cjs";
-
-const today = jDate.now().addYears(-1);
+/*
+const today = jDate.now();
 
 const betar = findLocation("Jerusalem");
 
@@ -11,29 +11,30 @@ const { sunrise, sunset } = today.getSunriseSunset(betar, false);
 console.log(
   `In ${betar.Name} on ${today.toString()}, Sunrise is at ${Utils.getTimeString(sunrise)}, and Sunset is at ${Utils.getTimeString(sunset)}`,
 );
-/**
+*/
+/**/
   
 let totalOld = 0;
 let totalNew = 0;
 let start = new Date().valueOf();
-for (var j = 0; j < 1000; j++) {
+for (var j = 0; j < 2000; j++) {
   for (var i = 4000; i < 5000; i++) {
-   totalOld += jDate.tDays(i);
+    totalOld += jDate.daysJYear(i);  
   }
 }
 let end = new Date().valueOf();
 let diff = end - start;
-console.log(`old: ${diff}`);
+console.log(`old: ${diff} totalOld: ${totalOld}`);
 
 start = new Date().valueOf();
-for (var j = 0; j < 1000; j++) {
+for (var j = 0; j < 2000; j++) {
   for (var i = 5000; i < 6000; i++) {
-   totalNew += jDate.tDays(i);   
+   totalNew += jDate.daysJYear(i);   
   }
 }
 end = new Date().valueOf();
 diff = end - start;
-console.log(`new: ${diff}`);
+console.log(`new: ${diff} totalNew: ${totalNew}`);
 
 
 

@@ -5,10 +5,9 @@ import Zmanim from "./Zmanim.js";
 import DafYomi from "./Dafyomi.js";
 import Location from "./Location.js";
 
-/** Keeps a "memcache" of years that have had their elapsed days previously calculated. Format: { year:5776, elapsed:2109283 } */
-const _yearCache: [{ year: number; elapsed: number }?] = [],
+
   //The absolute date for the zero hour of all javascript date objects - 1/1/1970 0:00:00 UTC
-  JS_START_DATE_ABS = 719163,
+  const JS_START_DATE_ABS = 719163,
   //The number of milliseconds in everyday
   MS_PER_DAY = 8.64e7,
   //The time zone offset (in minutes) for 1/1/1970 0:00:00 UTC at the current users time zone
@@ -64,27 +63,12 @@ const _yearCache: [{ year: number; elapsed: number }?] = [],
     0, 7, 4, 7, 0, 1, 8, 0, 1, 8, 0, 7, 1, 4, 13, 1, 1, 8, 0, 1, 7, 0, 8, 1, 0, 8, 1, 0, 7, 4, 7, 0,
     1, 8, 0, 1, 8, 1, 0, 7, 4, 13, 1, 1, 8, 0, 1, 7, 0, 8, 1, 0, 8, 1, 0, 7,
   ],
-  //The number of days from creation until 1 Tishrei 5000
-  daysUntil5000 = 1825849,
-  /**Used for years prior to 5000.
-   * Returns elapsed days since creation of the world until Rosh Hashana of the given year
-   * Returned values are cached for future use.
+  /** Returns elapsed days since creation of the world until Rosh Hashana of the given year.  
+   *  These algorithms are based on the C code which was translated from Lisp
+   *  in "Calendrical Calculations" by Nachum Dershowitz and Edward M. Reingold
+   *  in Software---Practice & Experience, vol. 20, no. 9 (September, 1990), pp. 899--928.
    */
-  getElapsedDaysEarly = (year: number) => {
-    /*As this function may be called many times, often on the same year for all types of calculations,
-      we save a list of years with their elapsed values.*/
-    const elapsed = _yearCache.find((y) => y?.year === year)?.elapsed;
-    //If this year was already calculated and cached, then we return the cached value.
-    if (elapsed) {
-      return elapsed;
-    }
-
-    /* ****************************************************************************************************************
-     * These algorithms are based on the C code which was translated from Lisp
-     * in "Calendrical Calculations" by Nachum Dershowitz and Edward M. Reingold
-     * in Software---Practice & Experience, vol. 20, no. 9 (September, 1990), pp. 899--928.
-     * ****************************************************************************************************************/
-
+  getElapsedDays = (year: number) => {
     let daysCounter = 0;
     const months = Utils.toInt(
         235 * Utils.toInt((year - 1) / 19) + // Leap months this cycle
@@ -115,24 +99,8 @@ const _yearCache: [{ year: number; elapsed: number }?] = [],
     if (Utils.has(daysCounter % 7, 0, 3, 5)) {
       daysCounter += 1;
     }
-
-    //Add this year to the cache to save on calculations later on
-    _yearCache.push({ year: year, elapsed: daysCounter });
-
     return daysCounter;
-  },
-  /**Used for years from 5000 and on.
-   * Returns elapsed days since creation of the world until Rosh Hashana of the given year
-   * */
-  getElapsedDays5000 = (year: number) => {
-    //The number of days until 1 Tishrei 5000
-    let counter = daysUntil5000;
-    for (var y = 5000; y < year; y++) {
-      counter += jDate.yearType(y).daysInYear;
-    }
-    return counter;
   };
-
 /** Represents a single day in the Jewish Calendar. */
 export default class jDate {
   public Day: number;
@@ -739,7 +707,7 @@ export default class jDate {
       }
     }
     // Days elapsed before absolute date 1. -  Days in prior years.
-    return dayInYear + (jDate.tDays(year) + -1373429);
+    return dayInYear + (getElapsedDays(year) + -1373429);
   }
 
   /**
@@ -790,15 +758,6 @@ export default class jDate {
     return 0;
   }
 
-  /**Elapsed days since creation of the world until Rosh Hashana of the given year*/
-  static tDays(year: number): number {
-    if (year >= 5000) {
-      return getElapsedDays5000(year);
-    } else {
-      return getElapsedDaysEarly(year);
-    }
-  }
-
   /**The index for the year type of the given year.
    * IMPORTANT NOTE: Only works for years 5000 and after.
    */
@@ -811,7 +770,7 @@ export default class jDate {
     if (year >= 5000) {
       return jDate.yearType(year).daysInYear;
     } else {
-      return jDate.tDays(year + 1) - jDate.tDays(year);
+      return getElapsedDays(year + 1) - getElapsedDays(year);
     }
   }
 
@@ -832,20 +791,7 @@ export default class jDate {
       return jDate.daysJYear(year) % 10 === 3;
     }
   }
-  /**number of days in the given Jewish Year.*/
-  static daysJYear_(year: number): number {
-    return jDate.yearType(year).daysInYear;
-  }
-
-  /**Does Cheshvan for the given Jewish Year have 30 days?*/
-  static isLongCheshvan_(year: number): boolean {
-    return jDate.yearType(year).isLongCheshvan;
-  }
-
-  /**Does Kislev for the given Jewish Year have 29 days?*/
-  static isShortKislev_(year: number): boolean {
-    return !jDate.yearType(year).isLongKislev;
-  }
+   
   /**Does the given Jewish Year have 13 months?*/
   static isJdLeapY(year: number): boolean {
     return (7 * year + 1) % 19 < 7;
@@ -855,4 +801,6 @@ export default class jDate {
   static monthsJYear(year: number): number {
     return jDate.isJdLeapY(year) ? 13 : 12;
   }
+
+  static getElapsedDays = getElapsedDays;
 }
