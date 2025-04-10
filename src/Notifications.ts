@@ -67,7 +67,7 @@ export function getNotifications(
     isNightTime = !isDaytime,
     isNotBeinHasmashos = !isAfterShkia || Utils.isTimeAfter(Utils.addMinutes(shkia, 18), time),
     isMorning = isDaytime && !isAfterChatzosHayom,
-    isAfternoon = isDaytime && isAfterChatzosHayom,
+    isAfternoon = isDaytime && isAfterChatzosHayom && isNotBeinHasmashos,
     isYomTov = jdate.isYomTovOrCholHamoed(location.Israel),
     isLeapYear = jDate.isJdLeapY(jdate.Year),
     noTachnun = isAfternoon && (dow === DaysOfWeek.FRIDAY || day === 29);
@@ -345,6 +345,14 @@ function getAroundTheYearNotifications() {
       }
       if (dow !== DaysOfWeek.SHABBOS && day > 15 && day !== 21) {
         addTefillahNote("Vesain Bracha", "ותן ברכה");
+      }
+      ///Bedikas Chometz - 
+      /// when פסח is Motzai Shabbos, it is on Thursday night of י"ג, otherwise, it is the night starting י"ד
+      if (
+        isNightTime &&
+        ((dow !== DaysOfWeek.FRIDAY && day === 14) || (dow === DaysOfWeek.THURSDAY && day === 13))
+      ) {
+        addDayNote("Bedikas Chometz", 'בדיקת חמץ');        
       }
       if (isMorning && dow !== DaysOfWeek.SHABBOS && [14, 16, 17, 18, 19, 20].includes(day)) {
         addTefillahNote("No Mizmor Lesodah", 'א"א מזמור לתודה');
