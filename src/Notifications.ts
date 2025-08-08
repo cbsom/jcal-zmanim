@@ -143,6 +143,8 @@ function getShabbosNotifications() {
     addDayNote("Shabbos Shuva", "שבת שובה");
   } else if (month === m.AV && day > 2 && day < 10) {
     addDayNote("Shabbos Chazon", "שבת חזון");
+  } else if (month === m.AV && day > 10 && day < 18) {
+    addDayNote("Shabbos Nachamu", "שבת נחמו");
   } else if (
     (month === (isLeapYear ? m.ADAR : m.SHVAT) && day > 24) ||
     (month === (isLeapYear ? m.ADAR_SHEINI : m.ADAR) && day === 1)
@@ -158,9 +160,12 @@ function getShabbosNotifications() {
   ) {
     addDayNote("Parshas Hachodesh", "פרשת החודש");
   }
-  if (isMorning && !isYomTov) {
+  if (!isYomTov) {
     const sedra = jdate.getSedra(israel);
-    if (sedra.sedras.length > 0) {
+    if (sedra.sedras.length > 0 && sedra.toStringHeb() === "בשלח") {
+      addDayNote("Shabbos Shira", "שבת שירה");
+    }
+    if (isMorning && sedra.sedras.length > 0) {
       addTefillahNote(
         `Kriyas Hatorah Parshas ${sedra.toString()}`,
         `קה"ת פרשת ${sedra.toStringHeb()}`
@@ -215,7 +220,7 @@ function getShabbosNotifications() {
     if (prakim.length > 0) {
       addDayNote(
         "Pirkei Avos - " +
-          prakim.map((s: number) => `Perek ${Utils.toJewishNumber(s)}`).join(" and "),
+        prakim.map((s: number) => `Perek ${Utils.toJewishNumber(s)}`).join(" and "),
         "פרקי אבות - " + prakim.map((s: number) => `פרק ${Utils.toJewishNumber(s)}`).join(" ו")
       );
     }
@@ -352,7 +357,7 @@ function getAroundTheYearNotifications() {
         isNightTime &&
         ((dow !== DaysOfWeek.FRIDAY && day === 14) || (dow === DaysOfWeek.THURSDAY && day === 13))
       ) {
-        addDayNote("Bedikas Chometz", 'בדיקת חמץ');        
+        addDayNote("Bedikas Chometz", 'בדיקת חמץ');
       }
       if (isMorning && dow !== DaysOfWeek.SHABBOS && [14, 16, 17, 18, 19, 20].includes(day)) {
         addTefillahNote("No Mizmor Lesodah", 'א"א מזמור לתודה');
@@ -739,8 +744,8 @@ function getAroundTheYearNotifications() {
               case 17:
                 addTefillahNote(
                   (showEnglish ? "Hoshanos" : "הושענות") +
-                    " - " +
-                    (dow === DaysOfWeek.SHABBOS ? "אום נצורה" : "אערוך שועי")
+                  " - " +
+                  (dow === DaysOfWeek.SHABBOS ? "אום נצורה" : "אערוך שועי")
                 );
                 if (showGaonShirShelYom && dow !== DaysOfWeek.SHABBOS) {
                   addTefillahNote("שיר של יום - נ' - מזמור לאסף");
@@ -770,8 +775,8 @@ function getAroundTheYearNotifications() {
               case 19:
                 addTefillahNote(
                   (showEnglish ? "Hoshanos" : "הושענות") +
-                    " - " +
-                    (dow === DaysOfWeek.SHABBOS ? "אום נצורה" : "א-ל למושעות")
+                  " - " +
+                  (dow === DaysOfWeek.SHABBOS ? "אום נצורה" : "א-ל למושעות")
                 );
                 if (showGaonShirShelYom && dow !== DaysOfWeek.SHABBOS) {
                   if (dow === DaysOfWeek.MONDAY) {
@@ -784,8 +789,8 @@ function getAroundTheYearNotifications() {
               case 20:
                 addTefillahNote(
                   (showEnglish ? "Hoshanos" : "הושענות") +
-                    " - " +
-                    (dow === DaysOfWeek.SHABBOS ? "אום נצורה" : "אדון המושיע")
+                  " - " +
+                  (dow === DaysOfWeek.SHABBOS ? "אום נצורה" : "אדון המושיע")
                 );
                 if (showGaonShirShelYom && dow !== DaysOfWeek.SHABBOS) {
                   if (dow === DaysOfWeek.THURSDAY) {
@@ -942,8 +947,8 @@ function getAroundTheYearNotifications() {
                 ? "Purim Katan"
                 : "פורים קטן"
               : showEnglish
-              ? "Shushan Purim Katan"
-              : "שושן פורים קטן"
+                ? "Shushan Purim Katan"
+                : "שושן פורים קטן"
           );
           if (isDaytime) {
             dayInfo.noTachnun = true;

@@ -1,6 +1,6 @@
 import Location from './JCal/Location.js';
 import { distance } from 'closest-match';
-import locations from './locations.json' assert { type: "json" };
+import locations from './locations.json' with { type: "json" };
 
 /**
  * NOTE: South and East are negative.
