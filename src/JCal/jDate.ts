@@ -70,10 +70,10 @@ const JS_START_DATE_ABS = 719163,
   getElapsedDays = (year: number) => {
     let daysCounter = 0;
     const months = Utils.toInt(
-        235 * Utils.toInt((year - 1) / 19) + // Leap months this cycle
-          12 * ((year - 1) % 19) + // Regular months in this cycle.
-          (7 * ((year - 1) % 19) + 1) / 19
-      ), // Months in complete cycles so far.
+      235 * Utils.toInt((year - 1) / 19) + // Leap months this cycle
+      12 * ((year - 1) % 19) + // Regular months in this cycle.
+      (7 * ((year - 1) % 19) + 1) / 19
+    ), // Months in complete cycles so far.
       parts = 204 + 793 * (months % 1080),
       hours = 5 + 12 * months + 793 * Utils.toInt(months / 1080) + Utils.toInt(parts / 1080),
       conjDay = Utils.toInt(1 + 29 * months + hours / 24),
@@ -766,6 +766,7 @@ export default class jDate {
 
   /**number of days in the given Jewish Year.*/
   static daysJYear(year: number): number {
+    if (!year || year < 0) { return 0; }
     if (year >= 5000) {
       return jDate.yearType(year).daysInYear;
     } else {
@@ -775,6 +776,7 @@ export default class jDate {
 
   /**Does Cheshvan for the given Jewish Year have 30 days?*/
   static isLongCheshvan(year: number): boolean {
+    if (!year || year < 0) { return false; }
     if (year >= 5000) {
       return jDate.yearType(year).isLongCheshvan;
     } else {
@@ -784,6 +786,7 @@ export default class jDate {
 
   /**Does Kislev for the given Jewish Year have 29 days?*/
   static isShortKislev(year: number): boolean {
+    if (!year || year < 0) { return false; }
     if (year >= 5000) {
       return !jDate.yearType(year).isLongKislev;
     } else {

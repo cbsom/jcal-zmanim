@@ -702,6 +702,7 @@ function getAroundTheYearNotifications() {
           if (isNightTime) {
             addDayNote("לך אכל בשמחה לחמך כי כבר רצה האלקים את מעשיך");
           }
+          break;
         case 15:
           addDayNote("First day of Sukkos", 'יו"ט ראשון של סוכות');
           addTefillahNote("Ya`aleh V`yavo", "יעלה ויבא");

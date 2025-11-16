@@ -17,6 +17,7 @@ export default class Molad {
      * @returns {{jDate:jDate,time:Time,chalakim:number}}
      */
     static getMolad(month: number, year: number): { jDate: jDate, time: Time, chalakim: number } {
+        
         let totalMonths, partsElapsed, hoursElapsed, parts, monthAdj = month - 7;
 
         if (monthAdj < 0) {
@@ -29,8 +30,10 @@ export default class Molad {
             Utils.toInt(partsElapsed / 1080) - 6;
         parts = Utils.toInt((partsElapsed % 1080) + 1080 * (hoursElapsed % 24));
 
+        //The molad of year Tohu is absolute day -1373429
+        const absoluteDays = (1 + (29 * Utils.toInt(totalMonths))) + Utils.toInt((hoursElapsed / 24)) - 1373429;
         return {
-            jDate: new jDate((1 + (29 * Utils.toInt(totalMonths))) + Utils.toInt((hoursElapsed / 24))),
+            jDate: new jDate(Math.floor(absoluteDays)),
             time: { hour: Utils.toInt(hoursElapsed) % 24, minute: Utils.toInt((parts % 1080) / 18), second: 0 },
             chalakim: parts % 18
         };
