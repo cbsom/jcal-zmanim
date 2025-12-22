@@ -1,6 +1,6 @@
 
-import { Utils } from '../Utils.js';
-import jDate from './jDate.js';
+import DateUtils from './DateUtils.js';
+import type jDate from './jDate.js';
 import Location from './Location.js';
 import { SunTimes, Time } from '../jcal-zmanim.js';
 
@@ -22,17 +22,17 @@ export default class Zmanim {
      */
     static getSunTimes(date: Date | jDate | string, location: Location, considerElevation = true): SunTimes {
         let absDate: number;
-        if (date instanceof jDate) {
-            absDate = date.Abs;
-            date = date.getDate();
+        if ((date as any).Abs) { // Duck typing jDate
+            absDate = (date as any).Abs;
+            date = (date as any).getDate();
         } else {
             if (typeof date === 'string' || date instanceof String) {
                 date = new Date(date as string);
             }
-            if (!Utils.isValidDate(date)) {
+            if (!DateUtils.isValidDate(date)) {
                 throw 'Zmanim.getSunTimes: supplied date parameter cannot be converted to a Date';
             }
-            absDate = jDate.absSd(date as Date);
+            absDate = DateUtils.absSd(date as Date);
         }
 
         const cacheKey = `${absDate}|${location.Name}|${location.Latitude}|${location.Longitude}|${location.Elevation}|${considerElevation}`;
@@ -46,7 +46,7 @@ export default class Zmanim {
             xmRise = 0, xmSet = 0, xlRise = 0, xlSet = 0, aRise = 0, aSet = 0, ahrRise = 0, ahrSet = 0,
             hRise = 0, hSet = 0, tRise = 0, tSet = 0, utRise = 0, utSet = 0;
 
-        const day = Zmanim.dayOfYear(date),
+        const day = Zmanim.dayOfYear(date as Date),
             earthRadius = 6356900,
             zenithAtElevation = Zmanim.degToDec(zenithDeg, zenithMin) +
                 Zmanim.radToDeg(Math.acos(earthRadius / (earthRadius +
@@ -91,7 +91,7 @@ export default class Zmanim {
         if (Math.abs(hRise) <= 1) {
             hRise = 57.29578 * Math.acos(hRise);
             utRise = ((360 - hRise) / 15) + ahrRise + Zmanim.adj(tRise) + lonHour;
-            sunrise = Zmanim.timeAdj(utRise + location.UTCOffset, date, location);
+            sunrise = Zmanim.timeAdj(utRise + location.UTCOffset, date as Date, location);
             if (sunrise.hour > 12) {
                 sunrise.hour -= 12;
             }
@@ -100,7 +100,7 @@ export default class Zmanim {
         if (Math.abs(hSet) <= 1) {
             hSet = 57.29578 * Math.acos(hSet);
             utSet = (hRise / 15) + ahrSet + Zmanim.adj(tSet) + lonHour;
-            sunset = Zmanim.timeAdj(utSet + location.UTCOffset, date, location);
+            sunset = Zmanim.timeAdj(utSet + location.UTCOffset, date as Date, location);
             if (sunset.hour > 0 && sunset.hour < 12) {
                 sunset.hour += 12;
             }
@@ -136,8 +136,8 @@ export default class Zmanim {
         if (rise === undefined || isNaN(rise.hour) || set === undefined || isNaN(set.hour)) {
             return { hour: NaN, minute: NaN };
         }
-        const chatz = Utils.toInt((Utils.totalSeconds(set) - Utils.totalSeconds(rise)) / 2);
-        return Utils.addSeconds(rise, chatz);
+        const chatz = DateUtils.toInt((DateUtils.totalSeconds(set) - DateUtils.totalSeconds(rise)) / 2);
+        return DateUtils.addSeconds(rise, chatz);
     }
 
     /**
@@ -167,11 +167,11 @@ export default class Zmanim {
         }
 
         if (offset) {
-            rise = Utils.addMinutes(rise, -offset) as Time;
-            set = Utils.addMinutes(set, offset) as Time;
+            rise = DateUtils.addMinutes(rise, -offset) as Time;
+            set = DateUtils.addMinutes(set, offset) as Time;
         }
 
-        return (Utils.totalSeconds(set) - Utils.totalSeconds(rise)) / 720;
+        return (DateUtils.totalSeconds(set) - DateUtils.totalSeconds(rise)) / 720;
     }
 
     /**
@@ -180,14 +180,14 @@ export default class Zmanim {
      */
     static getShaaZmanisMga(sunTimes: SunTimes, israel: boolean) {
         const minutes = israel ? 90 : 72;
-        let rise = sunTimes.sunrise && Utils.addMinutes(sunTimes.sunrise, -minutes),
-            set = sunTimes.sunset && Utils.addMinutes(sunTimes.sunset, minutes);
+        let rise = sunTimes.sunrise && DateUtils.addMinutes(sunTimes.sunrise, -minutes),
+            set = sunTimes.sunset && DateUtils.addMinutes(sunTimes.sunset, minutes);
 
         if (!rise || isNaN(rise.hour) || !set || isNaN(set.hour)) {
             return NaN;
         }
 
-        return (Utils.totalSeconds(set) - Utils.totalSeconds(rise)) / 720;
+        return (DateUtils.totalSeconds(set) - DateUtils.totalSeconds(rise)) / 720;
     }
 
     /**
@@ -214,7 +214,7 @@ export default class Zmanim {
      * @param {Location} location
      */
     static getCandleLightingFromSunset(sunset: Time, location: Location) {
-        return Utils.addMinutes(sunset, -(location.CandleLighting || 0));
+        return DateUtils.addMinutes(sunset, -(location.CandleLighting || 0));
     }
 
     /**
@@ -222,7 +222,7 @@ export default class Zmanim {
      */
     static dayOfYear(date: Date) {
         const month = date.getMonth(),
-            isLeap = () => Utils.isSecularLeapYear(date.getFullYear()),
+            isLeap = () => DateUtils.isSecularLeapYear(date.getFullYear()),
             yearDay = [0, 1, 32, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335];
         return yearDay[month + 1] + date.getDate() + ((month > 1 && isLeap()) ? 1 : 0);
     }
@@ -272,15 +272,15 @@ export default class Zmanim {
         if (time < 0) {
             time += 24;
         }
-        let hour = Utils.toInt(time);
+        let hour = DateUtils.toInt(time);
         const minFloat = (time - hour) * 60 + 0.5,
-            min = Utils.toInt(minFloat),
+            min = DateUtils.toInt(minFloat),
             sec = Math.round(60.0 * (minFloat - min));
 
-        if (Utils.isDST(location, date)) {
+        if (DateUtils.isDST(location, date)) {
             hour++;
         }
 
-        return Utils.fixTime({ hour: hour, minute: min, second: sec });
+        return DateUtils.fixTime({ hour: hour, minute: min, second: sec });
     }
 }

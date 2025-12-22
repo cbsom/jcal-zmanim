@@ -85,4 +85,21 @@ describe("Basic jDate", () => {
         const output = Molad.getString(5784, 9);
         expect(output).toBe('Monday 7:17:00 AM and 2 Chalakim');
     });
+
+    test('Polar Region Exception', () => {
+        // Antarctica - verify it throws the expected error
+        const antarctica = { Latitude: -82, Longitude: 0, Name: 'Antarctica', UTCOffset: 0, Elevation: 0 };
+        const date = new jDate(5785, 4, 1); // Winter in Antarctica (Summer in North) calculations might fail?
+        // Actually, Teves (Winter in North) -> Summer in South -> Sun always UP? or Down?
+        // In Antarctica:
+        // Dec (Summer) -> Sun always UP (Midnight Sun). No Rise/Set.
+        // June (Winter) -> Sun always DOWN (Polar Night).
+        // Teves 5785 is approx Dec 2024 / Jan 2025.
+        // So it should be Polar Day (Midnight Sun).
+        // The Exception Check looks for "No conversion".
+        // My code throws if !sunrise || !sunset.
+        expect(() => {
+            date.getSunriseSunset(antarctica);
+        }).toThrow(/Zmanim Calculation Error/);
+    });
 });

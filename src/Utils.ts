@@ -2,6 +2,7 @@ import Zmanim from "./JCal/Zmanim.js";
 import jDate from "./JCal/jDate.js";
 import Location from "./JCal/Location.js";
 import { Time } from "./jcal-zmanim.js";
+import DateUtils from "./JCal/DateUtils.js";
 
 const __DEV__ = process.env.NODE_ENV === "development";
 
@@ -93,7 +94,7 @@ export const DaysOfWeekHeb = [
   "ערב שבת קודש",
   "שבת קודש",
 ];
-export class Utils {
+export class Utils extends DateUtils {
   static jsd = ["א", "ב", "ג", "ד", "ה", "ו", "ז", "ח", "ט"];
   static jtd = ["י", "כ", "ל", "מ", "נ", "ס", "ע", "פ", "צ"];
   static jhd = ["ק", "ר", "ש", "ת"];
@@ -189,36 +190,7 @@ export class Utils {
     );
   }
 
-  /**
-   * Add two character suffix to number. e.g. 21st, 102nd, 93rd, 500th
-   * @param {Number} num
-   */
-  static toSuffixed(num: number) {
-    const t = num.toString();
-    let suffix = "th";
-    if (t.length === 1 || t[t.length - 2] !== "1") {
-      switch (t[t.length - 1]) {
-        case "1":
-          suffix = "st";
-          break;
-        case "2":
-          suffix = "nd";
-          break;
-        case "3":
-          suffix = "rd";
-          break;
-      }
-    }
-    return t + suffix;
-  }
 
-  /**
-   * Returns if the given full secular year has a February 29th
-   * @param {Number} year
-   */
-  static isSecularLeapYear(year: number) {
-    return !(year % 400) || (!!(year % 100) && !(year % 4));
-  }
 
   /**
    * Get day of week using Javascripts getDay function.
@@ -232,123 +204,9 @@ export class Utils {
     return new Date(year, month - 1, day).getDay();
   }
 
-  /**
-   * Makes sure hour is between 0 and 23 and minute is between 0 and 59.
-   * Overlaps get added/subtracted.
-   * The argument needs to be an object in the format {hour : 12, minute : 42, second : 18}
-   * @param {Time} time
-   */
-  static fixTime(time: Time) {
-    //make a copy - javascript sends object parameters by reference
-    const result = {
-      hour: time.hour,
-      minute: time.minute,
-      second: time.second || 0,
-    };
-    while (result.second >= 60) {
-      result.minute += 1;
-      result.second -= 60;
-    }
-    while (result.second < 0) {
-      result.minute -= 1;
-      result.second += 60;
-    }
-    while (result.minute < 0) {
-      result.minute += 60;
-      result.hour--;
-    }
-    while (result.minute >= 60) {
-      result.minute -= 60;
-      result.hour++;
-    }
-    if (result.hour < 0) {
-      result.hour = 24 + (result.hour % 24);
-    }
-    if (result.hour > 23) {
-      result.hour = result.hour % 24;
-    }
-    return result;
-  }
 
-  /**
-   * Add the given number of minutes to the given time.
-   * The argument needs to be an object in the format {hour : 12, minute : 42, second : 18 }
-   *
-   * @param {Time} time
-   * @param {Number} minutes
-   */
-  static addMinutes(time?: Time, minutes?: number): Time | undefined {
-    if (!time) return time;
-    return (
-      time &&
-      Utils.fixTime({
-        hour: time.hour,
-        minute: time.minute + (minutes || 0),
-        second: time.second,
-      })
-    );
-  }
 
-  /**
-   * Add the given number of seconds to the given time.
-   * The argument needs to be an object in the format {hour : 12, minute :42, second : 18}
-   *
-   * @param {Time} time
-   * @param {Number} seconds
-   */
-  static addSeconds(time: Time, seconds: number) {
-    return Utils.fixTime({
-      hour: time.hour,
-      minute: time.minute,
-      second: (time.second || 0) + seconds,
-    });
-  }
 
-  /**
-   * Gets the time difference between two times of day.
-   * If showNegative is falsey, assumes that the earlier time is always before the later time.
-   * So, if laterTime is less than earlierTime, the returned diff is until the next day.
-   * Both arguments need to be an object in the format {hour : 12, minute : 42, second : 18 }
-   * @param {Time} earlierTime
-   * @param {Time} laterTime
-   * @param {Boolean} [showNegative] show negative values or assume second value is next day?
-   * @returns{{hour:number, minute:number, second:number, sign:1|-1}}
-   */
-  static timeDiff(earlierTime: Time, laterTime: Time, showNegative = false) {
-    const earlySec = Utils.totalSeconds(earlierTime),
-      laterSec = Utils.totalSeconds(laterTime),
-      time = Utils.fixTime({
-        hour: 0,
-        minute: 0,
-        second:
-          earlySec <= laterSec
-            ? laterSec - earlySec
-            : showNegative
-            ? earlySec - laterSec
-            : 86400 - earlySec + laterSec,
-      });
-
-    return {
-      ...time,
-      sign: earlySec <= laterSec || !showNegative ? 1 : -1,
-    };
-  }
-
-  /**
-   * Gets the total number of minutes in the given time.
-   * @param {Time} time An object in the format {hour : 12, minute :42, second : 18}
-   */
-  static totalMinutes(time: Time) {
-    return time ? time.hour * 60 + time.minute : 0;
-  }
-
-  /**
-   * Gets the total number of seconds in the given time.
-   * @param {Time} time An object in the format {hour : 12, minute :42, second : 18}
-   */
-  static totalSeconds(time: Time) {
-    return time ? Utils.totalMinutes(time) * 60 + (time.second || 0) : 0;
-  }
 
   /**
    * Returns the time of the given javascript date as an object in the format of {hour : 23, minute :42, second: 18 }
@@ -392,9 +250,8 @@ export class Utils {
       if (t.length) {
         t += " ";
       }
-      t += `${Math.trunc(time.second || 0).toString()} ${
-        time.second === 1 ? "שנייה" : "שניות"
-      }\u{00AD}`;
+      t += `${Math.trunc(time.second || 0).toString()} ${time.second === 1 ? "שנייה" : "שניות"
+        }\u{00AD}`;
     }
     return t;
   }
@@ -418,9 +275,8 @@ export class Utils {
       if (t.length) {
         t += " ";
       }
-      t += `${Math.trunc(time.second || 0).toString()} ${
-        time.second === 1 ? "second" : "seconds"
-      }\u{00AD}`;
+      t += `${Math.trunc(time.second || 0).toString()} ${time.second === 1 ? "second" : "seconds"
+        }\u{00AD}`;
     }
     return t;
   }
@@ -525,106 +381,7 @@ export class Utils {
     }
   }
 
-  /**
-   * Gets the UTC offset in whole hours for the users time zone.
-   * Note: this is not affected by DST - unlike javascripts getTimezoneOffset() function which gives you the current offset.
-   */
-  static currUtcOffset() {
-    const date = new Date(),
-      jan = new Date(date.getFullYear(), 0, 1),
-      jul = new Date(date.getFullYear(), 6, 1);
-    return -Utils.toInt(Math.max(jan.getTimezoneOffset(), jul.getTimezoneOffset()) / 60);
-  }
 
-  /** Determines if the given date is within DST on the users system */
-  static isDateDST(date: Date) {
-    return -Utils.toInt(date.getTimezoneOffset() / 60) !== Utils.currUtcOffset();
-  }
-
-  /**
-   * Determines if the given date is within DST in the given location
-   * Note: This may not be correct if the user has set the Location to a
-   * time zone outside Israel or the USA which is not the current system time zone.
-   */
-  static isDST(location: Location, date: Date) {
-    //If the current system time zone is the same as the given locations time zone
-    if (location.UTCOffset === Utils.currUtcOffset()) {
-      //We can use the system data to determine if the given date is within DST
-      return Utils.isDateDST(date);
-    } else if (location.Israel) {
-      return Utils.isIsrael_DST(date);
-    } else {
-      return Utils.isUSA_DST(date);
-    }
-  }
-
-  /**
-   * Determines if the given javascript date is during DST according to the USA rules
-   * @param {Date} date A javascript Date object
-   */
-  static isUSA_DST(date: Date) {
-    const year = date.getFullYear(),
-      month = date.getMonth() + 1,
-      day = date.getDate(),
-      hour = date.getHours();
-
-    if (month < 3 || month == 12) {
-      return false;
-    } else if (month > 3 && month < 11) {
-      return true;
-    }
-
-    //DST starts at 2 AM on the second Sunday in March
-    else if (month === 3) {
-      //March
-      //Gets day of week on March 1st
-      const firstDOW = Utils.getSdDOW(year, 3, 1),
-        //Gets date of second Sunday
-        targetDate = firstDOW == 0 ? 8 : 7 - ((firstDOW + 7) % 7) + 8;
-
-      return day > targetDate || (day === targetDate && hour >= 2);
-    }
-    //DST ends at 2 AM on the first Sunday in November //dt.Month == 11 / November
-    else {
-      //Gets day of week on November 1st
-      const firstDOW = Utils.getSdDOW(year, 11, 1),
-        //Gets date of first Sunday
-        targetDate = firstDOW === 0 ? 1 : 7 - ((firstDOW + 7) % 7) + 1;
-
-      return day < targetDate || (day === targetDate && hour < 2);
-    }
-  }
-
-  //
-  /**
-   * Determines if the given Javascript date is during DST according to the current (5776) Israeli rules
-   * @param {Date} date A Javascript Date object
-   */
-  static isIsrael_DST(date: Date) {
-    const year = date.getFullYear(),
-      month = date.getMonth() + 1,
-      day = date.getDate(),
-      hour = date.getHours();
-
-    if (month > 10 || month < 3) {
-      return false;
-    } else if (month > 3 && month < 10) {
-      return true;
-    }
-    //DST starts at 2 AM on the Friday before the last Sunday in March
-    else if (month === 3) {
-      //March
-      //Gets date of the Friday before the last Sunday
-      const lastFriday = 31 - Utils.getSdDOW(year, 3, 31) - 2;
-      return day > lastFriday || (day === lastFriday && hour >= 2);
-    }
-    //DST ends at 2 AM on the last Sunday in October //dt.Month === 10 / October
-    else {
-      //Gets date of last Sunday in October
-      const lastSunday = 31 - Utils.getSdDOW(year, 10, 31);
-      return day < lastSunday || (day === lastSunday && hour < 2);
-    }
-  }
 
   /** The current time in Israel - determined by the current users system time and time zone offset*/
   static getSdNowInIsrael() {
@@ -697,17 +454,7 @@ export class Utils {
     }
     return new jDate(sdate);
   }
-  /**
-   * Converts the given complex number to an integer by removing the decimal part.
-   * Returns same results as Math.floor for positive numbers and Math.ceil for negative ones.
-   * Almost identical functionality to Math.trunc and parseInt.
-   * The difference is if the argument is NaN. Math.trunc returns NaN while ths fuction returns 0.
-   * In performance tests, this function was found to be quicker than the alternatives.
-   * @param {Number} float The complex number to convert to an integer
-   */
-  static toInt(float: number) {
-    return float | 0;
-  }
+
 
   /***
    * Takes either a jDate or a Date and returns both
@@ -727,20 +474,7 @@ export class Utils {
   static isNumber(thing: unknown) {
     return typeof thing === "number" || thing instanceof Number;
   }
-  /** Returns true if "thing" is a Date object containing a valid date.*/
-  static isValidDate(thing: unknown) {
-    return thing instanceof Date && !isNaN(thing.valueOf());
-  }
-  /** Returns whether or not the given, array, string, or argument list contains the given item or substring.
-   *
-   * This function is awfully similar to Array.includes, but has the added plus of accepting any number or type of arguments.*/
-  static has(o: unknown, ...arr: unknown[]) {
-    if (arr.length === 1 && (Array.isArray(arr[0]) || Utils.isString(arr[0]))) {
-      return (arr[0] as unknown[]).includes(o);
-    } else {
-      return arr.includes(o);
-    }
-  }
+
   /** Returns the first value unless it is undefined, null or NaN.
    *
    * This is very useful for boolean, string and integer parameters

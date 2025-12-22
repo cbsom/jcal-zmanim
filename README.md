@@ -10,11 +10,11 @@ OR
 
 > _yarn add jcal-zmanim_
 
-### Performance 🚀
+### Performance
 
 As of version 1.5.8, `jcal-zmanim` includes built-in caching for complex astronomical and calendar calculations.
 
-- **Zmanim Caching:** Sunrise/Sunset calculations are cached per date/location to drastically improve performance when rendering calendars or lists of zmanim.
+- **Zmanim Caching:** Sunrise/Sunset calculations are cached per date/location to improve performance when rendering calendars or lists of zmanim.
 - **Calendar Caching:** Year-based calculations are cached to speed up date conversions and manipulations.
 
 ### Some basic uses of _jcal-zmanim_
@@ -128,7 +128,7 @@ const dallas = findLocation("Dallas");
 //Get the candle-lighting time
 const candles = erevShabbos.getCandleLighting(dallas);
 
-//Spit in out formatted nicely...
+//Spit it out - formatted nicely...
 console.log(
   `Candle lighting time in ${dallas.Name} on ${erevShabbos.toString()} is at ${Utils.getTimeString(
     candles
@@ -353,6 +353,12 @@ const myLocation = new Location(
 );
 ```
 
+### Polar Regions
+
+Calculations for locations in **Polar Regions** (where sunrise or sunset may not occur daily) will throw a specific `Error`.
+`Zmanim.getSunTimes` and other Zmanim calculation functions will fail if the sun does not rise or set on the given date in the given location.
+Ensure your application handles these errors (e.g., using `try...catch`) if supporting such locations.
+
 ---
 
 ## Zmanim
@@ -508,7 +514,7 @@ const zmanimForThose = ZmanimUtils.getZmanTimes(
   lakewood
 );
 
-//Print them out nicely
+//Print them out
 for (let zman of zmanimForThose) {
   console.log(`${zman.zmanType.eng}: ${Utils.getTimeString(zman.time)}`);
 }

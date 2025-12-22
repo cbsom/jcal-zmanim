@@ -4,6 +4,7 @@ import PirkeiAvos from "./PirkeiAvos.js";
 import Zmanim from "./Zmanim.js";
 import DafYomi from "./Dafyomi.js";
 import Location from "./Location.js";
+import DateUtils from "./DateUtils.js";
 
 //The absolute date for the zero hour of all javascript date objects - 1/1/1970 0:00:00 UTC
 const JS_START_DATE_ABS = 719163,
@@ -71,14 +72,14 @@ const JS_START_DATE_ABS = 719163,
   getElapsedDays = (year: number) => {
     if (elapsedDaysCache.has(year)) return elapsedDaysCache.get(year)!;
     let daysCounter = 0;
-    const months = Utils.toInt(
-      235 * Utils.toInt((year - 1) / 19) + // Leap months this cycle
+    const months = DateUtils.toInt(
+      235 * DateUtils.toInt((year - 1) / 19) + // Leap months this cycle
       12 * ((year - 1) % 19) + // Regular months in this cycle.
       (7 * ((year - 1) % 19) + 1) / 19
     ), // Months in complete cycles so far.
       parts = 204 + 793 * (months % 1080),
-      hours = 5 + 12 * months + 793 * Utils.toInt(months / 1080) + Utils.toInt(parts / 1080),
-      conjDay = Utils.toInt(1 + 29 * months + hours / 24),
+      hours = 5 + 12 * months + 793 * DateUtils.toInt(months / 1080) + DateUtils.toInt(parts / 1080),
+      conjDay = DateUtils.toInt(1 + 29 * months + hours / 24),
       conjParts = 1080 * (hours % 24) + (parts % 1080);
 
     /* at the end of a leap year -  15 hours, 589 parts or later... -
@@ -97,7 +98,7 @@ const JS_START_DATE_ABS = 719163,
     }
 
     // A day is added if Rosh HaShanah would occur on Sunday, Friday or Wednesday,
-    if (Utils.has(daysCounter % 7, 0, 3, 5)) {
+    if (DateUtils.has(daysCounter % 7, 0, 3, 5)) {
       daysCounter += 1;
     }
     elapsedDaysCache.set(year, daysCounter);
@@ -151,7 +152,7 @@ export default class jDate {
     if (arguments.length === 0) {
       this.fromAbs(jDate.absSd(new Date()));
     } else if (arg instanceof Date) {
-      if (Utils.isValidDate(arg)) {
+      if (DateUtils.isValidDate(arg)) {
         this.fromAbs(jDate.absSd(arg));
       } else {
         throw "jDate constructor: The given Date is not a valid javascript Date";
@@ -161,14 +162,14 @@ export default class jDate {
       this.Month = arg[1];
       this.Year = arg[2];
       this.Abs = (arg.length > 3 && arg[3]) || jDate.absJd(this.Year, this.Month, this.Day);
-    } else if (arg && Utils.isString(arg)) {
+    } else if (arg && DateUtils.isString(arg)) {
       const d = new Date(arg as string);
-      if (Utils.isValidDate(d)) {
+      if (DateUtils.isValidDate(d)) {
         this.fromAbs(jDate.absSd(d));
       } else {
         throw 'jDate constructor: The given string "' + arg + '" cannot be parsed into a Date';
       }
-    } else if (Utils.isNumber(arg)) {
+    } else if (DateUtils.isNumber(arg)) {
       //if no other arguments were supplied, we assume that the supplied number is an absolute date
       if (arguments.length === 1) {
         this.fromAbs(arg as number);
@@ -185,7 +186,7 @@ export default class jDate {
     //If arg is an object that has a "year" property that contains a valid value...
     else if (typeof arg === "object") {
       const argObj = arg as { year: number; month: number; day: number; abs: number };
-      if (Utils.isNumber(argObj.year)) {
+      if (DateUtils.isNumber(argObj.year)) {
         this.Day = argObj.day || 1;
         this.Month = argObj.month || 7;
         this.Year = argObj.year;
@@ -504,10 +505,10 @@ export default class jDate {
   /**Is today Erev Yom Tov? (includes Erev second days of Sukkos and Pesach) */
   isErevYomTov(): boolean {
     return (
-      (this.Month === 1 && Utils.has(this.Day, 14, 20)) ||
+      (this.Month === 1 && DateUtils.has(this.Day, 14, 20)) ||
       (this.Month === 3 && this.Day === 5) ||
       (this.Month === 6 && this.Day === 29) ||
-      (this.Month === 7 && Utils.has(this.Day, 9, 14, 21))
+      (this.Month === 7 && DateUtils.has(this.Day, 9, 14, 21))
     );
   }
 
@@ -639,7 +640,7 @@ export default class jDate {
     // If just the year is set, then the date is set to Rosh Hashana of that year.
     // In the above scenario, we can't just pass the args along, as the constructor will treat it as an absolute date.
     //...and that folks, is actually the whole point of this function...
-    else if (Utils.isNumber(arg) && arguments.length === 1) {
+    else if (DateUtils.isNumber(arg) && arguments.length === 1) {
       return new jDate(arg, 7, 1);
     } else {
       return new jDate(arg, month, day, abs);
@@ -653,7 +654,7 @@ export default class jDate {
   /**Calculate the Jewish year, month and day for the given absolute date.*/
   static fromAbs(absDay: number): { year: number; month: number; day: number } {
     //To save on calculations, start with a few years before date
-    let year = 3761 + Utils.toInt(absDay / (absDay > 0 ? 366 : 300)),
+    let year = 3761 + DateUtils.toInt(absDay / (absDay > 0 ? 366 : 300)),
       month: number,
       day: number;
 
@@ -676,12 +677,7 @@ export default class jDate {
    * @param {Date} date
    */
   static absSd(date: Date): number {
-    //Get the correct number of milliseconds since 1/1/1970 00:00:00 UTC until current system time
-    const ms = date.valueOf() - date.getTimezoneOffset() * 60000,
-      //The number of full days since 1/1/1970.
-      numFullDays = Math.floor(ms / MS_PER_DAY);
-    //Add that to the number of days from 1/1/0001 until 1/1/1970 00:00:00 UTC
-    return JS_START_DATE_ABS + numFullDays;
+    return DateUtils.absSd(date);
   }
 
   /**Calculate the absolute date for the given Jewish Date.*/
@@ -716,18 +712,7 @@ export default class jDate {
    * Gets a javascript date from an absolute date
    */
   static sdFromAbs(abs: number): Date {
-    //The "zero hour" for Javascript is 1/1/1970 0:00:00 UTC.
-    //If the time zone offset was more than 0, the current time zone was earlier than UTC at the time.
-    //As the "zero hour" is at midnight, so if the current time was earlier than that, than it was during the previous date.
-    //So we will need to add another day to get the correct date.
-    const offset = JS_START_OFFSET > 0 ? 1 : 0,
-      //Get the number of days from the "zero hour" until the given date.
-      //This is done by taking the given absolute date and removing the
-      //number of days from absolute date 0 until the js "zero hour" - keeping into
-      //account the previously calculated possible day offset.
-      daysSinceStart = abs - JS_START_DATE_ABS + offset;
-    //Create a javascript date from the number of milliseconds since the "zero hour"
-    return new Date(daysSinceStart * MS_PER_DAY);
+    return DateUtils.sdFromAbs(abs);
   }
 
   /**number of days in the given Jewish Month. Nissan is 1 and Adar Sheini is 13.*/
