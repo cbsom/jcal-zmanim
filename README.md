@@ -1,6 +1,6 @@
 # jcal-zmanim
 
-A very complete JavaScript library for the Jewish Calendar.
+A comprehensive JavaScript library for the Jewish Calendar.
 
 ### To add _jcal-zmanim_ to your project
 
@@ -581,6 +581,30 @@ The above code printed out:
 |        **sedras** | `[{eng, heb}]` | An array for the `Sedra` of the week for the current [jDate](#the-jdate-object).<br>Each item in the array contains the `eng` (English) name of that _parsha_ and `heb`, the Hebrew name. |
 |    **toString()** |    `string`    | Gets the sedra/s names in English as a string. If there are two, they are separated by a " - "                                                                                            |
 | **toStringHeb()** |    `string`    | Gets the sedra/s names in Hebrew as a string. If there are two, they are separated by a " - "                                                                                             |
+
+---
+
+## The Dafyomi Object
+
+The `Dafyomi` class allows you to get the daily Daf Yomi details as an object, rather than just a string.
+
+```javascript
+import { jDate, Dafyomi } from "jcal-zmanim";
+
+const today = jDate.now();
+const daf = Dafyomi.getDaf(today);
+
+console.log(`Masechta: ${daf.masechet.eng}`);
+console.log(`Daf: ${daf.daf}`);
+```
+
+#### Dafyomi Functions
+
+|                           Name |                              Return Type                               | Description                                                                                                                |
+| -----------------------------: | :--------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------------------- |
+|      **Dafyomi.getDaf(jDate)** | `{ masechet: { eng: string, heb: string, daf: number }, daf: number }` | Returns an object containing the Masechta and the daf number. `masechet.daf` is the total number of blatt in the Masechta. |
+|    **Dafyomi.toString(jDate)** |                                `string`                                | Returns the daily daf in English. e.g. "Sukkah, Daf 3"                                                                     |
+| **Dafyomi.toStringHeb(jDate)** |                                `string`                                | Returns the daily daf in Hebrew. e.g. "סוכה דף כ"                                                                          |
 
 ---
 

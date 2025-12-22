@@ -1,4 +1,4 @@
-import {Utils, DaysOfWeek} from '../Utils.js';
+import { Utils, DaysOfWeek } from '../Utils.js';
 import Zmanim from './Zmanim.js';
 import Location from './Location.js';
 import jDate from './jDate.js';
@@ -30,7 +30,7 @@ export const WhichDaysFlags = Object.freeze({
 });
 
 export default class ZmanimUtils {
-    static zmanTimesCache: ZmanTime[] = [];   
+    static zmanTimesCache = new Map<string, ZmanTime>();
 
     /**
      * Gets the zmanim for all the types in the given list.
@@ -41,11 +41,8 @@ export default class ZmanimUtils {
      * @returns{[{zmanType:{id:number,offset:?number,desc:string,eng:string,heb:string },time:Time}]}
      */
     static getZmanTimes(zmanTypes: ZmanToShow[], date: Date, jdate: jDate, location: Location): { zmanType: ZmanToShow, time?: Time }[] {
-        const mem = ZmanimUtils.zmanTimesCache.find(
-            (z) =>
-                Utils.isSameSdate(z.date, date) &&
-                z.location.Name === location.Name,
-        ),
+        const key = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}|${location.Name}`;
+        const mem = ZmanimUtils.zmanTimesCache.get(key),
             zmanTimes: { zmanType: ZmanToShow, time?: Time }[] = [],
             whichDay = ZmanimUtils.getWhichDays(date, jdate, location);
         let sunrise: Time | undefined,
@@ -88,7 +85,11 @@ export default class ZmanimUtils {
                 sunsetMishor &&
                 Zmanim.getShaaZmanisMga(suntimesMishor, true);
 
-            ZmanimUtils.zmanTimesCache.push({
+            if (ZmanimUtils.zmanTimesCache.size > 2000) {
+                const firstKey = ZmanimUtils.zmanTimesCache.keys().next().value;
+                if (firstKey) ZmanimUtils.zmanTimesCache.delete(firstKey);
+            }
+            ZmanimUtils.zmanTimesCache.set(key, {
                 date,
                 location,
                 sunrise,

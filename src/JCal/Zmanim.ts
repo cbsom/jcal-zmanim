@@ -106,6 +106,11 @@ export default class Zmanim {
             }
         }
 
+        if (!sunrise || !sunset) {
+            const formattedDate = typeof (date as any).toDateString === 'function' ? (date as Date).toDateString() : date.toString();
+            throw new Error(`Zmanim Calculation Error: The sun does not rise or set at location "${location.Name}" (Lat: ${location.Latitude}) on ${formattedDate}. The location may be in a Polar region (Polar Night/Day).`);
+        }
+
         const result = { sunrise: sunrise, sunset: sunset };
         Zmanim._sunTimesCache.set(cacheKey, result);
         if (Zmanim._sunTimesCache.size > 2000) Zmanim._sunTimesCache.clear();
