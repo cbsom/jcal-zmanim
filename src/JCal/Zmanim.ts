@@ -1,5 +1,5 @@
 
-import {Utils} from '../Utils.js';
+import { Utils } from '../Utils.js';
 import jDate from './jDate.js';
 import Location from './Location.js';
 import { SunTimes, Time } from '../jcal-zmanim.js';
@@ -10,6 +10,7 @@ import { SunTimes, Time } from '../jcal-zmanim.js';
  * Jewish calendar calculation in C# Copyright © by Ulrich and Ziporah Greve (2005)
  */
 export default class Zmanim {
+    private static _sunTimesCache = new Map<string, SunTimes>();
     /**
      * Gets sunrise and sunset time for given date and Location.
      * Accepts a javascript Date object, a string for creating a javascript date object or a jDate object.
@@ -19,16 +20,24 @@ export default class Zmanim {
      * @param {Location} location Where on the globe to calculate the sun times for.
      * @param {Boolean} considerElevation
      */
-    static getSunTimes(date: Date | jDate, location: Location, considerElevation = true): SunTimes {
+    static getSunTimes(date: Date | jDate | string, location: Location, considerElevation = true): SunTimes {
+        let absDate: number;
         if (date instanceof jDate) {
+            absDate = date.Abs;
             date = date.getDate();
-        }
-        else if (date instanceof String) {
-            date = new Date(date);
+        } else {
+            if (typeof date === 'string' || date instanceof String) {
+                date = new Date(date as string);
+            }
+            if (!Utils.isValidDate(date)) {
+                throw 'Zmanim.getSunTimes: supplied date parameter cannot be converted to a Date';
+            }
+            absDate = jDate.absSd(date as Date);
         }
 
-        if (!Utils.isValidDate(date)) {
-            throw 'Zmanim.getSunTimes: supplied date parameter cannot be converted to a Date';
+        const cacheKey = `${absDate}|${location.Name}|${location.Latitude}|${location.Longitude}|${location.Elevation}|${considerElevation}`;
+        if (Zmanim._sunTimesCache.has(cacheKey)) {
+            return Zmanim._sunTimesCache.get(cacheKey)!;
         }
 
         let sunrise, sunset,
@@ -97,7 +106,10 @@ export default class Zmanim {
             }
         }
 
-        return { sunrise: sunrise, sunset: sunset };
+        const result = { sunrise: sunrise, sunset: sunset };
+        Zmanim._sunTimesCache.set(cacheKey, result);
+        if (Zmanim._sunTimesCache.size > 2000) Zmanim._sunTimesCache.clear();
+        return result;
     }
 
     /**

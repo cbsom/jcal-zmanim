@@ -62,12 +62,14 @@ const JS_START_DATE_ABS = 719163,
     0, 7, 4, 7, 0, 1, 8, 0, 1, 8, 0, 7, 1, 4, 13, 1, 1, 8, 0, 1, 7, 0, 8, 1, 0, 8, 1, 0, 7, 4, 7, 0,
     1, 8, 0, 1, 8, 1, 0, 7, 4, 13, 1, 1, 8, 0, 1, 7, 0, 8, 1, 0, 8, 1, 0, 7,
   ],
+  elapsedDaysCache = new Map<number, number>(),
   /** Returns elapsed days since creation of the world until Rosh Hashana of the given year.
    *  These algorithms are based on the C code which was translated from Lisp
    *  in "Calendrical Calculations" by Nachum Dershowitz and Edward M. Reingold
    *  in Software---Practice & Experience, vol. 20, no. 9 (September, 1990), pp. 899--928.
    */
   getElapsedDays = (year: number) => {
+    if (elapsedDaysCache.has(year)) return elapsedDaysCache.get(year)!;
     let daysCounter = 0;
     const months = Utils.toInt(
       235 * Utils.toInt((year - 1) / 19) + // Leap months this cycle
@@ -98,6 +100,7 @@ const JS_START_DATE_ABS = 719163,
     if (Utils.has(daysCounter % 7, 0, 3, 5)) {
       daysCounter += 1;
     }
+    elapsedDaysCache.set(year, daysCounter);
     return daysCounter;
   };
 /** Represents a single day in the Jewish Calendar. */
