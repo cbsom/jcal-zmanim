@@ -399,15 +399,15 @@ export default class jDate {
    * Returns the current Jewish date in the format: Thursday, the 3rd of Kislev 5776.
    * @param {boolean} hideDayOfWeek
    * @param {boolean} dontCapitalize
+   * @param {boolean} showParsha Show the parsha name?
+   * @param {boolean} israel Use the Israeli calendar for determining the parsha?
    */
-  toString(hideDayOfWeek?: boolean, dontCapitalize?: boolean): string {
-    return (
-      (hideDayOfWeek ? (dontCapitalize ? "t" : "T") : DaysOfWeekEng[this.getDayOfWeek()] + ", t") +
-      "he " +
-      Utils.toSuffixed(this.Day) +
-      " of " +
-      this.monthName()
-    );
+  toString(hideDayOfWeek?: boolean, dontCapitalize?: boolean, showParsha?: boolean, israel?: boolean): string {
+    const sedra = this.getSedra(!!israel);
+    const parshas = (showParsha && sedra?.sedras.length > 0) ? ` of Parshas ${sedra.toString()}` : "";
+    const dayOfWeek = !hideDayOfWeek ? `${DaysOfWeekEng[this.getDayOfWeek()]}${parshas}, ` : "";
+    const prefix = (dontCapitalize || !hideDayOfWeek) ? "the " : "The ";
+    return `${dayOfWeek}${prefix}${Utils.toSuffixed(this.Day)} of ${this.monthName()}`;
   }
 
   /**
@@ -438,18 +438,17 @@ export default class jDate {
   }
 
   /**
-   * Returns the current Jewish date in the format: יום חמישי כ"א כסלו תשע"ו
+   * Returns the current Jewish date in the format: יום חמישי כ"א כסלו תשע"ו or יום חמישי לפרשת וישב, כ"א כסלו תשע"ו 
    * @param hideDayOfWeek When set to truthy, hides the day of the week
+   * @param showParsha When set to truthy, shows the parsha
+   * @param israel When set to truthy, uses the Israeli Calendar for ascertaining the parsha
    */
-  toStringHeb(hideDayOfWeek?: boolean): string {
-    return (
-      (!hideDayOfWeek ? DaysOfWeekHeb[this.getDayOfWeek()] + " " : "") +
-      Utils.toJewishNumber(this.Day) +
-      " " +
-      JewishMonthsHeb[this.Month] +
-      (this.Month === 12 && jDate.isJdLeapY(this.Year) ? " ראשון " : " ") +
-      Utils.toJewishNumber(this.Year % 1000)
-    );
+  toStringHeb(hideDayOfWeek?: boolean, showParsha?: boolean, israel?: boolean): string {
+    const dayOfWeek = !hideDayOfWeek ? `${DaysOfWeekHeb[this.getDayOfWeek()]} ` : "";
+    const sedra = this.getSedra(!!israel);
+    const parsha = (showParsha && sedra?.sedras.length > 0) ? `לפרשת ${sedra.toStringHeb()}, ` : "";
+    const monthAdar = `${JewishMonthsHeb[this.Month]}${this.Month === 12 && jDate.isJdLeapY(this.Year) ? " ראשון " : " "}`;
+    return `${dayOfWeek}${parsha}${Utils.toJewishNumber(this.Day)} ${monthAdar}${Utils.toJewishNumber(this.Year % 1000)}`;
   }
 
   /**Gets the day of the omer for the current Jewish date. If the date is not during sefira, 0 is returned.*/
