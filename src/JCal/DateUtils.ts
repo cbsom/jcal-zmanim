@@ -19,17 +19,12 @@ export default class DateUtils {
     /**
      * Add two character suffix to number. e.g. 21st, 102nd, 93rd, 500th
      */
-    static toSuffixed(num: number) {
-        const t = num.toString();
-        let suffix = "th";
-        if (t.length === 1 || t[t.length - 2] !== "1") {
-            switch (t[t.length - 1]) {
-                case "1": suffix = "st"; break;
-                case "2": suffix = "nd"; break;
-                case "3": suffix = "rd"; break;
-            }
-        }
-        return t + suffix;
+    static toSuffixed(num: number): string {
+        const suffixes = ["th", "st", "nd", "rd"];
+        return num.toString() +
+            (suffixes[(num % 100 - 20) % 10] ||
+                suffixes[num % 10] ||
+                suffixes[0]);
     }
 
     /**
