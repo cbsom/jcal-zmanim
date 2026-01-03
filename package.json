@@ -1,7 +1,7 @@
 {
   "name": "jcal-zmanim",
   "description": "A comprehensive JavaScript library for the Jewish Calendar, Zmanim, Holidays, and daily Shul notes.",
-  "version": "1.5.11",
+  "version": "1.5.12",
   "author": "Chaim B. Sommers <cb@compute.co.il>",
   "license": "GPL-3.0-or-later",
   "main": "./dist/index.js",
