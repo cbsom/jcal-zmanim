@@ -2,6 +2,30 @@
 
 A comprehensive JavaScript library for the Jewish Calendar.
 
+## Table of Contents
+
+- [Installation](#to-add-jcal-zmanim-to-your-project)
+- [Basic Usage](#some-basic-uses-of-jcal-zmanim)
+- [The jDate Object](#the-jdate-object)
+  - [Creating a jDate](#creating-a-jdate-instance)
+  - [Properties and Functions](#jdate-instance-properties-and-functions)
+  - [Static Properties and Functions](#jdate-static-properties-and-functions)
+- [The Location Object](#the-location-object)
+  - [Finding a Location](#finding-a-location)
+  - [Properties and Functions](#location-properties-and-functions)
+  - [Creating a Location](#creating-a-new-location)
+  - [Polar Regions](#polar-regions)
+- [Zmanim](#zmanim)
+  - [Zmanim Types](#zmanim-types)
+  - [Calculate other Zmanim](#calculate-other-zmanim)
+- [The Sedra Object](#the-sedra-object)
+- [The Dafyomi Object](#the-dafyomi-object)
+- [The Molad Functions](#the-molad-functions)
+- [Daily Notifications](#daily-notifications-and-shul-notifications)
+- [The Utils Functions](#the-utils-functions)
+
+---
+
 ### To add _jcal-zmanim_ to your project
 
 > _npm install jcal-zmanim_
@@ -9,13 +33,6 @@ A comprehensive JavaScript library for the Jewish Calendar.
 OR
 
 > _yarn add jcal-zmanim_
-
-### Performance
-
-As of version 1.5.8, `jcal-zmanim` includes built-in caching for complex astronomical and calendar calculations.
-
-- **Zmanim Caching:** Sunrise/Sunset calculations are cached per date/location to improve performance when rendering calendars or lists of zmanim.
-- **Calendar Caching:** Year-based calculations are cached to speed up date conversions and manipulations.
 
 ### Some basic uses of _jcal-zmanim_
 
