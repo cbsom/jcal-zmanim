@@ -4,8 +4,13 @@ A comprehensive JavaScript library for the Jewish Calendar.
 
 ## Table of Contents
 
+### Getting Started
+
 - [Installation](#to-add-jcal-zmanim-to-your-project)
 - [Basic Usage](#some-basic-uses-of-jcal-zmanim)
+
+### API Reference
+
 - [The jDate Object](#the-jdate-object)
   - [Creating a jDate](#creating-a-jdate-instance)
   - [Properties and Functions](#jdate-instance-properties-and-functions)
@@ -161,18 +166,24 @@ The code above, prints out to the console:
 
 ## The jDate object
 
-A _jDate_ is a single day in the Jewish Calendar.<br>
+A **_jDate_** is a **single day in the Jewish Calendar**.<br>
 It is used as the basic date unit throughout jcal-zmanim.
 
 ```javascript
 import { jDate } from "jcal-zmanim";
 
-//The following will create a Jewish Date object for todays Date.
+//Create a jDate object for todays Date.
 const jdate = new jDate();
-
-//The following will output the above Jewish Date in the format: Thursday, the 3rd of Kislev 5784.
 console.log(jdate.toString());
+//Output: Wednesday, the 18th of Teves 5786
+
+//Create a jDate object for January 9 2035.
+const jdate2 = new jDate("January 9 2035");
+console.log(jdate2.toStringHeb());
+//Output: יום שלישי כ"ח טבת תשצ"ה
 ```
+
+It is important to note that in jcal-zmanim, the Jewish Months start at Nissan (1) and end at Adar Sheini (13) as it is in the Torah.
 
 ### Creating a jDate instance
 
@@ -181,7 +192,7 @@ A jDate can be created in a number of ways:
 #### Create a jDate using the jDate constructor
 
 - `const jdate = new jDate()` - Sets the Jewish Date for the current system date
-- `const jdate = new jDate(javascriptDateObject)` - Sets to the Jewish date on the given Gregorian date
+- `const jdate = new jDate(Date)` - Sets to the Jewish date on the given Javascript/Typescript Date object
 - `const jdate = new jDate("January 1 2045")` - Accepts any valid javascript Date string (uses JavaScript's new Date(string))
 - `const jdate = new jDate(jewishYear, jewishMonth, jewishDay)` - Months start at 1. Nissan is month 1 Adar Sheini is 13.
 - `const jdate = new jDate(jewishYear, jewishMonth)` - Same as above, with Day defaulting to 1
@@ -192,20 +203,20 @@ A jDate can be created in a number of ways:
 - `const jdate = new jDate(jewishYear, jewishMonth, jewishDay, absoluteDate)` - Most efficient constructor. Needs no calculations at all.
 - `const jdate = new jDate( { year: 5776, month: 4, day: 5, abs: 122548708 } )` - same as new jDate(jewishYear, jewishMonth, jewishDay, absoluteDate)
 
-#### Create a jDate using the static _toJDate_ function
+### Static jDate Constructors
 
-- `jDate.toJDate()` OR `jDate.now()` - To get the current Jewish Date.
+- Besides for `new jDate()`, you can also use `jDate.now()` to get the current Jewish Date.
 
 ```javascript
-//To print out the current Jewish Date in English.
-console.log(jDate.toJDate().toString());
 //A shortcut to get the current jDate.
 const currentJDate = jDate.now();
+//To print out the current Jewish Date in English.
+console.log(currentJDate.toString());
 //To print out the current Jewish Date in Hebrew:
-console.log(jDate.now().toStringHeb());
+console.log(currentJDate.toStringHeb());
 ```
 
-- `jDate.toJDate(Date)` - Sets to the Jewish date on the given Javascript Date object
+- The static function `jDate.toJDate(Date)` can also be used to convert a Javascript Date object to a jDate object.
 - `jDate.toJDate("January 1 2045")` - Accepts any valid Javascript Date string (uses string constructor of Date object)
 
 ```javascript
