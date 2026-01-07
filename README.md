@@ -342,14 +342,14 @@ const closeToJerusalem = findLocation({ latitude: 31.75, longitude: -35.2 });
 import { Location } from "jcal-zmanim";
 
 const myLocation = new Location(
-  "Nowhere" /* The location name */,
-  "יהופיץ" /* The name in Hebrew. */,
-  false /* This place is not in Israel */,
-  35.01 /* The latitude.  North is positive. */,
-  155.23 /* The longitude. East is negative. */,
-  11 /* The Time Zone: The number of hours offset from UTC. */,
-  1106 /* The elevation in Meters. (Feet x 3.2808) */,
-  18 /* The number of minutes before sunset candles are lit on Erev Shabbos. */
+  "Nowhere", // The location name
+  "יהופיץ", // The name in Hebrew
+  false, // This place is not in Israel
+  35.01, // The latitude.  North is positive
+  155.23, // The longitude. East is negative
+  11, // The Time Zone: The number of hours offset from UTC
+  1106, // The elevation in Meters. (Feet x 3.2808)
+  18 // The number of minutes before sunset candles are lit on Erev Shabbos
 );
 ```
 
