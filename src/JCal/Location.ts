@@ -22,7 +22,7 @@ export default class Location {
      * @param {Number} elevation Elevation in meters
      * @param {Number} [candleLighting] Number of minutes before sunset the candles are lit on Friday
      */
-    constructor(name: string, nameHeb: string | undefined, israel: boolean, latitude: number, longitude: number, utcOffset: number, elevation: number, candleLighting?: number) {
+    constructor(name: string, nameHeb: string | undefined, israel: boolean | undefined, latitude: number, longitude: number, utcOffset: number, elevation: number, candleLighting?: number) {
         //If the israel argument was not set at all.
         if (typeof israel === 'undefined' || israel === null) {
             //If the user is within Israels general coordinates,
