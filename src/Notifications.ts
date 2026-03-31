@@ -5,6 +5,7 @@ import PirkeiAvos from "./JCal/PirkeiAvos.js";
 import ZmanimUtils from "./JCal/ZmanimUtils.js";
 import Location from "./JCal/Location.js";
 import { Time } from "./jcal-zmanim.js";
+import { ZmanTypeIds, getZmanType } from "./ZmanTypes.js";
 
 type DayInfo = {
   jdate: jDate;
@@ -351,13 +352,50 @@ function getAroundTheYearNotifications() {
       if (dow !== DaysOfWeek.SHABBOS && day > 15 && day !== 21) {
         addTefillahNote("Vesain Bracha", "ותן ברכה");
       }
-      ///Bedikas Chometz - 
+      ///Bedikas Chometz-------------------------------------------------------------------------------------
+      /// when פסח is Motzai Shabbos, it is on Thursday night of י"ג, otherwise, it is the night starting י"ד
+      if (
+        !isNightTime &&
+        ((dow !== DaysOfWeek.THURSDAY && day === 13) || (dow === DaysOfWeek.WEDNESDAY && day === 12))
+      ) {
+        addDayNote("Bedikas Chometz Tonight", 'בדיקת חמץ בערב');
+      }
       /// when פסח is Motzai Shabbos, it is on Thursday night of י"ג, otherwise, it is the night starting י"ד
       if (
         isNightTime &&
         ((dow !== DaysOfWeek.FRIDAY && day === 14) || (dow === DaysOfWeek.THURSDAY && day === 13))
       ) {
-        addDayNote("Bedikas Chometz", 'בדיקת חמץ');
+        addDayNote("Bedikas Chometz", "בדיקת חמץ");
+      }
+      if (day === 14) {
+        const eatingZman = ZmanimUtils.getZmanTimes(
+          [getZmanType(ZmanTypeIds.SofZmanEatingChometz)!],
+          sdate,
+          jdate,
+          location
+        )[0];
+
+        if (eatingZman && eatingZman.time) {
+          addDayNote(
+            `Sof Zman Eating Chometz: ${Utils.getTimeString(eatingZman.time)}`,
+            `סוף זמן אכילת חמץ: ${Utils.getTimeString(eatingZman.time)}`
+          );
+        }
+      }
+      if ((day === 14 && dow !== DaysOfWeek.SHABBOS) || (day === 13 && dow === DaysOfWeek.FRIDAY)) {
+        const burnZman = ZmanimUtils.getZmanTimes(
+          [getZmanType(ZmanTypeIds.SofZmanBurnChometz)!],
+          sdate,
+          jdate,
+          location
+        )[0];
+
+        if (burnZman && burnZman.time) {
+          addDayNote(
+            `Sof Zman Burn Chometz: ${Utils.getTimeString(burnZman.time)}`,
+            `סוף זמן ביעור חמץ: ${Utils.getTimeString(burnZman.time)}`
+          );
+        }
       }
       if (isMorning && dow !== DaysOfWeek.SHABBOS && [14, 16, 17, 18, 19, 20].includes(day)) {
         addTefillahNote("No Mizmor Lesodah", 'א"א מזמור לתודה');

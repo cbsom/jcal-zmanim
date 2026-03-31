@@ -1,0 +1,44 @@
+
+> jcal-zmanim@1.5.12 test
+> node --experimental-vm-modules node_modules/jest/bin/jest.js tests/notifications.test.js
+
+  console.log
+    Nissan 14, 5786 Day Notes: [
+      'Sof Zman Eating Chometz: 10:03:17 AM',
+      'Sof Zman Burn Chometz: 11:20:17 AM',
+      'Menachos, Daf 80'
+    ]
+
+      at Object.log (tests/notifications.test.js:17:17)
+
+  console.log
+    Nissan 13, 5785 Day Notes: [
+      'Bedikas Chometz Tonight',
+      'Sof Zman Burn Chometz: 11:15:53 AM',
+      'Makkot, Daf 3'
+    ]
+
+      at Object.log (tests/notifications.test.js:32:17)
+
+  console.log
+    Nissan 14, 5785 Day Notes: [
+      'Shabbos Hagadol',
+      'Sof Zman Eating Chometz: 9:56:40 AM',
+      'Makkot, Daf 4'
+    ]
+
+      at Object.log (tests/notifications.test.js:45:17)
+
+(node:22132) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS tests/notifications.test.js
+  Chometz Notifications
+    Γטת Sof Zman Eating and Burn Chometz on Nissan 14 (Erev Pesach not on Shabbos) (14 ms)
+    Γטת Sof Zman Burn Chometz on Nissan 13 (Erev Pesach on Shabbos) (1 ms)
+    Γטת Sof Zman Eating Chometz on Nissan 14 (Erev Pesach on Shabbos) (2 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       3 passed, 3 total
+Snapshots:   0 total
+Time:        0.481 s, estimated 1 s
+Ran all test suites matching tests/notifications.test.js.

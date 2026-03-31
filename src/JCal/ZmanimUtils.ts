@@ -299,8 +299,7 @@ export default class ZmanimUtils {
                     break;
                 case ZmanTypeIds.SofZmanEatingChometz: //Sof Zman Achilas Chometz
                     if (shaaZmanisMga && jdate.Month === 1 &&
-                        jdate.Day === 14 &&
-                        Utils.isTimeAfter(sunrise, Utils.timeFromDate(date))) {
+                        jdate.Day === 14) {
                         zmanTimes.push({
                             zmanType,
                             time: Utils.addMinutes(
@@ -313,10 +312,9 @@ export default class ZmanimUtils {
                 case ZmanTypeIds.SofZmanBurnChometz: //Sof Zman Biur Chometz
                     if (shaaZmanisMga &&
                         jdate.Month === 1 &&
-                        (jdate.Day === 14 ||
+                        ((jdate.Day === 14 && jdate.DayOfWeek !== DaysOfWeek.SHABBOS) ||
                             (jdate.DayOfWeek === DaysOfWeek.FRIDAY &&
-                                jdate.Day === 13)) &&
-                        Utils.isTimeAfter(sunrise, Utils.timeFromDate(date))
+                                jdate.Day === 13))
                     ) {
                         zmanTimes.push({
                             zmanType,
