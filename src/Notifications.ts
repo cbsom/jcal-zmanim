@@ -565,8 +565,8 @@ function getAroundTheYearNotifications() {
         isDaytime &&
         ((day === 17 && DaysOfWeek.SHABBOS !== 6) || (day === 18 && dow === DaysOfWeek.SUNDAY))
       ) {
+        addDayNote("Shiva Asar B`Tamuz", 'י"ז בתמוז');
         if (isDaytime) {
-          addDayNote("Shiva Asar B`Tamuz", 'י"ז בתמוז');
           addTefillahNote("Avinu Malkeinu", "אבינו מלכנו");
           addTefillahNote("Aneinu", "עננו");
         }
@@ -677,8 +677,8 @@ function getAroundTheYearNotifications() {
           break;
         case 3:
           if (dow !== DaysOfWeek.SHABBOS) {
+            addDayNote("Fast of Tzom Gedalya", "צום גדליה");
             if (isDaytime) {
-              addDayNote("Fast of Tzom Gedalya", "צום גדליה");
               addTefillahNote("Aneinu", "עננו");
             }
             if (isAfterChatzosHalayla || isMorning) {
@@ -689,8 +689,8 @@ function getAroundTheYearNotifications() {
           break;
         case 4:
           if (dow === DaysOfWeek.SUNDAY) {
+            addDayNote("Fast of Tzom Gedalya", "צום גדליה");
             if (isDaytime) {
-              addDayNote("Fast of Tzom Gedalya", "צום גדליה");
               addTefillahNote("Aneinu", "עננו");
             }
             if (isAfterChatzosHalayla || isMorning) {
@@ -958,13 +958,15 @@ function getAroundTheYearNotifications() {
             }
           }
         }
-      } else if (day === 10 && isDaytime) {
+      } else if (day === 10) {
         addDayNote("Fast of Asara B`Teves", "עשרה בטבת");
         if (isMorning) {
           addTefillahNote("Selichos", "סליחות");
         }
-        addTefillahNote("Avinu Malkeinu", "אבינו מלכנו");
-        addTefillahNote("Aneinu", "עננו");
+        if (isDaytime) {
+          addTefillahNote("Avinu Malkeinu", "אבינו מלכנו");
+          addTefillahNote("Aneinu", "עננו");
+        }
       }
       break;
     case m.SHVAT:
@@ -1003,12 +1005,14 @@ function getAroundTheYearNotifications() {
           ((day === 11 && dow === DaysOfWeek.THURSDAY) ||
             (day === 13 && dow !== DaysOfWeek.SHABBOS))
         ) {
+          addDayNote("Fast of Ta`anis Esther", "תענית אסתר");
           if (isMorning) {
-            addDayNote("Fast of Ta`anis Esther", "תענית אסתר");
             addTefillahNote("Selichos", "סליחות");
           }
-          addTefillahNote("Avinu Malkeinu", "אבינו מלכנו");
-          addTefillahNote("Aneinu", "עננו");
+          if (isDaytime) {
+            addTefillahNote("Avinu Malkeinu", "אבינו מלכנו");
+            addTefillahNote("Aneinu", "עננו");
+          }
         } else {
           //Only ירושלים says על הניסים on ט"ו
           const isYerushalayim = location.Name === "Jerusalem" || location.NameHebrew === "ירושלים";
