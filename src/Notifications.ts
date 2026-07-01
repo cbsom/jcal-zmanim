@@ -561,10 +561,7 @@ function getAroundTheYearNotifications() {
 
       break;
     case m.TAMUZ:
-      if (
-        isDaytime &&
-        ((day === 17 && DaysOfWeek.SHABBOS !== 6) || (day === 18 && dow === DaysOfWeek.SUNDAY))
-      ) {
+      if ((day === 17 && dow !== DaysOfWeek.SHABBOS) || (day === 18 && dow === DaysOfWeek.SUNDAY)) {
         addDayNote("Shiva Asar B`Tamuz", 'י"ז בתמוז');
         if (isDaytime) {
           addTefillahNote("Avinu Malkeinu", "אבינו מלכנו");
@@ -583,8 +580,8 @@ function getAroundTheYearNotifications() {
         (day === 10 && dow === DaysOfWeek.SUNDAY)
       ) {
         addDayNote("Tish B`Av", "תשעה באב");
+        addTefillahNote("Kinos", "קינות");
         if (isDaytime) {
-          addTefillahNote("Kinos", "קינות");
           addTefillahNote("Aneinu", "עננו");
           if (isMorning && dow !== DaysOfWeek.SHABBOS) {
             noLaminatzeach();

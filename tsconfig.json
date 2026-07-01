@@ -1,7 +1,9 @@
 {
   "compilerOptions": {
+    "ignoreDeprecations": "6.0",
     "target": "ES5",
     "lib": ["es2017", "es7", "es6", "dom"],
+    "types": ["node", "jest"],
     "module": "NodeNext",
     "rootDir": "src",
     "moduleResolution":"NodeNext",
