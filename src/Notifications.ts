@@ -762,7 +762,7 @@ function getAroundTheYearNotifications() {
           addTefillahNote("Ya`aleh V`yavo", "יעלה ויבא");
           if (day === 16 && !israel) {
             addDayNote("Second day of Sukkos", "סוכות - יום טוב שני");
-          } else if (!israel) {
+          } else {
             addDayNote("Chol Hamoed Sukkos", "סוכות - חול המועד");
             addTefillahNote("Ya`aleh V`yavo", "יעלה ויבא");
           }
